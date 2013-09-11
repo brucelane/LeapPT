@@ -19,7 +19,9 @@ public class AppProfile {
 	 
 	 /// soundParams
 	 ArrayList<String> soundsStarWars = new ArrayList();
-	 public boolean isBlack;
+	 
+	 /// game mode params
+	 ArrayList<String> gameMode = new ArrayList();
 	 
 	 protected AppProfile() {
 	      // Exists only to defeat instantiation.
@@ -34,6 +36,9 @@ public class AppProfile {
    public void SetPApp(PApplet p){
 	   pApp = p;
 	   
+	   
+	   //// add sounds
+	   //// clean this
 	   soundsStarWars.add("sounds/laserhit_short1.wav");
 	   soundsStarWars.add("sounds/laserhit_short2.wav");
 	   soundsStarWars.add("sounds/laserhit_short3.wav");
@@ -51,14 +56,9 @@ public class AppProfile {
 	   soundsStarWars.add("sounds/Spin1.wav");
 	   soundsStarWars.add("sounds/Spin2.wav");
 
-	   /*
-	    clash1 = minim.loadSample("sounds/clash 01.wav", 512);
-	    clash2 = minim.loadSample("sounds/Swing01.wav", 512);
-	    clash3 = minim.loadSample("sounds/lasrhit3.wav", 512); 
-	    clash4 = minim.loadSample("sounds/lasrhit1.wav", 512);
-	    clash5 = minim.loadSample("sounds/Spin 1.wav", 512);
-	    clash6 = minim.loadSample("sounds/Spin 2.wav", 512); 
-	   */
+	   gameMode.add("SmashBlocks");
+	   gameMode.add("SpinBlock");
+	   gameMode.add("TennisBlock");
 	   
 
    }

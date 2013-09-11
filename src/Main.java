@@ -31,13 +31,6 @@ public class Main extends PApplet{
 	ConcurrentMap<Integer, Integer> fingerColors;
 	ConcurrentMap<Integer, Integer> toolColors;
 	
-	// minim
-	Minim minim;
-	AudioSample plate;
-	AudioSample rattle;
-	AudioSample sheet;
-	AudioSample snares;
-	
 	// text and UI display
 	PImage controlPanel;
 	
@@ -45,6 +38,9 @@ public class Main extends PApplet{
 	String theTime = "0";
 	String theRank = "noob";
 	String theGameType = "null";
+	
+	/// game state controls
+	int gameID = 0;
 	
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
@@ -58,22 +54,11 @@ public class Main extends PApplet{
 	
 	int tWidth;
 	int tHeight;
-	
-	float bx = 300;
-	float by = 300;
-	float bz = 100;
-	
-	float oldbx;
-	float oldby;
-	float oldbz;
-	
+
 	float theX = 0;
 	float theY = 0;
 	float theZ = 0;
-	
-	int boxSize = 100; 
-	boolean bover = false;
-	boolean locked = false;
+
 	float bdifx = 0.0f; 
 	float bdify = 0.0f; 
 	
@@ -82,7 +67,6 @@ public class Main extends PApplet{
 	///// control and images
 	String panelPath = "data/control_panel.png";
 
-	
 	// applet
 	AppProfile theAppProfile;
 	
@@ -122,11 +106,6 @@ public class Main extends PApplet{
 	  fingerPositions = new ConcurrentHashMap<Integer, Vector>();
 	  toolPositions = new ConcurrentHashMap<Integer, Vector>();
 	  
-	
-	  bx = tWidth/2.0f;
-	  by = tHeight/2.0f;
-	  bz = 100;
-	  
 	  /// smooth();
 	  
 	  // movers
@@ -156,8 +135,6 @@ public class Main extends PApplet{
 	  background(0);
 	  pushMatrix();
 	  translate(0,0,-500);
-	  // fill(0);
-	  // rect(-tWidth/2, -tHeight/2, tWidth*2, tHeight*2);
 	  popMatrix();
 
 	  for (Map.Entry entry : fingerPositions.entrySet()){
@@ -202,79 +179,37 @@ public class Main extends PApplet{
 	        dMover.display();
 	    }
 	}
-	public void hitTest(float tx, float ty, float tz){
-		theX = tx;
-		theY = ty;
-		theZ = tz;
-		// Test if the cursor is over the box 
-
-		  if (theX+boxSize/3 > bx-boxSize/3 && theX - boxSize/3 < bx+boxSize/3 && theY+boxSize/3 > by-boxSize/3 && theY- boxSize/3< by+boxSize/3) {
-			  // println("BOX IS OVER");
-		    bover = true;  
-
-		  } else {
-			  bover = false;
-			 // println("BOX NOT OVER");
-		  }
-
+	
+	///////////////////////////////////////
+	///// GAME STATE CONTROL /////////////
+	/////////////////////////////////////
+	public void doNextGame(){
 		
-		  // doBox();
 	}
 	
-	public void doBox(){
-		// bx = theMover.location.x;
-		// by = theMover.location.y;
-		if(bover == true){
-			
-		// /*
-		 bdifx = theX-bx; 
-		 bdify = theY-by; 
-		  
-		 bx = theX-bdifx; 
-		 by = theY-bdify; 
-		 
-		// */
-
-
-		///*
-		bx = theX;
-		by = theY;
-		//*/
-		bz = theZ;
+	public void doPrevGame(){
 		
-		// ps.run();
-		    
-		// println("I am x: " + bx + " " + theX);
-		// println("I am x: " + by + " " + theY);
-
-		strokeWeight(1);
-		stroke(255);
-		/// fill(255,0,0,125);
 		
-		} else {
-			bx = theX;
-			by = theY;
-			noStroke();
-			fill(0,255,0,125);
-			
+	}
+	
+	public void renderGame(){
+		
+		switch (gameID){
+		
+		
+		
+		
+		
 		
 		}
-
-		/*
-		pushMatrix();
-	    translate(bx, by, bz); /// x,y and z?
-	    rotateY(-0.5f);
-	    rotateX(-0.4f);
-	    box(boxSize);
-	    popMatrix();
-	    */
-		// println("CUR BOX: " + bx + " " + by);
+		
+		
 		
 	}
-	
-	
-	
+
+  /////////////////////////////////////
   /////// LEAP INPUT /////////////////
+	/////////////////////////////////////
   public void onFrame(final Controller controller){
 	  
 	  Frame frame = controller.frame();
@@ -367,9 +302,9 @@ public class Main extends PApplet{
 	
 	////// end leap input //////
 	
-//////////////////////////////
-///// CREATE INTERFACE ////
-//////////////////////////////
+	//////////////////////////////
+	///// CREATE INTERFACE ////
+	//////////////////////////////
 
 	private void initGUI() {
 		
@@ -424,6 +359,35 @@ public class Main extends PApplet{
 		
 	}
 	
+	////////////////////////////////////////
+	///////// KEYBOARD INPUT ///////////////
+	////////////////////////////////////////
+	
+	public void keyPressed() {
+		
+	    if (key == CODED) {
+	    	if (keyCode == RIGHT) {
+			 	println("next game");
+				doNextGame();
+		      
+		    } 
+	    	if (keyCode == RIGHT) {
+			 	println("next game");
+				doPrevGame();
+			      
+			} 
+		 }
+	    
+	    //// reg keys
+		if (key == 'r') {
+
+		}
+		if (key == 'q'){
+
+		}
+
+	}
+
 	
 	
 }
