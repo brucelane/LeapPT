@@ -8,6 +8,9 @@ public class AppProfile {
 	 private static AppProfile instance = null;
 	 public static PApplet pApp;
 	 
+	 /// input params
+	 int curNumFingers;
+	 
 	 /// stage params
 	 int theWidth = 1024;
 	 int theHeight = 768;
@@ -15,8 +18,7 @@ public class AppProfile {
 	 
 	 int scoredata;
 	 String rankdata = "noob";
-	 String gametypedata = "SmashBlock";
-	 
+
 	 /// soundParams
 	 ArrayList<String> soundsStarWars = new ArrayList();
 	 

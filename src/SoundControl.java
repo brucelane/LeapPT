@@ -89,7 +89,7 @@ class SoundControl extends PApplet{
 		try{
 			String soundpath = theAppProfile.soundsStarWars.get(theID);
 			boolean isPlaying = wall1.isPlaying();
-			println(theID + " " + soundpath);
+			/// println(theID + " " + soundpath);
 			
 			if(isPlaying){
 				/*

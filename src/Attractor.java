@@ -38,7 +38,7 @@ class Attractor{
     
     public void update(float tX, float tY, float tZ){
     	location = new PVector(tX, tY, tZ);
-    	// location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
+
     }
     // returns it attraction
     PVector attract(Mover m){
@@ -48,8 +48,8 @@ class Attractor{
       
         
         //// check to see if the attractor is overlapping the mover
-        ///*
-        if(location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){
+        ///  and that there are fingers attached to the attractor
+        if(theAppProfile.curNumFingers >0 && location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){
         	
         	m.hasImpact = true;
         	
@@ -81,22 +81,20 @@ class Attractor{
         
         float newG;
         
+        /*
         if(distance <10){
         	newG = pApp.map(distance,.50f, 900f, .5f, 10.5f);
         	
         } else {
         	newG = .5f;
         }
+        */
         
         force.normalize();
         float strength = (G * mass * m.mass) / (distance * distance);
         force.mult(strength);
         return force;
     } 
-    
-    void checkImpact(){
-    	
-    }
     
     //
     void display(){

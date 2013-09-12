@@ -31,6 +31,8 @@ public class Main extends PApplet{
 	ConcurrentMap<Integer, Integer> fingerColors;
 	ConcurrentMap<Integer, Integer> toolColors;
 	
+	int curNumFingers;
+	
 	// text and UI display
 	PImage controlPanel;
 	
@@ -58,11 +60,6 @@ public class Main extends PApplet{
 	float theX = 0;
 	float theY = 0;
 	float theZ = 0;
-
-	float bdifx = 0.0f; 
-	float bdify = 0.0f; 
-	
-	float gravWeight = .5f;
 	
 	///// control and images
 	String panelPath = "data/control_panel.png";
@@ -72,10 +69,20 @@ public class Main extends PApplet{
 	
 	/// arrays
 	ArrayList<Mover> movers;
+	ArrayList<Bouncer> bouncers;
 	
+	/// game objects //
+	float gravWeight = .5f;
 	int totalMovers = 1;
+	
 	Mover theMover;
 	Attractor theAttractor;
+	
+	
+	
+	Repulsor theRepulsor;
+	Bouncer theBouncer;
+	int totalBouncers = 1;
 	
 	TimerClass theTimer;
 
@@ -84,10 +91,10 @@ public class Main extends PApplet{
 	  /// set up app profile
 	  theAppProfile = theAppProfile.getInstance();
 	  theAppProfile.SetPApp(this);
-	  
 	  //
 	  movers = new ArrayList();
-	  
+	  bouncers = new ArrayList();
+	  //
 	  //
 	  theTimer = new TimerClass();
 	  
@@ -110,7 +117,11 @@ public class Main extends PApplet{
 	  
 	  // movers
 	  spawnMovers();
+	  // bouncers
+	  spawnBouncers();
+	  
 	  theAttractor = new Attractor(gravWeight);
+	  theRepulsor = new Repulsor(gravWeight);
 
 	  /// text images panels
 	  controlPanel = loadImage(panelPath);
@@ -119,6 +130,121 @@ public class Main extends PApplet{
 	  
 	  theTimer.start();
 
+	}
+	
+
+	public void draw(){
+		
+	  //// make a nice background ///
+	  background(0);
+	  /*
+	  pushMatrix();
+	  translate(0,0,-500);
+	  popMatrix();
+	  */
+
+
+	  renderGame();
+	  doGUI();
+
+	}
+	
+	
+	///////////////////////////////////////
+	///// GAME STATE CONTROL /////////////
+	/////////////////////////////////////
+
+	public void renderGame(){
+		
+		switch (gameID){
+		
+		case 0:
+			doRepulsor();
+			drawBouncers();
+			
+			
+			break;
+			
+		case 1:
+			doAttractor();
+			drawMovers();
+			
+			break;
+			
+		case 2:
+
+			break;
+			
+		case 3:
+			
+			break;
+			
+		case 4:
+			
+			break;
+		
+		case 5:
+			
+			break;	
+		}
+		
+	}
+	
+	/////////////// 
+	public void doNextGame(){
+		
+		if(gameID >= theAppProfile.gameMode.size()-1){
+			gameID = 0;
+		} else {
+			gameID ++;
+		}
+		
+	}
+	
+	public void doPrevGame(){
+		
+		if(gameID <= 0){
+			gameID = theAppProfile.gameMode.size()-1;
+		} else {
+			gameID --;
+		}
+		
+	}
+	
+	
+  /////////////////////////////////////
+  ////////// GAME MECHANICS BY TYPE //////////	
+ /////////////////////////////////////
+	
+	
+	///// attractor and mover
+	
+	public void doAttractor(){
+	 ////// do the LEAP //////////
+	  for (Map.Entry entry : fingerPositions.entrySet()){
+		  
+	    Integer fingerId = (Integer) entry.getKey();
+	    Vector position = (Vector) entry.getValue();
+
+	    // show finger colors
+	    // fill(fingerColors.get(fingerId), 65);
+	    stroke(255);
+	    strokeWeight(1);
+	    
+	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
+	    pushMatrix();
+	    
+	    //// move the ellipse in the z index
+	    translate(0,0,300);
+	    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+	    popMatrix();
+	    
+	    /// only activate if fingers are showing
+
+		theAttractor.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), position.getZ());
+	    theAttractor.display();
+	    
+	  }
 	}
 	/// spawn movers
 	void spawnMovers(){
@@ -130,45 +256,8 @@ public class Main extends PApplet{
 	        movers.add(new Mover(random(1.1f,5),0,0f));  
 	    } 
 	}
-
-	public void draw(){
-	  background(0);
-	  pushMatrix();
-	  translate(0,0,-500);
-	  popMatrix();
-
-	  for (Map.Entry entry : fingerPositions.entrySet()){
-		  
-	    Integer fingerId = (Integer) entry.getKey();
-	    Vector position = (Vector) entry.getValue();
-
-	    // fill(fingerColors.get(fingerId), 65);
-	    stroke(255);
-	    strokeWeight(1);
-	    
-	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
-	    pushMatrix();
-	    translate(0,0,300);
-	    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
-	    popMatrix();
-
-	    /// hitTest(leapToScreenX(position.getX()), leapToScreenY(position.getY()), position.getZ());
-
-	    theAttractor.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), position.getZ());
-
-		theAttractor.display();
-
-
-	  }
-	  drawMovers();
-
-	  image(controlPanel, 0, 0);
-	  doGUI();
-
-	}
-	
-	void drawMovers(){
-	    
+		
+	public void drawMovers(){
 	    for (int i=0; i< movers.size(); i++){
 	        Mover dMover = movers.get(i);
 	        /// movers[i].applyForce(gravity);
@@ -180,33 +269,66 @@ public class Main extends PApplet{
 	    }
 	}
 	
-	///////////////////////////////////////
-	///// GAME STATE CONTROL /////////////
-	/////////////////////////////////////
-	public void doNextGame(){
-		
-	}
 	
-	public void doPrevGame(){
-		
-		
-	}
+	///// bouncer and smasher //////////////////
 	
-	public void renderGame(){
-		
-		switch (gameID){
-		
-		
-		
-		
-		
-		
-		}
-		
-		
-		
-	}
+	
+	public void doRepulsor(){
+		 ////// do the LEAP //////////
+		  for (Map.Entry entry : fingerPositions.entrySet()){
+			  
+		    Integer fingerId = (Integer) entry.getKey();
+		    Vector position = (Vector) entry.getValue();
 
+		    // show finger colors
+		    // fill(fingerColors.get(fingerId), 65);
+		    stroke(255);
+		    strokeWeight(1);
+		    
+		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
+		   ////  pushMatrix();
+		    
+		    //// move the ellipse in the z index
+		    //// translate(0,0,300);
+		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+		    /// popMatrix();
+
+		    theRepulsor.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
+		    theRepulsor.display();
+		  }
+		}
+	
+	/// spawn bouncers
+	void spawnBouncers(){
+	    // generate movers
+	    bouncers.clear();
+	    for (int i=0; i< totalBouncers; i++){
+	        // // println("ADDING MOVER: " + i);
+	        // movers[i] = new Mover(random(0.1,5),0,0);
+	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
+	    } 
+	}
+		
+	public void drawBouncers(){
+	    for (int i=0; i< bouncers.size(); i++){
+	        Bouncer dBouncer = bouncers.get(i);
+	        /// movers[i].applyForce(gravity);
+	        PVector f = theRepulsor.repulse(dBouncer);
+	        dBouncer.applyForce(f);
+	        dBouncer.update();
+	        dBouncer.checkEdges();
+	        dBouncer.display();
+	    }
+	}
+	
+	
+	//// spinner
+	
+	
+	
+	
+	
+	
   /////////////////////////////////////
   /////// LEAP INPUT /////////////////
 	/////////////////////////////////////
@@ -216,11 +338,11 @@ public class Main extends PApplet{
 	  
 	  Hand hand = frame.hands().get(0);
 	  FingerList fingers = hand.fingers();
-
+	  
+	  theAppProfile.curNumFingers = hand.fingers().count();
 
 	  for (Finger finger : frame.fingers()){
 
-		  
 	    int fingerId = finger.id();
 	    int c = color(random(0, 255), random(0, 255), random(0, 255));  //generate random color
 	    fingerColors.putIfAbsent(fingerId, c);  //if there isn't a color put color into fingerColors at fingerId
@@ -235,7 +357,6 @@ public class Main extends PApplet{
 	    toolPositions.put(toolId, tool.tipPosition());
 	  }
 
-	  // todo:  clean up expired finger/toolIds
 	  cleanExpired(frame);
 	 
 	}
@@ -314,9 +435,9 @@ public class Main extends PApplet{
 
 	private void doGUI(){
 
-		/// parse score
-
+		image(controlPanel, 0, 0);
 		
+		/// parse score
 		try{
 			
 			int oldScore = parseInt(theScore); // theAppProfile.scoredata;
@@ -345,7 +466,7 @@ public class Main extends PApplet{
 
 		/// diaplay config
 		theRank = theAppProfile.rankdata;
-		theGameType = theAppProfile.gametypedata;
+		theGameType = theAppProfile.gameMode.get(gameID);
 
 		textFont(ScoreFont, 22);
 		fill(255,255,0);
@@ -371,8 +492,8 @@ public class Main extends PApplet{
 				doNextGame();
 		      
 		    } 
-	    	if (keyCode == RIGHT) {
-			 	println("next game");
+	    	if (keyCode == LEFT) {
+			 	println("previous game");
 				doPrevGame();
 			      
 			} 
