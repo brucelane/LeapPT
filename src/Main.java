@@ -6,13 +6,20 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /// leap motion
+import com.leapmotion.leap.CircleGesture;
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.FingerList;
 import com.leapmotion.leap.Frame;
+import com.leapmotion.leap.Gesture;
+import com.leapmotion.leap.GestureList;
 import com.leapmotion.leap.Hand;
+import com.leapmotion.leap.KeyTapGesture;
+import com.leapmotion.leap.ScreenTapGesture;
+import com.leapmotion.leap.SwipeGesture;
 import com.leapmotion.leap.Tool;
 import com.leapmotion.leap.Vector;
+import com.leapmotion.leap.Gesture.State;
 import com.leapmotion.leap.processing.LeapMotion;
 
 /// minim audio
@@ -24,13 +31,17 @@ public class Main extends PApplet{
 	
 	/// leap
 	LeapMotion leapMotion;
+	// controller and listeners
+    Controller controller = new Controller();
+	/// SampleListener listener = new SampleListener();
+
 	
 	/// finger arrays
 	ConcurrentMap<Integer, Vector> fingerPositions;
 	ConcurrentMap<Integer, Vector> toolPositions;
 	ConcurrentMap<Integer, Integer> fingerColors;
 	ConcurrentMap<Integer, Integer> toolColors;
-	
+
 	int curNumFingers;
 	
 	// text and UI display
@@ -42,7 +53,7 @@ public class Main extends PApplet{
 	String theGameType = "null";
 	
 	/// game state controls
-	int gameID = 0;
+	int gameID = 1;
 	
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
@@ -66,23 +77,32 @@ public class Main extends PApplet{
 
 	// applet
 	AppProfile theAppProfile;
+
+	//// GESTURE TRACKING
+	//// Swipe id: 123, STATE_STOP, position: (-98.4066, 175.594, 245.193), direction: (-0.286242, -0.268394, 0.919799), speed: 2278.775
+	//// ConcurrentMap<Integer, String, Vector, Float> gestureType; 
+	Gesture theGesture;
 	
 	/// arrays
 	ArrayList<Mover> movers;
 	ArrayList<Bouncer> bouncers;
+	ArrayList<Spinner> spinners;
 	
 	/// game objects //
+	boolean gestureCheck = false;
 	float gravWeight = .5f;
-	int totalMovers = 1;
-	
+
 	Mover theMover;
 	Attractor theAttractor;
-	
-	
+	int totalMovers = 1;
 	
 	Repulsor theRepulsor;
 	Bouncer theBouncer;
 	int totalBouncers = 1;
+	
+	Shaker theShaker;
+	Spinner theSpinner;
+	int totalSpinners = 1;
 	
 	TimerClass theTimer;
 
@@ -92,8 +112,12 @@ public class Main extends PApplet{
 	  theAppProfile = theAppProfile.getInstance();
 	  theAppProfile.SetPApp(this);
 	  //
+	  theGesture = new Gesture();
+	  
+	  //
 	  movers = new ArrayList();
 	  bouncers = new ArrayList();
+	  spinners = new ArrayList();
 	  //
 	  //
 	  theTimer = new TimerClass();
@@ -113,6 +137,11 @@ public class Main extends PApplet{
 	  fingerPositions = new ConcurrentHashMap<Integer, Vector>();
 	  toolPositions = new ConcurrentHashMap<Integer, Vector>();
 	  
+      controller.enableGesture(Gesture.Type.TYPE_SWIPE);
+      controller.enableGesture(Gesture.Type.TYPE_CIRCLE);
+      controller.enableGesture(Gesture.Type.TYPE_SCREEN_TAP);
+      controller.enableGesture(Gesture.Type.TYPE_KEY_TAP);
+	  
 	  /// smooth();
 	  
 	  // movers
@@ -120,8 +149,11 @@ public class Main extends PApplet{
 	  // bouncers
 	  spawnBouncers();
 	  
+	  spawnSpinners();
+	  
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
+	  theShaker = new Shaker(gravWeight);
 
 	  /// text images panels
 	  controlPanel = loadImage(panelPath);
@@ -166,13 +198,15 @@ public class Main extends PApplet{
 			break;
 			
 		case 1:
-			doAttractor();
-			drawMovers();
+			gestureCheck = true;
+			doShaker();
+			drawSpinners();
 			
 			break;
 			
 		case 2:
-
+			doAttractor();
+			drawMovers();
 			break;
 			
 		case 3:
@@ -193,6 +227,13 @@ public class Main extends PApplet{
 	/////////////// 
 	public void doNextGame(){
 		
+		/// should reset game and score
+		try{ 
+			gestureCheck = false;
+		} catch (Exception e){
+			println("Can't kill listeners");
+		}
+		
 		if(gameID >= theAppProfile.gameMode.size()-1){
 			gameID = 0;
 		} else {
@@ -202,6 +243,13 @@ public class Main extends PApplet{
 	}
 	
 	public void doPrevGame(){
+		
+		/// should reset game and score
+		try{ 
+			gestureCheck = false;
+		} catch (Exception e){
+			println("Can't kill listeners");
+		}
 		
 		if(gameID <= 0){
 			gameID = theAppProfile.gameMode.size()-1;
@@ -217,7 +265,7 @@ public class Main extends PApplet{
  /////////////////////////////////////
 	
 	
-	///// attractor and mover
+	///// ATTRACTORS /////////////////
 	
 	public void doAttractor(){
 	 ////// do the LEAP //////////
@@ -270,7 +318,7 @@ public class Main extends PApplet{
 	}
 	
 	
-	///// bouncer and smasher //////////////////
+	///////// BOUNCERS ////////////////
 	
 	
 	public void doRepulsor(){
@@ -298,7 +346,6 @@ public class Main extends PApplet{
 		  }
 		}
 	
-	/// spawn bouncers
 	void spawnBouncers(){
 	    // generate movers
 	    bouncers.clear();
@@ -322,8 +369,51 @@ public class Main extends PApplet{
 	}
 	
 	
-	//// spinner
-	
+	//// SPINNERS //////////////
+	public void doShaker(){
+		 ////// do the LEAP //////////
+		
+		
+		/*
+		  for (Map.Entry entry : fingerPositions.entrySet()){
+			  
+		    Integer fingerId = (Integer) entry.getKey();
+		    Vector position = (Vector) entry.getValue();
+
+
+
+
+			theShaker.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), position.getZ());
+		    theShaker.display();
+		    
+		  }
+		  
+		  */
+	}
+	/// spawn spinners
+	void spawnSpinners(){
+	    // generate spinners
+	    spinners.clear();
+	    for (int i=0; i< totalSpinners; i++){
+	        // // println("ADDING MOVER: " + i);
+	        // movers[i] = new Mover(random(0.1,5),0,0);
+	    	spinners.add(new Spinner(random(1.1f,5),0,0f));  
+	    } 
+	}
+		
+	public void drawSpinners(){
+	    for (int i=0; i< spinners.size(); i++){
+	        Spinner dSpinner = spinners.get(i);
+	        /// movers[i].applyForce(gravity);
+	        /*
+	        PVector f = theRepulsor.repulse(dBouncer);
+	        dBouncer.applyForce(f);
+	        dBouncer.update();
+	        dBouncer.checkEdges();
+	        */
+	        dSpinner.display();
+	    }
+	}
 	
 	
 	
@@ -336,6 +426,7 @@ public class Main extends PApplet{
 	  
 	  Frame frame = controller.frame();
 	  
+	  //// finger checks
 	  Hand hand = frame.hands().get(0);
 	  FingerList fingers = hand.fingers();
 	  
@@ -357,6 +448,78 @@ public class Main extends PApplet{
 	    toolPositions.put(toolId, tool.tipPosition());
 	  }
 
+	  //// gesture checks
+	  if (gestureCheck) {
+		  
+		  GestureList gestures = frame.gestures();
+		  
+	      for (int i = 0; i < gestures.count(); i++) {
+	          Gesture gesture = gestures.get(i);
+	
+	          switch (gesture.type()) {
+	              case TYPE_CIRCLE:
+	                  CircleGesture circle = new CircleGesture(gesture);
+	
+	                  // Calculate clock direction using the angle between circle normal and pointable
+	                  String clockwiseness;
+	                  if (circle.pointable().direction().angleTo(circle.normal()) <= Math.PI/4) {
+	                      // Clockwise if angle is less than 90 degrees
+	                      clockwiseness = "clockwise";
+	                  } else {
+	                      clockwiseness = "counterclockwise";
+	                  }
+	
+	                  // Calculate angle swept since last frame
+	                  double sweptAngle = 0;
+	                  if (circle.state() != State.STATE_START) {
+	                      CircleGesture previousUpdate = new CircleGesture(controller.frame(1).gesture(circle.id()));
+	                      sweptAngle = (circle.progress() - previousUpdate.progress()) * 2 * Math.PI;
+	                  }
+	
+	                  println("Circle id: " + circle.id()
+	                             + ", " + circle.state()
+	                             + ", progress: " + circle.progress()
+	                             + ", radius: " + circle.radius()
+	                             + ", angle: " + Math.toDegrees(sweptAngle)
+	                             + ", " + clockwiseness);
+	                  break;
+	              case TYPE_SWIPE:
+	                  SwipeGesture swipe = new SwipeGesture(gesture);
+	                  
+	                  theGesture.id = swipe.id;
+	                  theGesture.state = swipe.state;
+	                  theGesture.state = swipe.state;
+	                  theGesture.state = swipe.state;
+	                  theGesture.state = swipe.state;
+
+	                  println("Swipe id: " + swipe.id()
+	                             + ", " + swipe.state()
+	                             + ", position: " + swipe.position()
+	                             + ", direction: " + swipe.direction()
+	                             + ", speed: " + swipe.speed());
+	                  break;
+	              case TYPE_SCREEN_TAP:
+	                  ScreenTapGesture screenTap = new ScreenTapGesture(gesture);
+	                  println("Screen Tap id: " + screenTap.id()
+	                             + ", " + screenTap.state()
+	                             + ", position: " + screenTap.position()
+	                             + ", direction: " + screenTap.direction());
+	                  break;
+	              case TYPE_KEY_TAP:
+	                  KeyTapGesture keyTap = new KeyTapGesture(gesture);
+	                  println("Key Tap id: " + keyTap.id()
+	                             + ", " + keyTap.state()
+	                             + ", position: " + keyTap.position()
+	                             + ", direction: " + keyTap.direction());
+	                  break;
+	              default:
+	                  println("Unknown gesture type.");
+	                  break;
+	          }
+	      }
+      }
+
+	  //// clean expired fingers
 	  cleanExpired(frame);
 	 
 	}

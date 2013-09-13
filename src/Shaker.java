@@ -1,7 +1,7 @@
 import processing.core.*;
 
 
-class Repulsor{
+class Shaker{
 	
 	PApplet pApp;
 	AppProfile theAppProfile;
@@ -21,7 +21,7 @@ class Repulsor{
 	/// particles
 	ParticleSystem ps;
     
-	Repulsor(float theG){
+	Shaker(float theG){
     	
     	theAppProfile =  theAppProfile.getInstance();
     	pApp = theAppProfile.pApp;
@@ -43,24 +43,18 @@ class Repulsor{
     }
     
     public void update(float tX, float tY, float tZ){
+
     	
-    	/// move the location to the
-    	/// correct z-index
+    	
 
     	location = new PVector(tX, tY -friction, tZ);
 
     	// location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
     }
-    // returns it attraction
+    // make it spin slowly
     PVector repulse(Bouncer m){
     	
-    	/// moves towards attractor
-       //  PVector force = PVector.sub(location, m.location);
-        
-    	/// update the floor position
-    	/// currently UNDER the location
-    	/// but I should make it under where
-    	/// the location is going!
+
     	theFloor.x = m.location.x;
     	
         /// moves towards the floor
@@ -71,11 +65,8 @@ class Repulsor{
         //// check to see if the bouncer is hitting the repulsor
         ///  and that it's attached to fingers
         
-        /// let's try drawing a line
-        pApp.stroke(255);
-        pApp.line(m.location.x, m.location.y, location.x, location.y);
-        
-        
+       
+        /*
         if(theAppProfile.curNumFingers >0 && location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){
         	
         	/// if so, find the side it's hitting and
@@ -122,10 +113,7 @@ class Repulsor{
         	
         	
         	m.hasImpact = true;
-        	/*
-        	m.velocity = new PVector(0.15f,0.15f);
-        	m.acceleration = new PVector(0.15f,0.15f);
-        	*/
+        	
         	m.doImpactColor();
         	m.doBoxHitSounds();
         	theAppProfile.scoredata += 123;
@@ -138,6 +126,7 @@ class Repulsor{
         } else {
         	m.hasImpact = false;
         }
+        */
         
         //// this tells us if the velocity between 
         //// the attractor and the mover is less than 20
