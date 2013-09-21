@@ -11,6 +11,7 @@ class Particle {
   float lifespan;
   
   int innerColor;
+  int middleColor;
   int outerColor;
 
   Particle(PVector l) {
@@ -22,7 +23,8 @@ class Particle {
     lifespan = 255.0f;
     
     innerColor = pApp.color(255);
-    outerColor = pApp.color(255,255,0);
+    middleColor = pApp.color(255, 255,0);
+    outerColor = pApp.color(255,0,0);
   }
 
   void run() {
@@ -39,9 +41,15 @@ class Particle {
 
   // Method to display
   void display() {
-	pApp.stroke(outerColor,lifespan-20);
+	  
+	pApp.stroke(outerColor,lifespan-90);
+	
+	pApp.fill(middleColor,lifespan-20);
+	
+	pApp.ellipse(location.x,location.y,6,6);
+	
 	pApp.fill(innerColor,lifespan);
-	pApp.ellipse(location.x,location.y,4,4);
+	pApp.ellipse(location.x,location.y,3,3);
   }
   
   // Is the particle still useful?

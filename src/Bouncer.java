@@ -29,6 +29,9 @@ class Bouncer{
     int ballSize = 35;
     
     boolean hasImpact = false;
+    boolean hasDamage = false;
+    
+    int impactCounter;
     
     /// the mass, the x, the y);
     Bouncer(float m, float x, float y){
@@ -100,8 +103,15 @@ class Bouncer{
         if(location.y>theAppProfile.theHeight){
             velocity.y *= -1;
             location.y = theAppProfile.theHeight;
-            doImpactSounds();
+            // doImpactSounds();
+            
+            pApp.println("BOTTOM HIT");
+            impactCounter = 255;
+            hasDamage = true;
+            theSoundControl.playStarWarsSound(14);
             theAppProfile.scoredata += 23;
+            
+
 
         } else if (location.y<0){
             location.y = 0;  //// make sure the location doesn't go above the screen
@@ -134,13 +144,23 @@ class Bouncer{
     }
     
     void doBoxHitSounds(){
-       int theRnd = 4 + (int)pApp.random(7);
+       int theRnd = 5 + (int)pApp.random(7);
    	   theSoundControl.playStarWarsSound(theRnd);
    	   /// pApp.println(theRnd);
     }
     
     
     void display(){
+    	
+    	if(hasDamage && impactCounter >0){
+    		
+    		  pApp.fill(impactCounter,0,0);
+              pApp.rect(0,0,theAppProfile.theWidth, theAppProfile.theHeight);
+              impactCounter -= 75;
+    	}
+    	if(impactCounter <=0){
+    		hasDamage = false;
+    	}
     	
         pApp.stroke(255,0,0);
         pApp.strokeWeight(1);

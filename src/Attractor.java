@@ -44,9 +44,7 @@ class Attractor{
     PVector attract(Mover m){
         PVector force = PVector.sub(location, m.location);
         float distance = force.mag();
-        
-      
-        
+
         //// check to see if the attractor is overlapping the mover
         ///  and that there are fingers attached to the attractor
         if(theAppProfile.curNumFingers >0 && location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){

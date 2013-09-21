@@ -16,6 +16,7 @@ class Spinner{
     PVector acceleration;
     PVector wind;
     PVector gravity;
+    PVector friction;
     
     int theColor;
     int theR = 0;
@@ -23,7 +24,17 @@ class Spinner{
     int theB = 255;
     int theA = 165;
     
+    float baseRotX = .01f;
+    float baseRotY = .01f;
+    float baseRotZ = .01f;
+    
+    
+    float curRotX = .5f;
+    float curRotY = .5f;
+    float curRotZ = .5f;
+    
     float theSpin = 0.01f;
+    float baseSpin = 0.01f;
 
     float mass;
     int ballSize = 35;
@@ -44,8 +55,9 @@ class Spinner{
         mass = m;
         /// this always starts in the middle of the screen
         location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
-        velocity = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
+        velocity = new PVector(baseRotX, baseRotY, baseRotZ);
         acceleration = new PVector(0.1f,0.2f);
+        friction = new PVector(0.01f, 0.01f, 0.01f);
         
     }
     
@@ -57,37 +69,86 @@ class Spinner{
     }
     
     void update(){
+    	
+    	///mvt
+    	/*
         velocity.add(acceleration);
         location.add(velocity);
         acceleration.mult(0);
+        */
+        
+        // normalize rotation
+        
+    	if(baseRotX < velocity.x){
+    		velocity.x -= friction.x;
+
+    	} else {
+    		velocity.x = baseRotX;
+    	}
+        
+    	if(baseRotY < velocity.y){
+    		velocity.y -= friction.y;
+
+    	} else {
+    		velocity.y = baseRotY;
+    	}
+        
+    	if(baseRotZ < velocity.z){
+    		if(velocity.z >100){
+    			velocity.z -= 100;
+    		}
+    		if(velocity.z > 10){
+    			velocity.z -= 10;
+    		}
+    		if(velocity.z >1){
+    			velocity.z -= 1;
+    		}
+    		velocity.z -= friction.z;
+
+    	} else {
+    		velocity.z = baseRotZ;
+    	}
+    	
+    	
         
         if(theR > 0){
-        	theR -=10;
+        	theR -=5;
 
         }
         if(theG > 0){
-        	theG -=10;
+        	theG -=5;
 
         }
         if(theB < 255){
-        	theB +=10;
+        	theB +=5;
 
         }
         if(theA > 165){
-        	theA -=10;
+        	theA -=5;
 
         } 
         
         theColor = pApp.color(theR,theG,theB,theA);
     }
     
-    
+    public void doImpact(float tX, float tY, float tZ){
+    	hasImpact = true;
+    	doImpactColor();
+    	doBoxHitSounds();
+    	
+
+    	velocity.x = tX;
+    	velocity.y = tY;
+    	velocity.z = tZ;
+    	
+    	// pApp.println("SPINNER IMPACT: " + velocity.x + " : " + velocity.y + " : " + velocity.z);
+    }
    
     void doImpactColor(){
-    	pApp.println("IMPACT COLOR");
-        theR = 12;
+
+        theR = 255;
         theG = 255;
-        theB = 12;
+        theB = 255;
         theA = 255;
         
         
@@ -120,14 +181,15 @@ class Spinner{
         pApp.translate(location.x, location.y, location.z); /// x,y and z?
         
       /// add the x and y position to the movement
-        pApp.rotateY(pApp.map(location.y, 0,600, 0.5f, -0.5f));
-        pApp.rotateX(pApp.map(location.x, 0,600, 1.9f, -1.9f));
-        if(hasImpact){
-        	theSpin +=2.1;
-            pApp.rotateZ(theSpin);
-        } else {
-        	theSpin = .001f;
-        }
+        /*
+        curRotY += .01;
+        curRotX += .01;
+        curRotZ += theSpin;
+        */
+        
+        pApp.rotateY(curRotX += velocity.x);
+        pApp.rotateX(curRotY += velocity.y);
+    	pApp.rotateZ(curRotZ += velocity.z);
         
         pApp.box(200);
         // pApp.sphere(50);

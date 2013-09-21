@@ -72,8 +72,11 @@ class Repulsor{
         ///  and that it's attached to fingers
         
         /// let's try drawing a line
-        pApp.stroke(255);
-        pApp.line(m.location.x, m.location.y, location.x, location.y);
+        if(theAppProfile.curNumFingers >0){
+        	 pApp.stroke(125);
+             pApp.line(m.location.x, m.location.y, location.x, location.y);
+        }
+       
         
         
         if(theAppProfile.curNumFingers >0 && location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){
@@ -130,9 +133,13 @@ class Repulsor{
         	m.doBoxHitSounds();
         	theAppProfile.scoredata += 123;
         	
-        	/// update particle system
-        	ps.origin = location;
-        	ps.addParticle();
+        	///// do particles
+        	int theRnd = (int)pApp.random(50);
+        	for (int i=0; i<theRnd; i++){
+        		ps.origin = location;
+	        	ps.addParticle();
+        	
+        	}
       	  
       	   
         } else {
@@ -161,17 +168,14 @@ class Repulsor{
     //
     void display(){
 
-    	/// pApp.pushMatrix();
-    	/// pApp.translate(0,0,300);
- 	    
     	// pApp.noFill();
-    	pApp.fill(0,255,0,165);
+    	pApp.fill(0,0,255,65);
     	pApp.strokeWeight(1);
     	pApp.stroke(255,200);
     	pApp.ellipse(location.x, location.y, location.z/5, location.z/5);
 
-    	/// pApp.popMatrix();
-    	
+
+    	//// this updates the particles
     	ps.run();
     }
     

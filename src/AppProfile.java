@@ -4,29 +4,29 @@ import processing.core.PApplet;
 
 public class AppProfile {
 
-	 private static AppProfile instance = null;
-	 public static PApplet pApp;
-	 
-	 /// input params
-	 int curNumFingers;
-	 
-	 /// stage params
-	 int theWidth = 1024;
-	 int theHeight = 768;
-	 /// color params
-	 
-	 int scoredata;
-	 String rankdata = "noob";
+ private static AppProfile instance = null;
+ public static PApplet pApp;
+ 
+ /// input params
+ int curNumFingers;
+ 
+ /// stage params
+ int theWidth = 1024;
+ int theHeight = 768;
+ /// color params
+ 
+ int scoredata;
+ String rankdata = "noob";
 
-	 /// soundParams
-	 ArrayList<String> soundsStarWars = new ArrayList();
-	 
-	 /// game mode params
-	 ArrayList<String> gameMode = new ArrayList();
-	 
-	 protected AppProfile() {
-	      // Exists only to defeat instantiation.
-	   }
+ /// soundParams
+ ArrayList<String> soundsStarWars = new ArrayList();
+ 
+ /// game mode params
+ ArrayList<String> gameMode = new ArrayList();
+ 
+ protected AppProfile() {
+      // Exists only to defeat instantiation.
+   }
    public static AppProfile getInstance() {
       if(instance == null) {
          instance = new AppProfile();
@@ -56,6 +56,8 @@ public class AppProfile {
 	   soundsStarWars.add("sounds/lasrhit3.wav");
 	   soundsStarWars.add("sounds/Spin1.wav");
 	   soundsStarWars.add("sounds/Spin2.wav");
+	   
+	   soundsStarWars.add("sounds/Honk_sad.mp3");
 
 	   gameMode.add("SmashBlocks");
 	   gameMode.add("SpinBlock");

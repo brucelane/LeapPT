@@ -4,6 +4,7 @@ import processing.opengl.PGraphicsOpenGL;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+//// import java.util.Vector;
 
 /// leap motion
 import com.leapmotion.leap.CircleGesture;
@@ -81,7 +82,7 @@ public class Main extends PApplet{
 	//// GESTURE TRACKING
 	//// Swipe id: 123, STATE_STOP, position: (-98.4066, 175.594, 245.193), direction: (-0.286242, -0.268394, 0.919799), speed: 2278.775
 	//// ConcurrentMap<Integer, String, Vector, Float> gestureType; 
-	Gesture theGesture;
+	GestureProfile theGesture;
 	
 	/// arrays
 	ArrayList<Mover> movers;
@@ -102,6 +103,7 @@ public class Main extends PApplet{
 	
 	Shaker theShaker;
 	Spinner theSpinner;
+	Checkerboard theCheckers;
 	int totalSpinners = 1;
 	
 	TimerClass theTimer;
@@ -112,8 +114,8 @@ public class Main extends PApplet{
 	  theAppProfile = theAppProfile.getInstance();
 	  theAppProfile.SetPApp(this);
 	  //
-	  theGesture = new Gesture();
-	  
+	  theGesture = theGesture.getInstance();
+
 	  //
 	  movers = new ArrayList();
 	  bouncers = new ArrayList();
@@ -150,10 +152,13 @@ public class Main extends PApplet{
 	  spawnBouncers();
 	  
 	  spawnSpinners();
+  	  //
+	  theCheckers = new Checkerboard(0,0,0);
 	  
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
-	  theShaker = new Shaker(gravWeight);
+	  theShaker = new Shaker(0);
+	  
 
 	  /// text images panels
 	  controlPanel = loadImage(panelPath);
@@ -201,7 +206,7 @@ public class Main extends PApplet{
 			gestureCheck = true;
 			doShaker();
 			drawSpinners();
-			
+
 			break;
 			
 		case 2:
@@ -266,6 +271,16 @@ public class Main extends PApplet{
 	
 	
 	///// ATTRACTORS /////////////////
+	/// spawn movers
+	void spawnMovers(){
+	    // generate movers
+	    movers.clear();
+	    for (int i=0; i< totalMovers; i++){
+	        // // println("ADDING MOVER: " + i);
+	        // movers[i] = new Mover(random(0.1,5),0,0);
+	        movers.add(new Mover(random(1.1f,5),0,0f));  
+	    } 
+	}
 	
 	public void doAttractor(){
 	 ////// do the LEAP //////////
@@ -294,16 +309,7 @@ public class Main extends PApplet{
 	    
 	  }
 	}
-	/// spawn movers
-	void spawnMovers(){
-	    // generate movers
-	    movers.clear();
-	    for (int i=0; i< totalMovers; i++){
-	        // // println("ADDING MOVER: " + i);
-	        // movers[i] = new Mover(random(0.1,5),0,0);
-	        movers.add(new Mover(random(1.1f,5),0,0f));  
-	    } 
-	}
+
 		
 	public void drawMovers(){
 	    for (int i=0; i< movers.size(); i++){
@@ -320,6 +326,16 @@ public class Main extends PApplet{
 	
 	///////// BOUNCERS ////////////////
 	
+	void spawnBouncers(){
+	    // generate movers
+	    bouncers.clear();
+	    for (int i=0; i< totalBouncers; i++){
+	        // // println("ADDING MOVER: " + i);
+	        // movers[i] = new Mover(random(0.1,5),0,0);
+	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
+	    } 
+	}
+		
 	
 	public void doRepulsor(){
 		 ////// do the LEAP //////////
@@ -345,17 +361,7 @@ public class Main extends PApplet{
 		    theRepulsor.display();
 		  }
 		}
-	
-	void spawnBouncers(){
-	    // generate movers
-	    bouncers.clear();
-	    for (int i=0; i< totalBouncers; i++){
-	        // // println("ADDING MOVER: " + i);
-	        // movers[i] = new Mover(random(0.1,5),0,0);
-	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
-	    } 
-	}
-		
+
 	public void drawBouncers(){
 	    for (int i=0; i< bouncers.size(); i++){
 	        Bouncer dBouncer = bouncers.get(i);
@@ -371,24 +377,44 @@ public class Main extends PApplet{
 	
 	//// SPINNERS //////////////
 	public void doShaker(){
-		 ////// do the LEAP //////////
+		 
 		
+		//// have you made a gesture?
+        if(theGesture.state == "STATE_UPDATE"){
+			
+			/// ADD SWIPE VECTORS TO CHECKERBOARD AND SPINNER
+			try{
+				theCheckers.doImpact(map(theGesture.position.x * -1, 0,100,0, 0.1f), map(theGesture.position.y * 1, 0,100,0, 0.1f), map(theGesture.position.z * -1, 0,100,0, 0.01f));
+				
+				/// println(map(theGesture.position.x * -1, 0,100,0, 0.9f) + " y: " +  map(theGesture.position.y * -1, 0,100,0, 0.9f));
+				for (int i=0; i< spinners.size(); i++){
+			        Spinner dSpinner = spinners.get(i);
+			        dSpinner.doImpact(theGesture.position.x *.001f, theGesture.position.y * .001f, theGesture.position.z);
+				}
+				
+			} catch (Exception e){
+				
+				println("ERROR ON GESTURE: " + e);
+			}
+			
+		} else if(theGesture.state == "STATE_STOP"){
+			//// dSpinner.hasImpact = false;
+			theShaker.endImpact();
+			
+		}
+        
+        try{
+        	theShaker.update(theGesture.position.x, theGesture.position.y, theGesture.position.z);
+        } catch (Exception e) {
+        	/// println("No gesute data : " + e);
+        	theShaker.update(0, 0, 0);
+        	
+        }
+		theShaker.display();
 		
-		/*
-		  for (Map.Entry entry : fingerPositions.entrySet()){
-			  
-		    Integer fingerId = (Integer) entry.getKey();
-		    Vector position = (Vector) entry.getValue();
-
-
-
-
-			theShaker.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), position.getZ());
-		    theShaker.display();
-		    
-		  }
-		  
-		  */
+        theCheckers.update();
+        theCheckers.display();
+		
 	}
 	/// spawn spinners
 	void spawnSpinners(){
@@ -411,6 +437,7 @@ public class Main extends PApplet{
 	        dBouncer.update();
 	        dBouncer.checkEdges();
 	        */
+	        dSpinner.update();
 	        dSpinner.display();
 	    }
 	}
@@ -486,17 +513,21 @@ public class Main extends PApplet{
 	              case TYPE_SWIPE:
 	                  SwipeGesture swipe = new SwipeGesture(gesture);
 	                  
-	                  theGesture.id = swipe.id;
-	                  theGesture.state = swipe.state;
-	                  theGesture.state = swipe.state;
-	                  theGesture.state = swipe.state;
-	                  theGesture.state = swipe.state;
+	                  theGesture.id = swipe.id();
+	                  theGesture.state = String.valueOf(swipe.state());
 
+	                  // theGesture.direction = swipe.direction();
+	                  theGesture.position = new PVector(swipe.position().getX(), swipe.position().getY(), swipe.position().getZ());
+	                  theGesture.speed = swipe.speed();
+
+	                  /*
 	                  println("Swipe id: " + swipe.id()
 	                             + ", " + swipe.state()
 	                             + ", position: " + swipe.position()
 	                             + ", direction: " + swipe.direction()
 	                             + ", speed: " + swipe.speed());
+	                             
+	                             */
 	                  break;
 	              case TYPE_SCREEN_TAP:
 	                  ScreenTapGesture screenTap = new ScreenTapGesture(gesture);

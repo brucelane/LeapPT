@@ -8,6 +8,8 @@ class Shaker{
 	
 	SoundControl theSoundControl;
 	
+	Checkerboard theCheckers;
+	
 	PVector theFloor;
 
     float mass;
@@ -28,6 +30,7 @@ class Shaker{
     	
     	theSoundControl = theSoundControl.getInstance();
     	
+
         location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
         
         /// the floor's position is the current position X and the height of the screen Y
@@ -41,78 +44,23 @@ class Shaker{
 	  	ps.addParticle();
 	  	//*/
     }
-    
     public void update(float tX, float tY, float tZ){
+    	location = new PVector(tX, tY, tZ);
 
-    	
-    	
-
-    	location = new PVector(tX, tY -friction, tZ);
-
-    	// location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
     }
-    // make it spin slowly
-    PVector repulse(Bouncer m){
-    	
-
-    	theFloor.x = m.location.x;
-    	
-        /// moves towards the floor
-        PVector force = PVector.sub(theFloor, m.location);
-        
+    // returns it attraction
+    PVector spin(Spinner m){
+        PVector force = PVector.sub(location, m.location);
         float distance = force.mag();
-        
-        //// check to see if the bouncer is hitting the repulsor
-        ///  and that it's attached to fingers
-        
-       
-        /*
+
+        //// check to see if the attractor is overlapping the mover
+        ///  and that there are fingers attached to the attractor
         if(theAppProfile.curNumFingers >0 && location.x > m.location.x -50 && location.x < m.location.x + 50 && location.y > m.location.y -50 && location.y < m.location.y + 50){
         	
-        	/// if so, find the side it's hitting and
-        	/// bounce it in the other direction
-        	if(location.x > m.location.x -50){
-        		m.velocity.x *= -1; 
-        	}
-        	/// move it in the other direction
-        	if(location.x < m.location.x + 50){
-        		m.velocity.x *= 1; 
-        	}
-        	
-        	
-        	/// if it's hitting the bottom or top
-        	/// then move it laterally depending on
-        	/// what side it's hit on
-        	if(location.y > m.location.y -50){
-        		m.velocity.y *= -1; 
-        		
-        		/// lateral mvt
-        		if(location.x < m.location.x){
-        			m.velocity.x *= 1.25;
-        			/// pApp.println("Bounce Right");
-        		}
-        		if(location.x > m.location.x){
-        			m.velocity.x *= -1.5;
-        			/// pApp.println("Bounce Left");
-        		}
-        	}
-        	/// move it in the other direction
-        	if(location.y < m.location.y + 50){
-        		m.velocity.y *= 1; 
-        		
-        		/// lateral mvt
-        		if(location.x < m.location.x){
-        			/// pApp.println("On top Bounce Right");
-        			m.velocity.x *= 1.25;
-        		}
-        		if(location.x > m.location.x){
-        			m.velocity.x *= -1.25;
-        			/// pApp.println("On Top Bounce Left");
-        		}
-        	}
-        	
-        	
         	m.hasImpact = true;
+        	
+        	m.velocity = new PVector(0.15f,0.15f);
+        	m.acceleration = new PVector(0.15f,0.15f);
         	
         	m.doImpactColor();
         	m.doBoxHitSounds();
@@ -126,43 +74,52 @@ class Shaker{
         } else {
         	m.hasImpact = false;
         }
-        */
-        
-        //// this tells us if the velocity between 
-        //// the attractor and the mover is less than 20
-        if(distance < 20){
-        	/// do lock
 
-
-        } 
 
         distance = pApp.constrain(distance, 5.0f, 25.0f);
-        
-        float newG;
-       
+
         force.normalize();
         float strength = (G * mass * m.mass) / (distance * distance);
         force.mult(strength);
         return force;
     } 
     
-
     //
     void display(){
 
-    	/// pApp.pushMatrix();
-    	/// pApp.translate(0,0,300);
+    	/*
+    	pApp.pushMatrix();
+    	pApp.translate(0,0,300);
  	    
     	// pApp.noFill();
-    	pApp.fill(0,255,0,165);
+    	pApp.fill(0,0,255,165);
     	pApp.strokeWeight(1);
     	pApp.stroke(255,200);
     	pApp.ellipse(location.x, location.y, location.z/5, location.z/5);
-
-    	/// pApp.popMatrix();
+    	
+    	pApp.popMatrix();
     	
     	ps.run();
+    	*/
     }
+    
+    
+    public void doImpact(float tX, float tY, float tZ){
+    	pApp.println(tX + " " + tY + " " + tZ);
+    	
+    	
+    	location.x = tX;
+    	location.y = tY;
+    	location.z = tZ;
+    	
+    }
+    
+    public void endImpact(){
+    	
+    	
+    }
+    
+
     
 }
 
