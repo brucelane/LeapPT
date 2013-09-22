@@ -114,11 +114,7 @@ class Shaker{
     	
     }
     
-    public void endImpact(){
-    	
-    	
-    }
-    
+   
 
     
 }

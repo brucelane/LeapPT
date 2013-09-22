@@ -17,6 +17,10 @@ public class AppProfile {
  
  int scoredata;
  String rankdata = "noob";
+ 
+ //// player params
+ ArrayList<String> ranktypes = new ArrayList();
+ int rankID = 0;
 
  /// soundParams
  ArrayList<String> soundsStarWars = new ArrayList();
@@ -62,11 +66,19 @@ public class AppProfile {
 
 	   
 	   /// add game mode types
-	   gameMode.add("SmashBlocks");
-	   gameMode.add("SpinBlock");
-	   gameMode.add("TennisBlock");
-	   gameMode.add("PaddleBlocks");
+	   gameMode.add("SMASHBLOCK");
+	   gameMode.add("TRAVELBLOCK");
+	   gameMode.add("BABY ON FIRE");
+	   gameMode.add("BREAKOUT");
 	   
+	   
+	   //// add rank types
+	   ranktypes.add("BEGINNER");
+	   ranktypes.add("INTERN");
+	   ranktypes.add("APPRENTICE");
+	   ranktypes.add("JOURNEYMAN");
+	   ranktypes.add("CRAFTSMAN");
+	   ranktypes.add("MASTER"); 
 
    }
 

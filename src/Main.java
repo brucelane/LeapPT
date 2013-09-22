@@ -50,7 +50,7 @@ public class Main extends PApplet{
 	
 	String theScore = "0";
 	String theTime = "0";
-	String theRank = "noob";
+	String theRank = "";
 	String theGameType = "null";
 	
 	/// game state controls
@@ -59,7 +59,6 @@ public class Main extends PApplet{
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
 	PFont pfont = createFont("Neutra Text",10, true); // use true/false for smooth/no-smooth for Control fonts
-
 	
 	int numFingers = 0;
 
@@ -74,7 +73,7 @@ public class Main extends PApplet{
 	float theZ = 0;
 	
 	///// control and images
-	String panelPath = "data/control_panel.png";
+	String panelPath = "data/control_panel2.png";
 
 	// applet
 	AppProfile theAppProfile;
@@ -104,7 +103,8 @@ public class Main extends PApplet{
 	
 	Shaker theShaker;
 	Spinner theSpinner;
-	Checkerboard theCheckers;
+	BackgroundTiles theBground;
+	// Checkerboard theCheckers;
 	int totalSpinners = 1;
 	
 	Breakout theBreakout;
@@ -161,7 +161,8 @@ public class Main extends PApplet{
   	  //
 	  spawnBreakouts();
 	  
-	  theCheckers = new Checkerboard(0,0,0);
+	  //	BackgroundTiles theBground;
+	  theBground = new BackgroundTiles(0,0,0);
 	  
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
@@ -207,15 +208,12 @@ public class Main extends PApplet{
 		case 0:
 			doRepulsor();
 			drawBouncers();
-			
-			
 			break;
 			
 		case 1:
 			gestureCheck = true;
 			doShaker();
 			drawSpinners();
-
 			break;
 			
 		case 2:
@@ -365,8 +363,10 @@ public class Main extends PApplet{
 
 
 		    thePaddle.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
-		    thePaddle.display();
+
 		  }
+		  
+		  thePaddle.display();
 		}
 
 	public void drawBreakouts(){
@@ -391,12 +391,12 @@ public class Main extends PApplet{
 			
 			/// ADD SWIPE VECTORS TO CHECKERBOARD AND SPINNER
 			try{
-				theCheckers.doImpact(map(theGesture.position.x * -1, 0,100,0, 0.1f), map(theGesture.position.y * 1, 0,100,0, 0.1f), map(theGesture.position.z * -1, 0,100,0, 0.01f));
+				theBground.doImpact(map(theGesture.position.x * -1, 0,100,0, 0.1f), map(theGesture.position.y * 1, 0,100,0, 0.1f), map(theGesture.position.z * -1, 0,100,0, 0.01f));
 				
 				/// println(map(theGesture.position.x * -1, 0,100,0, 0.9f) + " y: " +  map(theGesture.position.y * -1, 0,100,0, 0.9f));
 				for (int i=0; i< spinners.size(); i++){
 			        Spinner dSpinner = spinners.get(i);
-			        dSpinner.doImpact(theGesture.position.x *.001f, theGesture.position.y * .001f, theGesture.position.z);
+			        dSpinner.doImpact(map(theGesture.position.x * -1, 0,100,0, 0.1f), map(theGesture.position.y * 1, 0,100,0, 0.1f), map(theGesture.position.z * -1, 0,100,0, 0.01f));
 				}
 				
 			} catch (Exception e){
@@ -405,8 +405,7 @@ public class Main extends PApplet{
 			}
 			
 		} else if(theGesture.state == "STATE_STOP"){
-			//// dSpinner.hasImpact = false;
-			theShaker.endImpact();
+			
 			
 		}
         
@@ -419,8 +418,8 @@ public class Main extends PApplet{
         }
 		theShaker.display();
 		
-        theCheckers.update();
-        theCheckers.display();
+        theBground.update();
+        theBground.display();
 		
 	}
 	/// spawn spinners
@@ -687,8 +686,10 @@ public class Main extends PApplet{
 		image(controlPanel, 0, 0);
 		
 		/// parse score
+		
+		/// this is too fancy
+		/*
 		try{
-			
 			int oldScore = parseInt(theScore); // theAppProfile.scoredata;
 			if(oldScore < theAppProfile.scoredata){
 			oldScore += 11;
@@ -698,6 +699,9 @@ public class Main extends PApplet{
 		} catch (Exception e){
 			println("error parsing score: " + e);
 		}
+		*/
+		theScore = String.valueOf(theAppProfile.scoredata);
+		
 		int hour = theTimer.hour();
 		int min = theTimer.minute();
 		int sec = theTimer.second();
@@ -714,7 +718,7 @@ public class Main extends PApplet{
 		theTime = hour + ":" + min + ":" + sec + ":" + theTimer.milisecond(); /// String.valueOf(theAppProfile.scoredata);
 
 		/// diaplay config
-		theRank = theAppProfile.rankdata;
+		theRank = theAppProfile.ranktypes.get(theAppProfile.rankID);
 		theGameType = theAppProfile.gameMode.get(gameID);
 
 		textFont(ScoreFont, 22);
@@ -724,8 +728,21 @@ public class Main extends PApplet{
 		text(theTime, 470, 72);
 		
 		fill(255);
-		textFont(ScoreFont, 28);
-		text(theScore, 830, 100);
+		
+		//// check for type of game it is
+		
+		if(theGameType == "TRAVELBLOCK"){
+			
+			String tScore = theScore + " feet";
+			textFont(ScoreFont, 28);
+			text(tScore, 830, 100);
+			
+		} else {
+			textFont(ScoreFont, 28);
+			text(theScore, 830, 100);
+			
+		}
+		
 		
 	}
 	
