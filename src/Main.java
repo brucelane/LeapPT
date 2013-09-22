@@ -88,6 +88,7 @@ public class Main extends PApplet{
 	ArrayList<Mover> movers;
 	ArrayList<Bouncer> bouncers;
 	ArrayList<Spinner> spinners;
+	ArrayList<Breakout> breakouts;
 	
 	/// game objects //
 	boolean gestureCheck = false;
@@ -106,6 +107,10 @@ public class Main extends PApplet{
 	Checkerboard theCheckers;
 	int totalSpinners = 1;
 	
+	Breakout theBreakout;
+	Paddle thePaddle;
+	int totalBreakouts = 1;
+	
 	TimerClass theTimer;
 
 	public void setup(){	
@@ -120,6 +125,7 @@ public class Main extends PApplet{
 	  movers = new ArrayList();
 	  bouncers = new ArrayList();
 	  spinners = new ArrayList();
+	  breakouts = new ArrayList();
 	  //
 	  //
 	  theTimer = new TimerClass();
@@ -153,11 +159,14 @@ public class Main extends PApplet{
 	  
 	  spawnSpinners();
   	  //
+	  spawnBreakouts();
+	  
 	  theCheckers = new Checkerboard(0,0,0);
 	  
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
 	  theShaker = new Shaker(0);
+	  thePaddle = new Paddle(gravWeight);
 	  
 
 	  /// text images panels
@@ -215,7 +224,8 @@ public class Main extends PApplet{
 			break;
 			
 		case 3:
-			
+			doPaddle();
+			drawBreakouts();
 			break;
 			
 		case 4:
@@ -326,18 +336,18 @@ public class Main extends PApplet{
 	
 	///////// BOUNCERS ////////////////
 	
-	void spawnBouncers(){
+	void spawnBreakouts(){
 	    // generate movers
-	    bouncers.clear();
-	    for (int i=0; i< totalBouncers; i++){
+	    breakouts.clear();
+	    for (int i=0; i< totalBreakouts; i++){
 	        // // println("ADDING MOVER: " + i);
 	        // movers[i] = new Mover(random(0.1,5),0,0);
-	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
+	        breakouts.add(new Breakout(random(1.1f,5),0,0f));  
 	    } 
 	}
 		
 	
-	public void doRepulsor(){
+	public void doPaddle(){
 		 ////// do the LEAP //////////
 		  for (Map.Entry entry : fingerPositions.entrySet()){
 			  
@@ -350,27 +360,24 @@ public class Main extends PApplet{
 		    strokeWeight(1);
 		    
 		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
-		   ////  pushMatrix();
-		    
-		    //// move the ellipse in the z index
-		    //// translate(0,0,300);
-		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
-		    /// popMatrix();
 
-		    theRepulsor.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
-		    theRepulsor.display();
+		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+
+
+		    thePaddle.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
+		    thePaddle.display();
 		  }
 		}
 
-	public void drawBouncers(){
+	public void drawBreakouts(){
 	    for (int i=0; i< bouncers.size(); i++){
-	        Bouncer dBouncer = bouncers.get(i);
+	        Breakout dBreakout = breakouts.get(i);
 	        /// movers[i].applyForce(gravity);
-	        PVector f = theRepulsor.repulse(dBouncer);
-	        dBouncer.applyForce(f);
-	        dBouncer.update();
-	        dBouncer.checkEdges();
-	        dBouncer.display();
+	        PVector f = thePaddle.repulse(dBreakout);
+	        dBreakout.applyForce(f);
+	        dBreakout.update();
+	        dBreakout.checkEdges();
+	        dBreakout.display();
 	    }
 	}
 	
@@ -443,8 +450,56 @@ public class Main extends PApplet{
 	}
 	
 	
+	///////// PADDLE BLOCKS ////////////////
+		
+	void spawnBouncers(){
+	    // generate movers
+	    bouncers.clear();
+	    for (int i=0; i< totalBouncers; i++){
+	        // // println("ADDING MOVER: " + i);
+	        // movers[i] = new Mover(random(0.1,5),0,0);
+	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
+	    } 
+	}
+		
 	
+	public void doRepulsor(){
+		 ////// do the LEAP //////////
+		  for (Map.Entry entry : fingerPositions.entrySet()){
+			  
+		    Integer fingerId = (Integer) entry.getKey();
+		    Vector position = (Vector) entry.getValue();
 	
+		    // show finger colors
+		    // fill(fingerColors.get(fingerId), 65);
+		    stroke(255);
+		    strokeWeight(1);
+		    
+		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
+		   ////  pushMatrix();
+		    
+		    //// move the ellipse in the z index
+		    //// translate(0,0,300);
+		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+		    /// popMatrix();
+	
+		    theRepulsor.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
+		    theRepulsor.display();
+		  }
+		}
+	
+	public void drawBouncers(){
+	    for (int i=0; i< bouncers.size(); i++){
+	        Bouncer dBouncer = bouncers.get(i);
+	        /// movers[i].applyForce(gravity);
+	        PVector f = theRepulsor.repulse(dBouncer);
+	        dBouncer.applyForce(f);
+	        dBouncer.update();
+	        dBouncer.checkEdges();
+	        dBouncer.display();
+	    }
+	}
+		
 	
   /////////////////////////////////////
   /////// LEAP INPUT /////////////////

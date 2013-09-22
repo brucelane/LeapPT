@@ -20,6 +20,7 @@ public class AppProfile {
 
  /// soundParams
  ArrayList<String> soundsStarWars = new ArrayList();
+ ArrayList<String> soundsBreakout = new ArrayList();
  
  /// game mode params
  ArrayList<String> gameMode = new ArrayList();
@@ -59,9 +60,12 @@ public class AppProfile {
 	   
 	   soundsStarWars.add("sounds/Honk_sad.mp3");
 
+	   
+	   /// add game mode types
 	   gameMode.add("SmashBlocks");
 	   gameMode.add("SpinBlock");
 	   gameMode.add("TennisBlock");
+	   gameMode.add("PaddleBlocks");
 	   
 
    }
