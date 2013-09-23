@@ -19,9 +19,9 @@ class Bouncer{
     
     int theColor;
     int theR = 255;
-    int theG = 0;
+    int theG = 164;
     int theB = 0;
-    int theA = 165;
+    int theA = 255;
     
     float theSpin = 0.01f;
 
@@ -67,7 +67,7 @@ class Bouncer{
         	theR +=10;
 
         }
-        if(theG > 0){
+        if(theG > 164){
         	theG -=10;
 
         }
@@ -75,10 +75,7 @@ class Bouncer{
         	theB -=10;
 
         }
-        if(theA > 165){
-        	theA -=10;
-
-        } 
+       
         
         theColor = pApp.color(theR,theG,theB,theA);
     }
@@ -89,13 +86,13 @@ class Bouncer{
         if(location.x>theAppProfile.theWidth){
             location.x = theAppProfile.theWidth;
             velocity.x *= -.65;
-            doImpactSounds();
+            doBounceSound();
             theAppProfile.scoredata += 23;
 
         } else if (location.x<0){
             velocity.x *= -.65;
             location.x = 0;
-            doImpactSounds();
+            doBounceSound();
             theAppProfile.scoredata += 23;
             
         }
@@ -103,12 +100,8 @@ class Bouncer{
         if(location.y>theAppProfile.theHeight){
             velocity.y *= -1;
             location.y = theAppProfile.theHeight;
-            // doImpactSounds();
-            
             pApp.println("BOTTOM HIT");
-            impactCounter = 255;
-            hasDamage = true;
-            theSoundControl.playStarWarsSound(14);
+            doBounceSound();
             theAppProfile.scoredata += 23;
             
 
@@ -116,7 +109,7 @@ class Bouncer{
         } else if (location.y<0){
             location.y = 0;  //// make sure the location doesn't go above the screen
             velocity.y *=-.25;
-            doImpactSounds();
+            doBounceSound();
             theAppProfile.scoredata += 23;
 
         }
@@ -125,9 +118,9 @@ class Bouncer{
     
     void doImpactColor(){
     	pApp.println("IMPACT COLOR");
-        theR = 12;
+        theR = 0;
         theG = 255;
-        theB = 12;
+        theB = 0;
         theA = 255;
         
         
@@ -143,25 +136,15 @@ class Bouncer{
 
     }
     
-    void doBoxHitSounds(){
-       int theRnd = 5 + (int)pApp.random(7);
-   	   theSoundControl.playStarWarsSound(theRnd);
+    void doBounceSound(){
+       int theRnd = (int)pApp.random(4);
+   	   theSoundControl.playBasketballSound(theRnd);
    	   /// pApp.println(theRnd);
     }
     
     
     void display(){
-    	
-    	if(hasDamage && impactCounter >0){
-    		
-    		  pApp.fill(impactCounter,0,0);
-              pApp.rect(0,0,theAppProfile.theWidth, theAppProfile.theHeight);
-              impactCounter -= 75;
-    	}
-    	if(impactCounter <=0){
-    		hasDamage = false;
-    	}
-    	
+
         pApp.stroke(255,0,0);
         pApp.strokeWeight(1);
         pApp.fill(theColor);
@@ -171,7 +154,7 @@ class Bouncer{
         
       /// add the x and y position to the movement
         pApp.rotateY(pApp.map(location.y, 0,600, 0.5f, -0.5f));
-        pApp.rotateX(pApp.map(location.x, 0,600, 1.9f, -1.9f));
+       ///// pApp.rotateX(pApp.map(location.x, 0,600, 1.9f, -1.9f));
         if(hasImpact){
         	theSpin +=2.1;
             pApp.rotateZ(theSpin);
@@ -179,7 +162,7 @@ class Bouncer{
         	theSpin = .001f;
         }
         
-        pApp.box(100);
+        pApp.sphere(50);
         // pApp.sphere(50);
         pApp.popMatrix();
 

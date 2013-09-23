@@ -14,13 +14,12 @@ class Repulsor{
     PVector location;
     float G;
     
+    PImage bgroundImg;
+    String bgImgPath = "data/basketball_court2.png";
+    
     float friction = .01f; /// this is the slowdown for the movement
     
-    //
-	
-	/// particles
-	ParticleSystem ps;
-    
+
 	Repulsor(float theG){
     	
     	theAppProfile =  theAppProfile.getInstance();
@@ -36,10 +35,8 @@ class Repulsor{
         G = theG;
         
         //
-        /// particles
-	  	ps = new ParticleSystem(new PVector(theAppProfile.theWidth/2,50));
-	  	ps.addParticle();
-	  	//*/
+        bgroundImg = pApp.loadImage(bgImgPath);
+       
     }
     
     public void update(float tX, float tY, float tZ){
@@ -125,21 +122,10 @@ class Repulsor{
         	
         	
         	m.hasImpact = true;
-        	/*
-        	m.velocity = new PVector(0.15f,0.15f);
-        	m.acceleration = new PVector(0.15f,0.15f);
-        	*/
         	m.doImpactColor();
-        	m.doBoxHitSounds();
+        	m.doBounceSound();
         	theAppProfile.scoredata += 123;
         	
-        	///// do particles
-        	int theRnd = (int)pApp.random(50);
-        	for (int i=0; i<theRnd; i++){
-        		ps.origin = location;
-	        	ps.addParticle();
-        	
-        	}
       	  
       	   
         } else {
@@ -174,9 +160,11 @@ class Repulsor{
     	pApp.stroke(255,200);
     	pApp.ellipse(location.x, location.y, location.z/5, location.z/5);
 
-
-    	//// this updates the particles
-    	ps.run();
+    	
+    	
+    }
+    void doBground(){
+    	pApp.image(bgroundImg, 0,0);
     }
     
 }

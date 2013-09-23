@@ -63,7 +63,7 @@ class Shaker{
         	m.acceleration = new PVector(0.15f,0.15f);
         	
         	m.doImpactColor();
-        	m.doBoxHitSounds();
+        	m.doSpinSounds();
         	theAppProfile.scoredata += 123;
         	
         	/// update particle system

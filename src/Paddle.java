@@ -21,6 +21,12 @@ class Paddle{
     int paddleWidth;
     int paddleHeight;
     
+    int theColor;
+    int theR = 255;
+    int theG = 165;
+    int theB = 0;
+    int theA = 165;
+    
     Poly paddleHitState;
     
     boolean isHit = false;
@@ -115,14 +121,8 @@ class Paddle{
         */
         //// 
 
-        
-        /// let's try drawing a line
-        if(theAppProfile.curNumFingers >0){
-        	 pApp.stroke(125);
-             pApp.line(m.location.x, m.location.y, location.x, location.y);
-        }
        
-        if(location.x + paddleWidth/2 > m.location.x -50 && location.x - paddleWidth/2 < m.location.x + 50 && paddleY > m.location.y -50 && paddleY < m.location.y + 50){
+        if(location.x + paddleWidth/2 > m.location.x -30 && location.x - paddleWidth/2 < m.location.x + 30 && paddleY > m.location.y -30 && paddleY < m.location.y + 30){
         
         /// if (paddleHitState.contains((int)m.location.x, (int)m.location.y)) {
         // if(isHit){
@@ -132,11 +132,11 @@ class Paddle{
         	
         	
         	// to do--redo bounces
-        	if(location.x > m.location.x -50){
+        	if(location.x > m.location.x -30){
         		m.velocity.x *= -1; 
         	}
         	/// move it in the other direction
-        	if(location.x < m.location.x + 50){
+        	if(location.x < m.location.x + 30){
         		m.velocity.x *= 1; 
         	}
         	
@@ -144,7 +144,7 @@ class Paddle{
         	/// if it's hitting the bottom or top
         	/// then move it laterally depending on
         	/// what side it's hit on
-        	if(paddleY > m.location.y -50){
+        	if(paddleY > m.location.y -30){
         		m.velocity.y *= -1; 
         		
         		/// lateral mvt
@@ -158,7 +158,7 @@ class Paddle{
         		}
         	}
         	/// move it in the other direction
-        	if(paddleY < m.location.y + 50){
+        	if(paddleY < m.location.y + 30){
         		m.velocity.y *= 1; 
         		
         		/// lateral mvt
@@ -178,8 +178,9 @@ class Paddle{
         	m.velocity = new PVector(0.15f,0.15f);
         	m.acceleration = new PVector(0.15f,0.15f);
         	*/
+        	paddleImpactColor();
         	m.doImpactColor();
-        	m.doBoxHitSounds();
+        	m.doPaddleHit();
         	theAppProfile.scoredata += 123;
         	
         	///// do particles
@@ -194,15 +195,7 @@ class Paddle{
         } else {
         	m.hasImpact = false;
         }
-        
-        //// this tells us if the velocity between 
-        //// the attractor and the mover is less than 20
-        if(distance < 20){
-        	/// do lock
-
-
-        } 
-
+      
         distance = pApp.constrain(distance, 5.0f, 25.0f);
         
         float newG;
@@ -213,14 +206,41 @@ class Paddle{
         return force;
     } 
     
-
+    void paddleImpactColor(){
+    	pApp.println("IMPACT COLOR");
+        theR = 0;
+        theG = 255;
+        theB = 0;
+        theA = 255;
+    	
+    }
     //
     void display(){
     	
+    	/// normalize paddle color
+    	 if(theR < 255){
+         	theR +=10;
+
+         }
+         if(theG > 165){
+         	theG -=10;
+
+         }
+         if(theB > 0){
+         	theB -=10;
+
+         }
+         if(theA > 165){
+         	theA -=10;
+
+         } 
+         
+         theColor = pApp.color(theR,theG,theB,theA);
+         
     	// pApp.noFill();
-    	pApp.fill(255,165,0,165);
+    	pApp.fill(theColor);
     	pApp.strokeWeight(0);
-    	pApp.stroke(255,200);
+    	/// pApp.stroke(255,200);
     	pApp.rect((location.x-paddleWidth/2), paddleY, paddleWidth - 28, paddleHeight);
 
     	/// add paddle image

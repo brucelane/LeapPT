@@ -33,6 +33,9 @@ class Breakout{
     
     int impactCounter;
     
+    PImage bottomBorder;
+    String borderPath = "data/bottom_border_breakout.png";
+    
     /// the mass, the x, the y);
     Breakout(float m, float x, float y){
     	
@@ -45,9 +48,11 @@ class Breakout{
     	theColor = pApp.color(theR,theG,theB,theA);
     	
         mass = m;
-        location = new PVector(pApp.random(theAppProfile.theWidth), pApp.random(theAppProfile.theHeight));
+        location = new PVector(pApp.random(theAppProfile.theWidth), pApp.random(theAppProfile.theHeight/2));
         velocity = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
         acceleration = new PVector(0.1f,0.2f);
+        
+        bottomBorder = pApp.loadImage(borderPath);
         
     }
     
@@ -108,7 +113,7 @@ class Breakout{
             pApp.println("BOTTOM HIT");
             impactCounter = 255;
             hasDamage = true;
-            theSoundControl.playStarWarsSound(14);
+            theSoundControl.playStarWarsSound(6);
             theAppProfile.scoredata += 23;
             
 
@@ -137,14 +142,14 @@ class Breakout{
     	
     	/// switch
        
-	   int theRnd = (int)pApp.random(4);
+	   int theRnd = (int)pApp.random(5);
 	   /// pApp.println("wall hit: " + theRnd);
-	   theSoundControl.playStarWarsSound(theRnd);
+	   theSoundControl.playLaserSounds(theRnd);
 
     }
     
-    void doBoxHitSounds(){
-       int theRnd = 5 + (int)pApp.random(7);
+    void doPaddleHit(){
+       int theRnd = (int)pApp.random(4);
    	   theSoundControl.playStarWarsSound(theRnd);
    	   /// pApp.println(theRnd);
     }
@@ -162,7 +167,7 @@ class Breakout{
     		hasDamage = false;
     	}
     	
-        pApp.stroke(255,0,0);
+        pApp.stroke(255,255,255, 65);
         pApp.strokeWeight(1);
         pApp.fill(theColor);
 
@@ -179,11 +184,13 @@ class Breakout{
         	theSpin = .001f;
         }
         
-        pApp.sphere(50);
+        pApp.sphere(20);
         // pApp.sphere(50);
         pApp.popMatrix();
-
+        
+        
+        pApp.image(bottomBorder, 0, theAppProfile.theHeight - bottomBorder.height);
     }
     
 }
-/// end mover class
+/// end breakout class

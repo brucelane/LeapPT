@@ -54,7 +54,7 @@ public class Main extends PApplet{
 	String theGameType = "null";
 	
 	/// game state controls
-	int gameID = 1;
+	int gameID = 0;
 	
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
@@ -163,7 +163,6 @@ public class Main extends PApplet{
 	  
 	  //	BackgroundTiles theBground;
 	  theBground = new BackgroundTiles(0,0,0);
-	  
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
 	  theShaker = new Shaker(0);
@@ -217,17 +216,18 @@ public class Main extends PApplet{
 			break;
 			
 		case 2:
-			doAttractor();
-			drawMovers();
-			break;
-			
-		case 3:
 			doPaddle();
 			drawBreakouts();
 			break;
 			
-		case 4:
+		case 3:
+			doAttractor();
+			drawMovers();
+			break;
 			
+		case 4:
+			doAttractor();
+			drawMovers();
 			break;
 		
 		case 5:
@@ -332,7 +332,7 @@ public class Main extends PApplet{
 	}
 	
 	
-	///////// BOUNCERS ////////////////
+	///////// BREAKOUT ////////////////
 	
 	void spawnBreakouts(){
 	    // generate movers
@@ -351,17 +351,6 @@ public class Main extends PApplet{
 			  
 		    Integer fingerId = (Integer) entry.getKey();
 		    Vector position = (Vector) entry.getValue();
-
-		    // show finger colors
-		    // fill(fingerColors.get(fingerId), 65);
-		    stroke(255);
-		    strokeWeight(1);
-		    
-		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
-
-		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
-
-
 		    thePaddle.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
 
 		  }
@@ -417,7 +406,6 @@ public class Main extends PApplet{
         	
         }
 		theShaker.display();
-		
         theBground.update();
         theBground.display();
 		
@@ -449,20 +437,20 @@ public class Main extends PApplet{
 	}
 	
 	
-	///////// PADDLE BLOCKS ////////////////
+	///////// BOUNCER ////////////////
 		
 	void spawnBouncers(){
 	    // generate movers
 	    bouncers.clear();
 	    for (int i=0; i< totalBouncers; i++){
-	        // // println("ADDING MOVER: " + i);
-	        // movers[i] = new Mover(random(0.1,5),0,0);
 	        bouncers.add(new Bouncer(random(1.1f,5),0,0f));  
 	    } 
 	}
 		
 	
 	public void doRepulsor(){
+		
+		 theRepulsor.doBground();
 		 ////// do the LEAP //////////
 		  for (Map.Entry entry : fingerPositions.entrySet()){
 			  

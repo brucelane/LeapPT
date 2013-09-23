@@ -92,11 +92,6 @@ class SoundControl extends PApplet{
 			/// println(theID + " " + soundpath);
 			
 			if(isPlaying){
-				/*
-				wall1.shiftGain(-80.0f, 0f, 2000);
-				wall2 = minim.loadFile(soundpath);
-				wall2.play();
-				*/
 				
 			} else {
 				wall1 = minim.loadFile(soundpath);
@@ -108,6 +103,48 @@ class SoundControl extends PApplet{
 			pApp.println("error loading sound: " + e);
 		}
 
+	}
+	
+	
+	void playLaserSounds(int theID){
+		String soundpath ="";
+		try{
+			soundpath = theAppProfile.soundsLasers.get(theID);
+			boolean isPlaying = wall1.isPlaying();
+			/// println(theID + " " + soundpath);
+			
+			if(isPlaying){
+				
+			} else {
+				wall1 = minim.loadFile(soundpath);
+				wall1.play();
+			}
+			
+			
+		} catch (Exception e){
+			pApp.println("error loading sound: " + soundpath);
+		}
+		
+	}
+	
+	void playBasketballSound(int theID){
+		try{
+			String soundpath = theAppProfile.soundsBasketball.get(theID);
+			boolean isPlaying = wall1.isPlaying();
+			/// println(theID + " " + soundpath);
+			
+			if(isPlaying){
+				
+			} else {
+				wall1 = minim.loadFile(soundpath);
+				wall1.play();
+			}
+			
+			
+		} catch (Exception e){
+			pApp.println("error loading sound: " + e);
+		}
+		
 	}
 	
 	///// ACTIVATE EACH

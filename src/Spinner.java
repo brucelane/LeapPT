@@ -133,73 +133,13 @@ class Spinner{
 	}
     
     
-    /* 
-     * 
-     *  old update movement 
-    void update(){
-    	
-    	///mvt
+   
     
-        // normalize rotation
-        
-    	if(baseRotX < velocity.x){
-    		velocity.x -= friction.x;
-
-    	} else {
-    		velocity.x = baseRotX;
-    	}
-        
-    	if(baseRotY < velocity.y){
-    		velocity.y -= friction.y;
-
-    	} else {
-    		velocity.y = baseRotY;
-    	}
-        
-    	if(baseRotZ < velocity.z){
-    		if(velocity.z >100){
-    			velocity.z -= 100;
-    		}
-    		if(velocity.z > 10){
-    			velocity.z -= 10;
-    		}
-    		if(velocity.z >1){
-    			velocity.z -= 1;
-    		}
-    		velocity.z -= friction.z;
-
-    	} else {
-    		velocity.z = baseRotZ;
-    	}
-    	
-    	
-        
-        if(theR > 0){
-        	theR -=5;
-
-        }
-        if(theG > 0){
-        	theG -=5;
-
-        }
-        if(theB < 255){
-        	theB +=5;
-
-        }
-        if(theA > 165){
-        	theA -=5;
-
-        } 
-        
-        theColor = pApp.color(theR,theG,theB,theA);
-    }
-    
-    */
-    
+    ////// this is not used?
     public void doImpact(float tX, float tY, float tZ){
     	hasImpact = true;
     	doImpactColor();
-    	doBoxHitSounds();
+    	doSpinSounds();
     	
     	acceleration.x = tX;
     	acceleration.y = tY;
@@ -228,12 +168,12 @@ class Spinner{
        
 	   int theRnd = (int)pApp.random(4);
 	   /// pApp.println("wall hit: " + theRnd);
-	   theSoundControl.playStarWarsSound(theRnd);
+	   theSoundControl.playLaserSounds(theRnd);
 
     }
     
-    void doBoxHitSounds(){
-       int theRnd = 4 + (int)pApp.random(7);
+    void doSpinSounds(){
+       int theRnd = (int)pApp.random(4);
    	   theSoundControl.playStarWarsSound(theRnd);
    	   /// pApp.println(theRnd);
     }
