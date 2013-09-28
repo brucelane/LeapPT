@@ -714,12 +714,12 @@ public class Main extends PApplet{
 		text(theGameType, 160, 38);
 		text(theRank, 90, 70);
 		text(theTime, 470, 72);
-		
+
 		fill(255);
 		
 		//// check for type of game it is
 		
-		if(theGameType == "TRAVELBLOCK"){
+		if(theGameType == "MULTI FEET"){
 			
 			String tScore = theScore + " feet";
 			textFont(ScoreFont, 28);
