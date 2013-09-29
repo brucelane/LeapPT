@@ -75,8 +75,10 @@ public class Main extends PApplet{
 	///// control and images
 	String panelPath = "data/control_panel2.png";
 
-	// applet
+	// app profile
 	AppProfile theAppProfile;
+	/// player profile
+	PlayerProfile thePlayerProfile;
 
 	//// GESTURE TRACKING
 	//// Swipe id: 123, STATE_STOP, position: (-98.4066, 175.594, 245.193), direction: (-0.286242, -0.268394, 0.919799), speed: 2278.775
@@ -120,6 +122,9 @@ public class Main extends PApplet{
 	  theAppProfile.SetPApp(this);
 	  //
 	  theGesture = theGesture.getInstance();
+	  
+	  // init player profile
+	  thePlayerProfile = new PlayerProfile();
 
 	  //
 	  movers = new ArrayList();
@@ -252,6 +257,8 @@ public class Main extends PApplet{
 		} else {
 			gameID ++;
 		}
+		
+
 		
 	}
 	
