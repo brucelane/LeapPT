@@ -6,6 +6,7 @@ class Spinner{
 	
 	PApplet pApp;
 	AppProfile theAppProfile;
+	PlayerProfile thePlayerProfile;
 	  
 	SoundControl theSoundControl;
 	  
@@ -50,6 +51,8 @@ class Spinner{
     	pApp = theAppProfile.pApp;
 
     	theSoundControl = theSoundControl.getInstance();
+    	
+    	thePlayerProfile = thePlayerProfile.getInstance();
     	 // = new SoundControl();
     	
     	theColor = pApp.color(theR,theG,theB,theA);
@@ -125,7 +128,9 @@ class Spinner{
 		}
 		
     	
-		
+		if(velocity.x != 0 && velocity.y != 0 && velocity.z != 0){
+			thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += velocity.x;
+		}
 		velocity.add(acceleration);
         location.add(velocity);
         acceleration.mult(0);

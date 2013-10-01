@@ -9,13 +9,17 @@ public class GameProfile {
 	boolean hasPlayed;
 	String gameName;
 	int highScore;
+	int curScore;
 	int timeSpent;
 	float percentComp;
 	int numWins;
 	int numLosses;
 	int curLevel;
 	
-	GameProfile(boolean hp, String gn, int cl, int hs, int ts, float pc, int nw, int nl){
+	/// GameProfile(boolean hp, String gn, int cl, int hs, int ts, float pc, int nw, int nl){
+	GameProfile(){
+		
+		/*
 		
 		hasPlayed = hp;
 		
@@ -32,6 +36,8 @@ public class GameProfile {
 		numLosses = nl;
 
 		curLevel = cl;
+		
+		*/
 
 	}
 

@@ -54,7 +54,7 @@ public class Main extends PApplet{
 	String theGameType = "null";
 	
 	/// game state controls
-	int gameID = 0;
+
 	
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
@@ -65,8 +65,8 @@ public class Main extends PApplet{
 	static float LEAP_WIDTH = 200.0f; // in mm
 	static float LEAP_HEIGHT = 700.0f; // in mm
 	
-	int tWidth;
-	int tHeight;
+	int tWidth = 1024;
+	int tHeight = 768;
 
 	float theX = 0;
 	float theY = 0;
@@ -116,15 +116,16 @@ public class Main extends PApplet{
 	TimerClass theTimer;
 
 	public void setup(){	
-		  
+	  size(tWidth,tHeight, OPENGL);
 	  /// set up app profile
 	  theAppProfile = theAppProfile.getInstance();
-	  theAppProfile.SetPApp(this);
+	  theAppProfile.initApp(this);
+	  theAppProfile.initData();
 	  //
 	  theGesture = theGesture.getInstance();
 	  
 	  // init player profile
-	  thePlayerProfile = new PlayerProfile();
+	  thePlayerProfile = thePlayerProfile.getInstance();
 
 	  //
 	  movers = new ArrayList();
@@ -139,7 +140,7 @@ public class Main extends PApplet{
 	  tHeight = theAppProfile.theHeight;
 	  // size(16*50, 9*50);
 	 //  size(800,600, OPENGL);
-	  size(tWidth,tHeight, OPENGL);
+
 	  background(20);
 	  frameRate(60);
 	  ellipseMode(CENTER);
@@ -207,7 +208,7 @@ public class Main extends PApplet{
 
 	public void renderGame(){
 		
-		switch (gameID){
+		switch (theAppProfile.gameID){
 		
 		case 0:
 			doRepulsor();
@@ -252,10 +253,10 @@ public class Main extends PApplet{
 			println("Can't kill listeners");
 		}
 		
-		if(gameID >= theAppProfile.gameMode.size()-1){
-			gameID = 0;
+		if(theAppProfile.gameID >= theAppProfile.gameMode.size()-1){
+			theAppProfile.gameID = 0;
 		} else {
-			gameID ++;
+			theAppProfile.gameID ++;
 		}
 		
 
@@ -271,10 +272,10 @@ public class Main extends PApplet{
 			println("Can't kill listeners");
 		}
 		
-		if(gameID <= 0){
-			gameID = theAppProfile.gameMode.size()-1;
+		if(theAppProfile.gameID <= 0){
+			theAppProfile.gameID = theAppProfile.gameMode.size()-1;
 		} else {
-			gameID --;
+			theAppProfile.gameID --;
 		}
 		
 	}
@@ -683,18 +684,7 @@ public class Main extends PApplet{
 		/// parse score
 		
 		/// this is too fancy
-		/*
-		try{
-			int oldScore = parseInt(theScore); // theAppProfile.scoredata;
-			if(oldScore < theAppProfile.scoredata){
-			oldScore += 11;
-			}
-			theScore = String.valueOf(oldScore);
-			
-		} catch (Exception e){
-			println("error parsing score: " + e);
-		}
-		*/
+	
 		theScore = String.valueOf(theAppProfile.scoredata);
 		
 		int hour = theTimer.hour();
@@ -714,7 +704,7 @@ public class Main extends PApplet{
 
 		/// diaplay config
 		theRank = theAppProfile.ranktypes.get(theAppProfile.rankID);
-		theGameType = theAppProfile.gameMode.get(gameID);
+		theGameType = theAppProfile.gameMode.get(theAppProfile.gameID);
 
 		textFont(ScoreFont, 22);
 		fill(255,255,0);
@@ -766,6 +756,10 @@ public class Main extends PApplet{
 		}
 		if (key == 'q'){
 
+		}
+		
+		if (key == 's'){
+			thePlayerProfile.savePlayerData();
 		}
 
 	}

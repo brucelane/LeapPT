@@ -1,6 +1,4 @@
 import processing.core.*;
-
-
 import processing.opengl.PGraphicsOpenGL;
 
 
@@ -8,6 +6,7 @@ class Breakout{
 	
 	PApplet pApp;
 	AppProfile theAppProfile;
+	PlayerProfile thePlayerProfile;
 	  
 	SoundControl theSoundControl;
 	  
@@ -43,6 +42,8 @@ class Breakout{
     	pApp = theAppProfile.pApp;
 
     	theSoundControl = theSoundControl.getInstance();
+    	
+    	thePlayerProfile = thePlayerProfile.getInstance();
     	 // = new SoundControl();
     	
     	theColor = pApp.color(theR,theG,theB,theA);
@@ -95,13 +96,13 @@ class Breakout{
             location.x = theAppProfile.theWidth;
             velocity.x *= -.65;
             doImpactSounds();
-            theAppProfile.scoredata += 23;
+            // theAppProfile.scoredata += 23;
 
         } else if (location.x<0){
             velocity.x *= -.65;
             location.x = 0;
             doImpactSounds();
-            theAppProfile.scoredata += 23;
+            // theAppProfile.scoredata += 23;
             
         }
         
@@ -114,7 +115,7 @@ class Breakout{
             impactCounter = 255;
             hasDamage = true;
             theSoundControl.playStarWarsSound(6);
-            theAppProfile.scoredata += 23;
+            // theAppProfile.scoredata += 23;
             
 
 
@@ -122,9 +123,11 @@ class Breakout{
             location.y = 0;  //// make sure the location doesn't go above the screen
             velocity.y *=-.25;
             doImpactSounds();
-            theAppProfile.scoredata += 23;
+            /// theAppProfile.scoredata += 23;
 
         }
+        
+        thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 23;
         
     }
     
@@ -152,6 +155,7 @@ class Breakout{
        int theRnd = (int)pApp.random(4);
    	   theSoundControl.playStarWarsSound(theRnd);
    	   /// pApp.println(theRnd);
+   	   thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 123;
     }
     
     

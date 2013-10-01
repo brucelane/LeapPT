@@ -21,13 +21,14 @@ public class AppProfile {
  //// player params
  ArrayList<String> ranktypes = new ArrayList();
  int rankID = 0;
+ 
+ int gameID = 0;
 
  /// soundParams
  ArrayList<String> soundsStarWars = new ArrayList();
  ArrayList<String> soundsLasers = new ArrayList();
  ArrayList<String> soundsBasketball = new ArrayList();
  ArrayList<String> soundsBreakout = new ArrayList();
- 
  /// game mode params
  ArrayList<String> gameMode = new ArrayList();
  
@@ -41,10 +42,16 @@ public class AppProfile {
       return instance;
    }
 
-   public void SetPApp(PApplet p){
+   public void initApp(PApplet p){
 	   pApp = p;
 	   
+	   pApp.println("SETTING APP");
 	   
+   }
+   
+   public void initData(){
+	   
+	   pApp.println("INITIALIZING APP");
 	   //// add sounds
 	   //// clean this
 	   /*

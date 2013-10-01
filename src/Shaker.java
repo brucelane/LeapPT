@@ -106,15 +106,10 @@ class Shaker{
     
     public void doImpact(float tX, float tY, float tZ){
     	pApp.println(tX + " " + tY + " " + tZ);
-    	
-    	
     	location.x = tX;
     	location.y = tY;
     	location.z = tZ;
-    	
     }
-    
-   
 
     
 }

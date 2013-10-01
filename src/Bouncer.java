@@ -75,8 +75,7 @@ class Bouncer{
         	theB -=10;
 
         }
-       
-        
+
         theColor = pApp.color(theR,theG,theB,theA);
     }
     

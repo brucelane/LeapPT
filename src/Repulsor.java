@@ -5,6 +5,8 @@ class Repulsor{
 	
 	PApplet pApp;
 	AppProfile theAppProfile;
+	/// player profile
+	PlayerProfile thePlayerProfile;
 	
 	SoundControl theSoundControl;
 	
@@ -26,6 +28,9 @@ class Repulsor{
     	pApp = theAppProfile.pApp;
     	
     	theSoundControl = theSoundControl.getInstance();
+    	
+    	/// player profile
+    	thePlayerProfile = thePlayerProfile.getInstance();
     	
         location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
         
@@ -124,8 +129,8 @@ class Repulsor{
         	m.hasImpact = true;
         	m.doImpactColor();
         	m.doBounceSound();
-        	theAppProfile.scoredata += 123;
-        	
+
+        	thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 123;
       	  
       	   
         } else {
