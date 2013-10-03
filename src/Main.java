@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 //// import java.util.Vector;
 
+
+
 /// leap motion
 import com.leapmotion.leap.CircleGesture;
 import com.leapmotion.leap.Controller;
@@ -23,6 +25,8 @@ import com.leapmotion.leap.Vector;
 import com.leapmotion.leap.Gesture.State;
 import com.leapmotion.leap.processing.LeapMotion;
 
+import controlP5.ControlEvent;
+import controlP5.ControlP5;
 /// minim audio
 import ddf.minim.AudioSample;
 import ddf.minim.Minim;
@@ -48,13 +52,18 @@ public class Main extends PApplet{
 	// text and UI display
 	PImage controlPanel;
 	
+	 //// interface elements
+	ControlP5 cp5;
+	ControlP5 ControlEvent;
+	
 	String theScore = "0";
 	String theTime = "0";
 	String theRank = "";
 	String theGameType = "null";
 	
-	/// game state controls
-
+	/// game state data
+	boolean isPaused = false;
+	
 	
 	///// fonts
 	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
@@ -79,6 +88,8 @@ public class Main extends PApplet{
 	AppProfile theAppProfile;
 	/// player profile
 	PlayerProfile thePlayerProfile;
+	
+	Messaging theMessaging;
 
 	//// GESTURE TRACKING
 	//// Swipe id: 123, STATE_STOP, position: (-98.4066, 175.594, 245.193), direction: (-0.286242, -0.268394, 0.919799), speed: 2278.775
@@ -93,22 +104,25 @@ public class Main extends PApplet{
 	
 	/// game objects //
 	boolean gestureCheck = false;
-	float gravWeight = .5f;
+	float gravWeight = .5f;  //// can we add this to difficulty level?
 
+	/// grabber
 	Mover theMover;
 	Attractor theAttractor;
 	int totalMovers = 1;
 	
+	/// basketball
 	Repulsor theRepulsor;
 	Bouncer theBouncer;
 	int totalBouncers = 1;
 	
+	/// multifeet
 	Shaker theShaker;
 	Spinner theSpinner;
 	BackgroundTiles theBground;
-	// Checkerboard theCheckers;
 	int totalSpinners = 1;
 	
+	//// breakout
 	Breakout theBreakout;
 	Paddle thePaddle;
 	int totalBreakouts = 1;
@@ -126,6 +140,9 @@ public class Main extends PApplet{
 	  
 	  // init player profile
 	  thePlayerProfile = thePlayerProfile.getInstance();
+	  // message box
+	  
+	  theMessaging = new Messaging();
 
 	  //
 	  movers = new ArrayList();
@@ -179,9 +196,80 @@ public class Main extends PApplet{
 	  controlPanel = loadImage(panelPath);
 	  /// init the GUI
 	  initGUI();
-	  
-	  theTimer.start();
 
+	}
+	
+	///// control events need to be implemented in main
+	///// for some reason
+	public void controlEvent(ControlEvent theEvent) {
+		  // DropdownList is of type ControlGroup.
+		  // A controlEvent will be triggered from inside the ControlGroup class.
+		  // therefore you need to check the originator of the Event with
+		  // if (theEvent.isGroup())
+		  // to avoid an error message thrown by controlP5.
+
+		 
+		  // println("P5 EVENT" + theEvent.getController().getId());
+		 
+		  if(theEvent.isController()){
+			 // println("CLICK" + theEvent.getController().getId());
+			 println("Name" + theEvent.getName());
+		  }
+		  if (theEvent.isFrom("CLOSE")){
+			  isPaused = false;
+			  theMessaging.closeMessage();
+		  }
+		  
+		  if (theEvent.isFrom("MENU")){
+			  theMessaging.showGameMenuButtons();
+			  theMessaging.messageState = "showMenu";
+		  }
+		  
+		  if (theEvent.isFrom("STATS")){
+			  theMessaging.setStats();
+			  theMessaging.hideGameMenuButtons();
+			  theMessaging.messageState = "showStats";
+		  }
+		  
+
+		  /// game menu actions
+		  if (theEvent.isFrom("PLAY BUTTON")){
+			  /*
+			  theMessaging.setStats();
+			  theMessaging.hideGameMenuButtons();
+			  theMessaging.messageState = "showStats";
+			  
+			  */
+		  }
+		  
+		  
+		  if (theEvent.isFrom("GAME0")){
+			  theMessaging.showGameInfo(0);
+			  // theMessaging.messageState = "showMenu";
+		  }
+		  if (theEvent.isFrom("GAME1")){
+			  theMessaging.showGameInfo(1);
+			  // theMessaging.messageState = "showMenu";
+		  }
+		  
+		  if (theEvent.isFrom("GAME2")){
+			  theMessaging.showGameInfo(2);
+			  // theMessaging.messageState = "showMenu";
+		  }
+		  if (theEvent.isFrom("GAME3")){
+			  theMessaging.showGameInfo(3);
+			  // theMessaging.messageState = "showMenu";
+		  }
+		  if (theEvent.isFrom("GAME4")){
+			  theMessaging.showGameInfo(4);
+			  theMessaging.messageState = "showMenu";
+		  }
+		  if (theEvent.isFrom("GAME5")){
+			  
+			  theMessaging.showGameInfo(5);
+			  // theMessaging.messageState = "showMenu";
+		  }
+		  
 	}
 	
 
@@ -189,15 +277,19 @@ public class Main extends PApplet{
 		
 	  //// make a nice background ///
 	  background(0);
-	  /*
-	  pushMatrix();
-	  translate(0,0,-500);
-	  popMatrix();
-	  */
-
-
-	  renderGame();
-	  doGUI();
+	  
+	  
+	  
+	  if(!isPaused){
+		  renderGame();
+		  doGUI();
+	  } else {
+		  
+		  doGUI();
+		  theMessaging.showMessageBox();
+	  }
+	  
+	  
 
 	}
 	
@@ -245,6 +337,11 @@ public class Main extends PApplet{
 	
 	/////////////// 
 	public void doNextGame(){
+		//// 
+
+	    thePlayerProfile.GameStats.get(theAppProfile.gameID).timeSpent = theTimer.getElapsedTime();
+	    theTimer.stop();
+	    theTime = "";
 		
 		/// should reset game and score
 		try{ 
@@ -259,13 +356,16 @@ public class Main extends PApplet{
 			theAppProfile.gameID ++;
 		}
 		
-
+	    theTimer.start();
 		
 	}
 	
 	public void doPrevGame(){
 		
-		/// should reset game and score
+		thePlayerProfile.GameStats.get(theAppProfile.gameID).timeSpent = theTimer.getElapsedTime();
+	    theTimer.stop();
+	    theTime = "";
+	    
 		try{ 
 			gestureCheck = false;
 		} catch (Exception e){
@@ -278,12 +378,14 @@ public class Main extends PApplet{
 			theAppProfile.gameID --;
 		}
 		
+		theTimer.start();
+		
 	}
 	
 	
-  /////////////////////////////////////
-  ////////// GAME MECHANICS BY TYPE //////////	
- /////////////////////////////////////
+    /////////////////////////////////////
+    ////////// GAME MECHANICS BY TYPE ///
+    /////////////////////////////////////
 	
 	
 	///// ATTRACTORS /////////////////
@@ -381,8 +483,7 @@ public class Main extends PApplet{
 	
 	//// SPINNERS //////////////
 	public void doShaker(){
-		 
-		
+
 		//// have you made a gesture?
         if(theGesture.state == "STATE_UPDATE"){
 			
@@ -667,6 +768,22 @@ public class Main extends PApplet{
 	
 	////// end leap input //////
 	
+	///////////////////////////////
+	////// GAME STATE FUNCTION ////
+	//////////////////////////////
+	
+	public void doPause(){
+		isPaused = true;
+		
+		/// do messaging
+	}
+	
+	public void doUnPause(){
+		isPaused = false;
+		
+		// do messaging
+	}
+	
 	//////////////////////////////
 	///// CREATE INTERFACE ////
 	//////////////////////////////
@@ -761,10 +878,21 @@ public class Main extends PApplet{
 		if (key == 's'){
 			thePlayerProfile.savePlayerData();
 		}
+		
+		if (key == 'p'){
+			if(isPaused){
+				isPaused = false;
+				
+			} else {
+				// it's paused! unPause it!
+				isPaused = true;
+			}
+		}
+		
+		
 
-	}
+	} /// end keypress code
 
 	
 	
-}
-/// end class
+}/// end class

@@ -119,6 +119,16 @@ public class PlayerProfile {
 						if(j ==5){
 							theGameProf.curLevel = ((Long) msg.get(j)).intValue();
 						}
+						//// extra data
+						if(j ==6){
+							theGameProf.gameInfo = ((String) msg.get(j));
+						}
+						if(j ==7){
+							theGameProf.gameThumbnail = ((String) msg.get(j));
+						}
+						if(j ==8){
+							theGameProf.gameMainPic = ((String) msg.get(j));
+						}
 					}
 					
 					GameStats.add(theGameProf);
@@ -190,14 +200,10 @@ public class PlayerProfile {
 					}
 					
 				}
-				
-
 				obj.put(GameStats.get(i).gameName, list);
 				System.out.println("Saving data: " + GameStats.get(i).gameName + " " + list);
 			}
-			
-			
-			
+
 			try {
 		 
 				FileWriter file = new FileWriter("data/playerData.json");
@@ -208,10 +214,6 @@ public class PlayerProfile {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		 
-		
-			
-		 
 		}
 	 
 	 

@@ -16,6 +16,11 @@ public class GameProfile {
 	int numLosses;
 	int curLevel;
 	
+	///// info about games
+	String gameInfo;
+	String gameThumbnail;
+	String gameMainPic;
+	
 	/// GameProfile(boolean hp, String gn, int cl, int hs, int ts, float pc, int nw, int nl){
 	GameProfile(){
 		

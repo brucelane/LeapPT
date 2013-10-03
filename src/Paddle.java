@@ -121,12 +121,8 @@ class Paddle{
         */
         //// 
 
-       
+       /// check if is hit
         if(location.x + paddleWidth/2 > m.location.x -30 && location.x - paddleWidth/2 < m.location.x + 30 && paddleY > m.location.y -30 && paddleY < m.location.y + 30){
-        
-        /// if (paddleHitState.contains((int)m.location.x, (int)m.location.y)) {
-        // if(isHit){
-        	
         	/// if so, find the side it's hitting and
         	/// bounce it in the other direction
         	
