@@ -88,7 +88,7 @@ public class Main extends PApplet{
 	AppProfile theAppProfile;
 	/// player profile
 	PlayerProfile thePlayerProfile;
-	
+
 	Messaging theMessaging;
 
 	//// GESTURE TRACKING
@@ -137,13 +137,10 @@ public class Main extends PApplet{
 	  theAppProfile.initData();
 	  //
 	  theGesture = theGesture.getInstance();
-	  
 	  // init player profile
 	  thePlayerProfile = thePlayerProfile.getInstance();
 	  // message box
-	  
 	  theMessaging = new Messaging();
-
 	  //
 	  movers = new ArrayList();
 	  bouncers = new ArrayList();
@@ -221,14 +218,13 @@ public class Main extends PApplet{
 		  }
 		  
 		  if (theEvent.isFrom("MENU")){
-			  theMessaging.showGameMenuButtons();
-			  theMessaging.messageState = "showMenu";
+			  theMessaging.showGameMenu();
+			  
 		  }
 		  
 		  if (theEvent.isFrom("STATS")){
-			  theMessaging.setStats();
-			  theMessaging.hideGameMenuButtons();
-			  theMessaging.messageState = "showStats";
+
+			  theMessaging.showStats();
 		  }
 		  
 
@@ -240,6 +236,9 @@ public class Main extends PApplet{
 			  theMessaging.messageState = "showStats";
 			  
 			  */
+			  isPaused = false;
+			  theMessaging.closeMessage();
+			  startNewGame(theMessaging.newGameID);
 		  }
 		  
 		  
@@ -286,7 +285,7 @@ public class Main extends PApplet{
 	  } else {
 		  
 		  doGUI();
-		  theMessaging.showMessageBox();
+		  theMessaging.drawMessageBox();
 	  }
 	  
 	  
@@ -382,6 +381,22 @@ public class Main extends PApplet{
 		
 	}
 	
+	public void startNewGame(int tId){
+		
+		thePlayerProfile.GameStats.get(theAppProfile.gameID).timeSpent = theTimer.getElapsedTime();
+	    theTimer.stop();
+	    theTime = "";
+	    
+		try{ 
+			gestureCheck = false;
+		} catch (Exception e){
+			println("Can't kill listeners");
+		}
+
+		theAppProfile.gameID = tId;
+		theTimer.start();
+		
+	}
 	
     /////////////////////////////////////
     ////////// GAME MECHANICS BY TYPE ///
@@ -871,8 +886,8 @@ public class Main extends PApplet{
 		if (key == 'r') {
 
 		}
-		if (key == 'q'){
-
+		if (key == 'a'){
+			
 		}
 		
 		if (key == 's'){
@@ -884,6 +899,7 @@ public class Main extends PApplet{
 				isPaused = false;
 				
 			} else {
+				theMessaging.showGameMenu();
 				// it's paused! unPause it!
 				isPaused = true;
 			}

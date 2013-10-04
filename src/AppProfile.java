@@ -86,9 +86,9 @@ public class AppProfile {
 	   
 	   /// add game mode types
 	   gameMode.add("FINGERBALL");
-	   gameMode.add("MULTI FEET");
+	   gameMode.add("MULTIFEET");
 	   gameMode.add("BREAKOUT");
-	   gameMode.add("BABY ON FIRE");
+	   gameMode.add("BABYONFIRE");
 	   
 	   //// add rank types
 	   ranktypes.add("BEGINNER");

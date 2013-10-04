@@ -53,6 +53,9 @@ public class Messaging implements ControlListener{
      String curStatHeader = "SHOWING DATA FOR: ";
      String statData = "";
      String gameInfoData = "";
+     
+     ///
+     int newGameID = 0;
 
 	 //
 	 String messageState = "showMenu"; /// default
@@ -67,9 +70,7 @@ public class Messaging implements ControlListener{
 	 
 	 String theHeader;
 	 String theMessage;
-	 
-	 
-	 
+
 	 Messaging() {
 	     
 		 theAppProfile = theAppProfile.getInstance();
@@ -96,124 +97,95 @@ public class Messaging implements ControlListener{
 		 initGUI();
 		 
 	 }
-	 
-	
-	 
-	 public void showMessageBox(){
 
-		 if(messageState == "message"){
-			 
-			 showMessage();
-			 
-		 } else if (messageState == "winMessage"){
-			 
-			 showWin();
-			  
-		 } else if (messageState == "loseMessage"){ 
-			 
-			 showLose();
-			 
-		 } else if (messageState == "showStats"){
-			 
-			 showStats();
-			 
-		 } else if (messageState == "showMenu"){
-			 
-			 showGameMenu();
-			 
-		 } else {
-			 pApp.println("BAD MENU PARAM");
-			 showGameMenu();
-		 }
-	 }
-	 
 	 public void closeMessage(){
-		 //// hide menu buttons
-		 game0Button.hide();
-		 game1Button.hide();
-		 game2Button.hide();
-		 game3Button.hide();
-		 game4Button.hide();
-		 
-		 statTextArea.hide();  
-		 gameInfoTextArea.hide();
+
+		 hideGameMenuButtons();
 		 closeButton.hide(); 
 		 menuButton.hide();
 		 statsButton.hide();
+		 
+		 statTextArea.hide();  
+		 gameInfoTextArea.hide();
 	 }
 	 
 	 public void showBasicInterface(){
-		 
-		 //// hide menu buttons
-		 /*
-		 game0Button.hide();
-		 game1Button.hide();
-		 game2Button.hide();
-		 game3Button.hide();
-		 game4Button.hide();
-		 */
-		 
+		
 		 pApp.image(bgroundImg, bgX, bgY);
 		 //// display trim
-		 
-		 /// draw message
-		 
-		 /// pApp.text(tHead, bgX + theMargin, bgY + theMargin);
-		 // pApp.text(tMess, bgX + theMargin, bgY + theMargin + 50);
-		 
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
+
 	 }
 	 
 	 
-	 public void showMessage(){
-		 
-		 statTextArea.hide();    
+	 public void drawMessageBox(){
+  
 		 //// draw background
 		 bgX = theAppProfile.theWidth/2 - bgroundImg.width/2;		 
 		 bgY = theAppProfile.theHeight/2 - bgroundImg.height/2;
 		 pApp.image(bgroundImg, bgX, bgY);
 		 //// display trim
 		 
-		 /// is showing info about a game?
-		 
-		 if(showGameInfo){
+		 if(messageState == "message"){
 			 
-			 /// do game popup bground
+			 /// showMessage();
 			 
+		 } else if (messageState == "winMessage"){
 			 
-			 /// show game bground box
+			 // showWin();
+			  
+		 } else if (messageState == "loseMessage"){ 
 			 
-			 /// pass game id to help class
+			 // showLose();
 			 
-			 /// show it!
+		 } else if (messageState == "showStats"){
+			
+			 /// showStats();
+			 pApp.image(tabRImg, bgX + theMargin*2, bgY + theMargin *3);
+			 
+		 } else if (messageState == "showMenu"){
+			 
+			 /// showGameMenu();
+			 pApp.image(tabLImg, bgX + theMargin *2, bgY + theMargin *3);
+			 
+		 }	else if (messageState == "showGameInfo"){
+			 
+			 /// showGameMenu();
+			 pApp.image(tabLImg, bgX + theMargin *2, bgY + theMargin *3);
+			 
+		 } else {
+			 pApp.println("BAD MENU PARAM");
+			 showGameMenu();
+		 }
 
-			 
-		 } 
-		 
-		 /// draw message
-		 
 		 /// pApp.text(tHead, bgX + theMargin, bgY + theMargin);
 		 // pApp.text(tMess, bgX + theMargin, bgY + theMargin + 50);
-		 
+	 }
+	 
+
+	 
+	 ///////////////////////////////////////////////
+	 /////// SHOW and HIDE CONFIGURATIONS ////////
+	 //////////////////////////////////////
+	 
+	 public void showWin(){
+		 // buttons
 		 closeButton.show();
 		 menuButton.show();
 		 statsButton.show();
-	 
 		 
-	 }
-	 
-	 public void showWin(){
-		 
+		 /// text
 		 statTextArea.hide();    
-		 showBasicInterface();
-		 
+
 	 }
 	 
 	 public void showLose(){
+		 // buttons
+		 closeButton.show();
+		 menuButton.show();
+		 statsButton.show();
 		 
-		 showBasicInterface();
+		 /// text
+		 statTextArea.hide();    
 	 }
 	 
 	 public void setStats(){
@@ -283,31 +255,35 @@ public class Messaging implements ControlListener{
 	 
 	 
 	 public void showStats(){
+		 setStats();
+		 messageState = "showStats";
 		 
-		 showBasicInterface();
-		 
-		 pApp.image(tabRImg, bgX + theMargin*2, bgY + theMargin *3);
-		 
+		 // buttons
+		 closeButton.show();
+		 menuButton.show();
+		 statsButton.show();
+		 //
+		 hideGameMenuButtons();
+
 		 /// show badges class
 		 
+		 /// show and hide text
 		 statTextArea.show();
 		 gameInfoTextArea.hide();
 	 }
 	 
 	 public void showGameMenu(){
-		 showBasicInterface();
+		 messageState = "showMenu";
+		 // buttons
+		 closeButton.show();
+		 menuButton.show();
+		 statsButton.show();
 		 
-		 statTextArea.hide();    
-		 
-		 pApp.image(tabLImg, bgX + theMargin *2, bgY + theMargin *3);
-		 
-		 /// do stat button
-		 
-		 /// do menu button
-		 
-		 /// game buttons
-		
-		 
+		 showGameMenuButtons();
+
+		 /// text
+		 statTextArea.hide();   
+		 gameInfoTextArea.show();
 	 }
 	 
 	 public void showGameMenuButtons(){
@@ -317,6 +293,7 @@ public class Messaging implements ControlListener{
 		 game2Button.show();
 		 game3Button.show();
 		 game4Button.show();
+		 playButton.show();
 
 	 }
 
@@ -327,12 +304,14 @@ public class Messaging implements ControlListener{
 		 game2Button.hide();
 		 game3Button.hide();
 		 game4Button.hide();
+		 playButton.hide();
 		 
 	 }
 	 
 	 public void showGameInfo(int tID){
 		 pApp.println("SHOW GAME INFO FOR: " + tID);
 		 gameInfoData = "";
+		 newGameID = tID;
 		 /// show popup background
 		 try{
 			 // show "more info" 

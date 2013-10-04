@@ -23,8 +23,7 @@ public class PlayerProfile {
 	 AppProfile theAppProfile;
 
 	 JSONParser parser = new JSONParser();
-	 
-	 
+
 	 String playerName;
 	 String playerRank;
 	 String totalTime; /// totalTime played
@@ -98,6 +97,8 @@ public class PlayerProfile {
 					
 					theGameProf.gameName = theAppProfile.gameMode.get(i);
 					// System.out.println(theGameProf.gameName);
+					
+					theGameProf.loadCheevos();
 					
 					for(int j=0; j< msg.size(); j++){
 						

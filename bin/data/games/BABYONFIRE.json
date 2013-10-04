@@ -1,0 +1,15 @@
+{
+    "BABYONFIRE": [
+{
+            "name": "first baby on fire cheevo",
+            "description": "started baby on fire for the first time",
+            "image": "data\/cheevos\/cheevo3.png"
+        },
+        {
+            "name": "second baby on fire cheevo",
+            "description": "lit a baby on fire bunches of times",
+            "image": "data\/cheevos\/cheevo11.png"
+        }
+
+    ]
+}
