@@ -4,6 +4,10 @@ import processing.opengl.PGraphicsOpenGL;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.EventListener;
+import java.util.EventObject;
+
+import javax.swing.event.EventListenerList;
 //// import java.util.Vector;
 
 
@@ -51,6 +55,10 @@ public class Main extends PApplet{
 	
 	// text and UI display
 	PImage controlPanel;
+	PImage cheevoBadge;
+	PImage cheevoBground;
+	
+	String chevBgroundPath = "data/achievement_bground.png";
 	
 	 //// interface elements
 	ControlP5 cp5;
@@ -105,6 +113,12 @@ public class Main extends PApplet{
 	/// game objects //
 	boolean gestureCheck = false;
 	float gravWeight = .5f;  //// can we add this to difficulty level?
+	
+	/// achievment display
+	boolean showCheevo = false;
+	String cheevoName = "";
+	String cheevoDesc = "";
+	String cheevoPath = "";
 
 	/// grabber
 	Mover theMover;
@@ -128,6 +142,10 @@ public class Main extends PApplet{
 	int totalBreakouts = 1;
 	
 	TimerClass theTimer;
+	
+	float curMarker; // marker for particular time
+	
+	MyEventListener listener;
 
 	public void setup(){	
 	  size(tWidth,tHeight, OPENGL);
@@ -188,13 +206,27 @@ public class Main extends PApplet{
 	  theShaker = new Shaker(0);
 	  thePaddle = new Paddle(gravWeight);
 	  
+	  
+	  
+	// add event listener to the paddle
+	  thePaddle.addMyEventListener(new MyEventListener() {
+      public void myEventOccurred(MyEvent evt, String tCheev) {
+          /// System.out.println("fired");
+          initAchievement(tCheev);
+        }
+      });
+  
 
 	  /// text images panels
 	  controlPanel = loadImage(panelPath);
+	  cheevoBground = loadImage(chevBgroundPath);
 	  /// init the GUI
 	  initGUI();
 
 	}
+	
+	//// listeners
+
 	
 	///// control events need to be implemented in main
 	///// for some reason
@@ -217,53 +249,51 @@ public class Main extends PApplet{
 			  theMessaging.closeMessage();
 		  }
 		  
-		  if (theEvent.isFrom("MENU")){
+		  if (theEvent.isFrom("GAMES MENU")){
 			  theMessaging.showGameMenu();
 			  
 		  }
 		  
-		  if (theEvent.isFrom("STATS")){
+		  if (theEvent.isFrom("PROGRESS")){
 
 			  theMessaging.showStats();
 		  }
 		  
+		  if (theEvent.isFrom("SETTINGS")){
 
+			  theMessaging.showSettings();
+		  }
 		  /// game menu actions
-		  if (theEvent.isFrom("PLAY BUTTON")){
-			  /*
-			  theMessaging.setStats();
-			  theMessaging.hideGameMenuButtons();
-			  theMessaging.messageState = "showStats";
-			  
-			  */
+		  if (theEvent.isFrom("PLAY GAME")){
+			 
 			  isPaused = false;
 			  theMessaging.closeMessage();
 			  startNewGame(theMessaging.newGameID);
 		  }
 		  
 		  
-		  if (theEvent.isFrom("GAME0")){
+		  if (theEvent.isFrom("GAME 0")){
 			  theMessaging.showGameInfo(0);
 			  // theMessaging.messageState = "showMenu";
 		  }
-		  if (theEvent.isFrom("GAME1")){
+		  if (theEvent.isFrom("GAME 1")){
 			  theMessaging.showGameInfo(1);
 			  // theMessaging.messageState = "showMenu";
 		  }
 		  
-		  if (theEvent.isFrom("GAME2")){
+		  if (theEvent.isFrom("GAME 2")){
 			  theMessaging.showGameInfo(2);
 			  // theMessaging.messageState = "showMenu";
 		  }
-		  if (theEvent.isFrom("GAME3")){
+		  if (theEvent.isFrom("GAME 3")){
 			  theMessaging.showGameInfo(3);
 			  // theMessaging.messageState = "showMenu";
 		  }
-		  if (theEvent.isFrom("GAME4")){
+		  if (theEvent.isFrom("GAME 4")){
 			  theMessaging.showGameInfo(4);
 			  theMessaging.messageState = "showMenu";
 		  }
-		  if (theEvent.isFrom("GAME5")){
+		  if (theEvent.isFrom("GAME 5")){
 			  
 			  theMessaging.showGameInfo(5);
 			  // theMessaging.messageState = "showMenu";
@@ -330,6 +360,11 @@ public class Main extends PApplet{
 		case 5:
 			
 			break;	
+		}
+		
+		if(showCheevo){
+			
+			showAchievment();
 		}
 		
 	}
@@ -862,6 +897,85 @@ public class Main extends PApplet{
 		
 		
 	}
+	
+	//////////////////////////////////////
+	////////// ACHIEVEMENTS /////////////
+	//////////////////////////////////////
+	
+	public void initAchievement(String tCheev){
+		curMarker =  theTimer.getElapsedTime();
+		
+		cheevoName = tCheev;
+		/// println("mark: " + curMarker + " " + cheevoName);
+		
+		/// make sure we don't already have this achievement
+		boolean hasCheevo = false;
+		for(int j=0; j<thePlayerProfile.CheevoNames.size(); j++){
+			
+			println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
+			if(thePlayerProfile.CheevoNames.get(j).equals(cheevoName)){
+				hasCheevo = true;
+				
+				println("HAS CHEEVO");
+				
+			}
+		}
+		
+			
+		/// if player doesn't have this achievement
+		if(hasCheevo == false){	
+			showCheevo = true;
+			/// get the achievment data from the game profiles
+			for (int i=0; i<thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.size(); i++){
+				/*
+				println("Cheevo NAME: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i));
+				println("Cheevo DESCRIPTION: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoDescription.get(i));
+				println("Cheevo IMAGE: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoImage.get(i));
+				*/
+				if(cheevoName.equals(thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i))){
+					println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
+					// add cheevo to the player profile
+					thePlayerProfile.addAchievement(cheevoName);
+					cheevoDesc = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoDescription.get(i);
+					cheevoPath = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoImage.get(i);
+				}
+			}
+			
+			cheevoBadge = loadImage(cheevoPath);
+		}
+		
+	}
+	public void showAchievment(){
+		
+		 //// draw the achievment
+		/// println("SHOW CHEEVO");
+		float tX = theAppProfile.theWidth/2 - cheevoBground.width/2;
+		float tY = theAppProfile.theHeight - cheevoBground.height - 100;
+		String cheevData = "Achievment Unlocked: " + cheevoName + "\n";
+		image(cheevoBground, tX, tY);
+		image(cheevoBadge, tX + 30, tY + 30);
+		
+		textFont(ScoreFont, 22);
+		fill(255);
+		text(cheevData, tX + 100, tY + 50);
+		textFont(ScoreFont, 18);
+		text(cheevoDesc, tX + 100, tY + 70);
+		
+		 /// retrieve the stat info
+		 if(theTimer.getElapsedTime() - 5000 >= curMarker){
+
+			hideAchievement();
+			 
+			 
+		 }
+		 
+	 }
+	 
+	 public void hideAchievement(){
+		 showCheevo = false;
+		 println("HIDE CHEEVO");
+		 
+	 }
 	
 	////////////////////////////////////////
 	///////// KEYBOARD INPUT ///////////////

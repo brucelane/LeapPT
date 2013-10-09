@@ -1,5 +1,9 @@
 import processing.core.*;
 
+import java.util.EventListener;
+import java.util.EventObject;
+
+import javax.swing.event.EventListenerList;
 
 
 class Paddle{
@@ -35,8 +39,8 @@ class Paddle{
     
     float friction = .01f; /// this is the slowdown for the movement
     
-    //
-	
+    // listeners
+    protected EventListenerList listenerList = new EventListenerList();
 	/// particles
 	ParticleSystem ps;
     
@@ -177,6 +181,10 @@ class Paddle{
         	paddleImpactColor();
         	m.doImpactColor();
         	m.doPaddleHit();
+        	
+        	/// do cheevo
+        	fireMyEvent(null, "First Bounce");
+        	//
         	theAppProfile.scoredata += 123;
         	
         	///// do particles
@@ -245,8 +253,22 @@ class Paddle{
     	ps.run();
     }
     
-}
+    ////// listeners
+    public void addMyEventListener(MyEventListener listener) {
+        listenerList.add(MyEventListener.class, listener);
+      }
+      public void removeMyEventListener(MyEventListener listener) {
+        listenerList.remove(MyEventListener.class, listener);
+      }
+      void fireMyEvent(MyEvent evt, String tCheev) {
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = 0; i < listeners.length; i = i+2) {
+          if (listeners[i] == MyEventListener.class) {
+            ((MyEventListener) listeners[i+1]).myEventOccurred(evt, tCheev);
+          }
+        }
+      }
 
 
-
-//// end paddle class
+    
+}//// end paddle class

@@ -1,13 +1,13 @@
 {
     "BREAKOUT": [
         {
-            "name": "first breakout cheevo",
-            "description": "started the game for the first time",
+            "name": "First Bounce",
+            "description": "Bounced for the first time in Breakout",
             "image": "data\/cheevos\/cheevo0.png"
         },
         {
-            "name": "second breakout cheevo",
-            "description": "started the game for the second time",
+            "name": "Second Bounce",
+            "description": "Bounced for the second time in Breakout",
             "image": "data\/cheevos\/cheevo5.png"
         }
     ]

@@ -40,10 +40,15 @@ public class GameProfile {
 	
 	GameProfile(){
 		
-		
+		CheevoNames = new ArrayList();
+		CheevoDescription = new ArrayList();
+		CheevoImage = new ArrayList();
 
 	}
 	
+	//// load the achievments for each game
+	//// and saves it with the game
+	////  when player unlocks, pulls the data from here
 	public void loadCheevos(){
 		
 			 try{
@@ -52,39 +57,29 @@ public class GameProfile {
 				/// JSONArray jsonarray = (JSONArray) obj;
 				JSONArray jsonarray = (JSONArray) gameDataObject.get(gameName);
 				/// String rank = (String) jsonObject.get("rank");
-				
-				/*
-				CheevoNames.add((String) cheevData.get(0));
-				CheevoDescription.add((String) cheevData.get(1));
-				CheevoImage.add((String) cheevData.get(2));
-				
-				*/
+
 				try{
 					for (int i=0; i<jsonarray.size(); i++) {
 	
 							JSONObject jsonObject= (JSONObject)jsonarray.get(i);
 							
 							String name = (String) jsonObject.get("name");
-							System.out.println("Cheevo name: " + name);
+							// System.out.println("Cheevo name: " + name);
+							CheevoNames.add(name);
 							
 							String desc = (String) jsonObject.get("description");
-							System.out.println("Cheevo description: " + desc);
+							// System.out.println("Cheevo description: " + desc);
+							CheevoDescription.add(desc);
 							
 							String img = (String) jsonObject.get("image");
-							System.out.println("Cheevo image: " + img);
-							// loop array
-							
-							//JSONArray msg = (JSONArray) jsonObject.get("image");
-							//Iterator iterator = msg.iterator();
-						//while (iterator.hasNext()) {
-						// System.out.println(iterator.next());
-							
-						// }
+							// System.out.println("Cheevo image: " + img);
+							CheevoImage.add(img);
 	
 					}
-				}catch(Exception e){
+				} catch(Exception e){
 					System.out.print("cheevo load error: " + e);
 				}
+				// System.out.print(CheevoDescription.toString());
 				
 			// catch json parsing errors
 			 } catch (FileNotFoundException e) {

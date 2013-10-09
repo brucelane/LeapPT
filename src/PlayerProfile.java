@@ -31,10 +31,12 @@ public class PlayerProfile {
 	 
 	 int statLength; /// length of the stat list
 	 
-	 ///// stats for all games played /////
-	 ///// name, current level, high score, time spent playing, % completed, num wins, num losses ///// 
+	 ///// holds game profiles with stats for all games played /////
+	 ///// game name, current level, high score, time spent playing, % completed, num wins, num losses ///// 
 	 ArrayList<GameProfile> GameStats;
-
+	 //
+	 ArrayList<String> CheevoNames;
+	 
 	 GameProfile theGameProf;
 	
 	 protected PlayerProfile() {
@@ -42,6 +44,8 @@ public class PlayerProfile {
 		 theAppProfile = theAppProfile.getInstance();
 		 //
 		 GameStats = new ArrayList();
+		 //
+		 CheevoNames = new ArrayList();
 		 // get saved player data
 		 getPlayerData();
 		 
@@ -63,6 +67,7 @@ public class PlayerProfile {
 		 
 				JSONObject jsonObject = (JSONObject) obj;
 		 
+				/// get basic player data
 				String name = (String) jsonObject.get("name");
 				playerName =  name;
 				
@@ -76,28 +81,34 @@ public class PlayerProfile {
 				
 				String total_time = (String) jsonObject.get("total_time");
 				totalTime = total_time;
-		 
+				
+				
+				/// get the unlocked achievements by name
+				/// add to the player achievent array
+				
+				JSONArray achievMent = (JSONArray) jsonObject.get("achievements");
+				for(int k=0; k< achievMent.size(); k++){
+					CheevoNames.add(((String) achievMent.get(k)));
+					/// pApp.println("Current cheevo: " + CheevoNames.get(k));
+				}
+				
+				// now that we have player data,
 				// create a new game profile
 				// add stats to it
 				// add the game profile to the 
 				// game profile array
+				// when the player gets score it
+				// adds it to the correct game data
 				
 				for (int i=0; i < theAppProfile.gameMode.size(); i++){
 					
 					JSONArray msg = (JSONArray) jsonObject.get(theAppProfile.gameMode.get(i));
 					theGameProf = new GameProfile();
-					/*
-					 * list.add(new Integer(0)); // high score
-					list.add(new Integer(0)); // time spent
-					list.add(new Float(0.00)); // percent completed
-					list.add(new Integer(0)); // num wins
-					list.add(new Integer(0)); // num losses
-					list.add(new Integer(0)); // cur level
-					*/
-					
+
 					theGameProf.gameName = theAppProfile.gameMode.get(i);
 					// System.out.println(theGameProf.gameName);
 					
+					/// tell the game to parse its particular achievments
 					theGameProf.loadCheevos();
 					
 					for(int j=0; j< msg.size(); j++){
@@ -160,6 +171,7 @@ public class PlayerProfile {
 	 
 	 public void savePlayerData() {
 			
+		 	/// add basic stats to the object
 			JSONObject obj = new JSONObject();
 			obj.put("name", playerName);
 			obj.put("total_time", totalTime);
@@ -169,6 +181,9 @@ public class PlayerProfile {
 			System.out.println("Game mode length: " + statLength + theAppProfile.gameMode.size());
 			for(int i=0; i<theAppProfile.gameMode.size(); i++){
 				
+				/// add all the game stats to their
+				/// particular name, then add that list
+				/// to the object
 				JSONArray list = new JSONArray();
 				for(int j=0; j<statLength; j++){
 					
@@ -204,6 +219,18 @@ public class PlayerProfile {
 				obj.put(GameStats.get(i).gameName, list);
 				System.out.println("Saving data: " + GameStats.get(i).gameName + " " + list);
 			}
+			
+			/// add the cheevos to a new list
+			JSONArray cheevList = new JSONArray();
+			for(int l=0; l<CheevoNames.size(); l++){
+
+				cheevList.add(CheevoNames.get(l));
+				pApp.println("CURRENT CHEEVO: " + CheevoNames.get(l));
+
+			}
+			obj.put("achievements", cheevList);
+			
+		
 
 			try {
 		 
@@ -218,6 +245,14 @@ public class PlayerProfile {
 		}
 	 
 	 
+	 public void addAchievement(String tCheev){
+		 pApp.println("ADDING CHEEVO: " + tCheev);
+		 CheevoNames.add(tCheev);
+		 
+	 }
+	 
+	 
+	 ///////// may get rid of these
 	 public void intGameStats(){
 		 
 		 //// load stat file
@@ -228,7 +263,7 @@ public class PlayerProfile {
 		 
 	 }
 	 
-	 //// add all games to stats, even if not played
+	 //// add all games and their scores to stats
 	 //// name, current level, high score, time spent playing, % completed, num wins, num losses ///// 
 	 public void addGameToStats(boolean hp, String gn, int cl, int hs, int ts, float pc, int nw, int nl){
 		 
