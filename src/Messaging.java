@@ -20,12 +20,14 @@ public class Messaging implements ControlListener{
 	 PImage tabStatsImg;
 	 PImage tabSettingsImg;
 	 PImage closeImg;
+	 PImage gameThumbImg;
 	 
 	 String bgroundImgPath = "data/message_bground.png";
 	 String tabMenuImgPath = "data/tab_game_menu.png";
 	 String tabStatsImgPath = "data/tab_stats.png";
 	 String tabSettgsImgPath = "data/tab_settings.png";
 	 String closeImgPath = "data/close_button.png";
+	 String gameThumbPath;
 	 
 	 ///// fonts
 	 PFont HeaderFont; /// normal fonts
@@ -87,6 +89,10 @@ public class Messaging implements ControlListener{
 	 
 	 float chvDispX; /// positioning of cheevos
 	 float chvDispY;
+	 float chivHeight;
+	 
+	 float gameInfoThumbX; //positioning of game info thumb
+	 float gameInfoThumbY;
 	 
 	 String theHeader;
 	 String theMessage;
@@ -103,8 +109,6 @@ public class Messaging implements ControlListener{
 		 
 		 thePlayerProfile = thePlayerProfile.getInstance();
 		 
-		 PlayerAchievments = new ArrayList();
-		 
 		 /// bgroundImg = pApp.loadImage(bgroundImgPath);
 		 
 		 tabMenuImg = pApp.loadImage(tabMenuImgPath);
@@ -116,8 +120,14 @@ public class Messaging implements ControlListener{
 		 bgX = theAppProfile.theWidth/2 - tabMenuImg.width/2;		 
 		 bgY = theAppProfile.theHeight/2 - tabMenuImg.height/2;
 		 
+		 //// cheevo positioning
 		 chvDispX = bgX + tabMenuImg.width/2;	
 		 chvDispY = bgY + theAppProfile.theHeight/2 - tabMenuImg.height/2;
+		 chivHeight = 45;
+		 
+		 /// game info thumb pic
+		 gameInfoThumbX =  bgX + tabMenuImg.width - 220 - theMargin2;	
+		 gameInfoThumbY =  bgY + theMargin2 * 2 + theMargin;
 		 
 		 HeaderFont = pApp.createFont("Neutra Text",22, true); /// normal fonts
 		 BodyFont = pApp.createFont("Neutra Text",18, true); // use true/false for smooth/no-smooth for Control fonts
@@ -131,6 +141,7 @@ public class Messaging implements ControlListener{
 		 theTimer = new TimerClass();
 		 
 		 initGUI();
+		 loadPlayerAchievements();
 		 
 	 }
 
@@ -155,14 +166,6 @@ public class Messaging implements ControlListener{
 	 
 	 
 	 public void drawMessageBox(){
-  
-		 //// draw background
-		 /*
-		 bgX = theAppProfile.theWidth/2 - bgroundImg.width/2;		 
-		 bgY = theAppProfile.theHeight/2 - bgroundImg.height/2;
-		 pApp.image(bgroundImg, bgX, bgY);
-		 
-		 */
 		 //// display trim
 		 
 		 if(messageState == "default"){
@@ -183,13 +186,15 @@ public class Messaging implements ControlListener{
 			 
 		 } else if (messageState == "showStats"){
 			
-			 showAchievments();
+			 
 			 pApp.image(tabStatsImg, bgX, bgY);
+			 showAchievments();
 			 
 		 } else if (messageState == "showMenu"){
 			 
 			 /// showGameMenu();
 			 pApp.image(tabMenuImg, bgX, bgY);
+			 showGameInfoPic();
 			 
 		 } else if (messageState == "settings"){
 			 
@@ -200,6 +205,7 @@ public class Messaging implements ControlListener{
 			 
 			 /// showGameMenu();
 			 pApp.image(tabMenuImg, bgX, bgY);
+			 showGameInfoPic();
 			 
 		 } else {
 			 pApp.println("BAD MENU PARAM");
@@ -239,7 +245,7 @@ public class Messaging implements ControlListener{
 
 	 public void showStats(){
 		 setStats();
-		 loadPlayerAchievements();
+		 
 		 messageState = "showStats";
 		 
 		 /// activate button style
@@ -351,8 +357,8 @@ public class Messaging implements ControlListener{
 		 hideGameMenuButtons();
 
 		 /// text
-		 statTextArea.hide();   
-		 gameInfoTextArea.show();
+		 statTextArea.hide();  
+		 gameInfoTextArea.hide();
 	 }
 
 	 
@@ -372,7 +378,7 @@ public class Messaging implements ControlListener{
 	 }
 	 
 	 public void showGameInfo(int tID){
-		 pApp.println("SHOW GAME INFO FOR: " + tID);
+		
 		 gameInfoData = "";
 		 newGameID = tID;
 		 /// show popup background
@@ -380,9 +386,9 @@ public class Messaging implements ControlListener{
 			 // show "more info" 
 			 gameInfoData += thePlayerProfile.GameStats.get(tID).gameName + "\n" + "\n";
 			 gameInfoData += thePlayerProfile.GameStats.get(tID).gameInfo + "\n";
-			 gameInfoData += thePlayerProfile.GameStats.get(tID).gameThumbnail + "\n";
-			 gameInfoData += thePlayerProfile.GameStats.get(tID).gameMainPic + "\n";
-			 
+			 /// gameInfoData += thePlayerProfile.GameStats.get(tID).gameThumbnail + "\n";
+			 /// gameInfoData += thePlayerProfile.GameStats.get(tID).gameMainPic + "\n";
+			 gameThumbImg = pApp.loadImage(thePlayerProfile.GameStats.get(tID).gameThumbnail);
 			 gameInfoTextArea.setText(gameInfoData);
 			 
 			 gameInfoTextArea.show();
@@ -394,12 +400,30 @@ public class Messaging implements ControlListener{
 		 /// display the info for the correct ID
 		 
 	 }
+	 private void showGameInfoPic(){
+		 try{
+			 // show "more info" 
+			 pApp.image(gameThumbImg, gameInfoThumbX, gameInfoThumbY);
+			 
+		 
+		 } catch (Exception e){
+			 
+			 pApp.println("game image error:  " + e);
+		 }
+		 
+		 
+	 }
 	 
 	 
 	 
 	 ///////// set achievments from player profile ////////////
 	 
 	 public void loadPlayerAchievements(){
+		 
+		 // re init theachievment array in case
+		 // there's new cheevos
+		 
+		 PlayerAchievments = new ArrayList();
 		 /// get current player cheevos
 		 
 		 /// get the name of the player's current achievment
@@ -413,14 +437,16 @@ public class Messaging implements ControlListener{
 				 
 				 /// cross reference with all cheevos in that game
 				 for(int k=0; k < thePlayerProfile.GameStats.get(j).CheevoNames.size(); k++){
+					 
 					 if(tCheevName.equals(thePlayerProfile.GameStats.get(j).CheevoNames.get(k))){
 						
 						 String cheevDesc = thePlayerProfile.GameStats.get(j).CheevoDescription.get(k);
 						 String cheevPath = thePlayerProfile.GameStats.get(j).CheevoImage.get(k);
 						 
+						 pApp.println("CURRENT PLAYER CHEEVOS: " + tCheevName);
 						 Achievment tCheevObj  = new Achievment(tCheevName, cheevDesc, cheevPath);
 						 tCheevObj.tX = chvDispX;
-						 tCheevObj.tY = chvDispY + i*theMargin2;
+						 tCheevObj.tY = chvDispY + (i*chivHeight);
 						 PlayerAchievments.add(tCheevObj);
 						 
 					 }
@@ -450,6 +476,7 @@ public class Messaging implements ControlListener{
 				/// showing stat header
 			   curStatHeader = "SHOWING DATA FOR: ";
 			    
+			   statData = "";
 			    /// go thru all the games
 			   /// then display all the stats
 			    for (int i=0; i< theAppProfile.gameMode.size(); i++){
@@ -459,7 +486,11 @@ public class Messaging implements ControlListener{
 			    	for(int j=0; j<thePlayerProfile.statLength; j++){
 			    		statData += "\n";	
 		    			if(j==0){
-		    				statData += "high score: " + thePlayerProfile.GameStats.get(i).highScore + "\n";
+		    				if(thePlayerProfile.GameStats.get(i).highScore < thePlayerProfile.GameStats.get(i).curScore){
+		    					thePlayerProfile.GameStats.get(i).highScore = thePlayerProfile.GameStats.get(i).curScore;
+		    				} 
+		    				statData += "high score: " + thePlayerProfile.GameStats.get(i).highScore + "\n" + "\n";
+		    				statData += "recent score: " + thePlayerProfile.GameStats.get(i).curScore + "\n";
 						}
 						if(j ==1){
 							statData += "time spent: " + thePlayerProfile.GameStats.get(i).timeSpent + "\n";
@@ -495,6 +526,8 @@ public class Messaging implements ControlListener{
 					pApp.println("stat error: " + e);
 			}
 		 
+		 	String theCleaner = "";
+		 	statTextArea.setText(theCleaner);
 		    statTextArea.setText(statData);
 		 
 	 }
@@ -521,12 +554,7 @@ public class Messaging implements ControlListener{
 				 closeButton.hide(); 
 				 
 		/////// SETTINGS WINDOW INTERFACE /////////
-				 /*
-			 saveGameButton.show();
-		 difficultyButton.show();
-		 helpButton.show();
-		 resetButton.show();
-*/
+
 			saveGameButton = cp5.addButton("SAVE GAME")
 					  .setPosition(bgX + tabMenuImg.width/2 - 150/2, bgY + theMargin2*4)
 					  // .setImage(closeImg)
@@ -791,7 +819,7 @@ public class Messaging implements ControlListener{
 		 statTextArea = cp5.addTextarea("stattext")
                  .setPosition(bgX + 20, bgY + 140)
                  .setSize(328,286)
-                 .setFont(statFont)
+                 .setFont(BodyFont)
                  .setLineHeight(14)
                  .setColor(pApp.color(255))
                  .setColorBackground(pApp.color(255,65))
@@ -809,12 +837,13 @@ public class Messaging implements ControlListener{
          
          gameInfoTextArea = cp5.addTextarea("gameinfotext")
                  .setPosition(bgX + 215, bgY + 100)
-                 .setSize(300,200)
-                 .setFont(statFont)
-                 .setLineHeight(14)
+                 .setSize(280,286)
+                 .setFont(BodyFont)
+                 .setLineHeight(20)
                  .setColor(pApp.color(255))
                  .setColorBackground(pApp.color(255,0))
-                 .setColorForeground(pApp.color(255,0));
+                 .setColorForeground(pApp.color(255))
+                 .setColorActive(pApp.color(230,190,139));
                  ;
                  
           gameInfoTextArea.hide();     

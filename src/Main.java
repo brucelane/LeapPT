@@ -207,9 +207,18 @@ public class Main extends PApplet{
 	  thePaddle = new Paddle(gravWeight);
 	  
 	  
-	  
-	// add event listener to the paddle
+	  ///////////////////////////
+	// add achievment listeners
+	  ///////////////////////////
 	  thePaddle.addMyEventListener(new MyEventListener() {
+      public void myEventOccurred(MyEvent evt, String tCheev) {
+          /// System.out.println("fired");
+          initAchievement(tCheev);
+        }
+      });
+	  
+	  /// add to the first and only spinner we're instantiating
+	  spinners.get(0).addMyEventListener(new MyEventListener() {
       public void myEventOccurred(MyEvent evt, String tCheev) {
           /// System.out.println("fired");
           initAchievement(tCheev);
@@ -246,12 +255,14 @@ public class Main extends PApplet{
 		  }
 		  if (theEvent.isFrom("CLOSE")){
 			  isPaused = false;
+			  theTimer.running = true;
 			  theMessaging.closeMessage();
 		  }
 		  
 		  if (theEvent.isFrom("GAMES MENU")){
 			  theMessaging.showGameMenu();
-			  
+			  // show the default game
+			  theMessaging.showGameInfo(0);
 		  }
 		  
 		  if (theEvent.isFrom("PROGRESS")){
@@ -316,6 +327,7 @@ public class Main extends PApplet{
 		  
 		  doGUI();
 		  theMessaging.drawMessageBox();
+		  theTimer.running = false;
 	  }
 	  
 	  
@@ -852,7 +864,9 @@ public class Main extends PApplet{
 		
 		/// this is too fancy
 	
-		theScore = String.valueOf(theAppProfile.scoredata);
+		//// need to assign this to specific game
+		/// not player score in general
+		theScore = String.valueOf(thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore);
 		
 		int hour = theTimer.hour();
 		int min = theTimer.minute();
@@ -882,9 +896,10 @@ public class Main extends PApplet{
 		fill(255);
 		
 		//// check for type of game it is
-		
-		if(theGameType == "MULTI FEET"){
-			
+		/// for multifeet, you give distance
+		/// not points
+		if(theGameType == "MULTIFEET"){
+
 			String tScore = theScore + " feet";
 			textFont(ScoreFont, 28);
 			text(tScore, 830, 100);
@@ -903,39 +918,40 @@ public class Main extends PApplet{
 	//////////////////////////////////////
 	
 	public void initAchievement(String tCheev){
+		/// set the time to start
+		/// displaying the achievment
+		
 		curMarker =  theTimer.getElapsedTime();
-		
 		cheevoName = tCheev;
-		/// println("mark: " + curMarker + " " + cheevoName);
 		
-		/// make sure we don't already have this achievement
+		/// check to see if the player
+		/// has this achievment
 		boolean hasCheevo = false;
 		for(int j=0; j<thePlayerProfile.CheevoNames.size(); j++){
 			
 			println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
 			if(thePlayerProfile.CheevoNames.get(j).equals(cheevoName)){
 				hasCheevo = true;
-				
-				println("HAS CHEEVO");
-				
 			}
 		}
 		
-			
 		/// if player doesn't have this achievement
+		/// then get the info, display it, and add to the
+		/// player data array
 		if(hasCheevo == false){	
 			showCheevo = true;
 			/// get the achievment data from the game profiles
 			for (int i=0; i<thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.size(); i++){
-				/*
-				println("Cheevo NAME: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i));
-				println("Cheevo DESCRIPTION: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoDescription.get(i));
-				println("Cheevo IMAGE: " + thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoImage.get(i));
-				*/
+				
 				if(cheevoName.equals(thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i))){
 					println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
 					// add cheevo to the player profile
 					thePlayerProfile.addAchievement(cheevoName);
+					/// re-init the cheevo display in "progress"
+					/// should probably do this in a different thread
+					theMessaging.loadPlayerAchievements();
+					
+					/// get ready to display the badge
 					cheevoDesc = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoDescription.get(i);
 					cheevoPath = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoImage.get(i);
 				}
@@ -951,15 +967,15 @@ public class Main extends PApplet{
 		/// println("SHOW CHEEVO");
 		float tX = theAppProfile.theWidth/2 - cheevoBground.width/2;
 		float tY = theAppProfile.theHeight - cheevoBground.height - 100;
-		String cheevData = "Achievment Unlocked: " + cheevoName + "\n";
+		String cheevData = "Achievment: " + cheevoName + "\n";
 		image(cheevoBground, tX, tY);
-		image(cheevoBadge, tX + 30, tY + 30);
+		image(cheevoBadge, tX + 27, tY + 28);
 		
 		textFont(ScoreFont, 22);
 		fill(255);
 		text(cheevData, tX + 100, tY + 50);
 		textFont(ScoreFont, 18);
-		text(cheevoDesc, tX + 100, tY + 70);
+		text(cheevoDesc, tX + 100, tY + 80);
 		
 		 /// retrieve the stat info
 		 if(theTimer.getElapsedTime() - 5000 >= curMarker){
@@ -1014,6 +1030,8 @@ public class Main extends PApplet{
 				
 			} else {
 				theMessaging.showGameMenu();
+				/// show default game
+				theMessaging.showGameInfo(0);
 				// it's paused! unPause it!
 				isPaused = true;
 			}

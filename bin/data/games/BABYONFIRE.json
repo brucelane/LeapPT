@@ -1,14 +1,14 @@
 {
     "BABYONFIRE": [
 {
-            "name": "first baby on fire cheevo",
-            "description": "started baby on fire for the first time",
-            "image": "data\/cheevos\/cheevo3.png"
+            "name": "Babies on Fire",
+            "description": "Started Baby on Fire for the 1st time",
+            "image": "data\/cheevos\/cheevo8.png"
         },
         {
-            "name": "second baby on fire cheevo",
-            "description": "lit a baby on fire bunches of times",
-            "image": "data\/cheevos\/cheevo11.png"
+            "name": "Better throw him in the Water",
+            "description": "Started Baby on Fire for the 2nd time",
+            "image": "data\/cheevos\/cheevo20.png"
         }
 
     ]

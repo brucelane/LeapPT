@@ -1,6 +1,10 @@
 import processing.core.*;
 import processing.opengl.PGraphicsOpenGL;
 
+import java.util.EventListener;
+import java.util.EventObject;
+
+import javax.swing.event.EventListenerList;
 
 class Spinner{
 	
@@ -32,6 +36,10 @@ class Spinner{
     float curRotY = .5f;
     float curRotZ = .5f;
     
+    boolean isSpinningX = false;
+    boolean isSpinningY = false;
+    boolean isSpinningZ = false;
+    
     float theSpin = 0.01f;
     float baseSpin = 0.01f;
 
@@ -44,6 +52,9 @@ class Spinner{
     PImage shadowImg;
     String feetImgPath = "data/feet_circle_medium.png";
     String shadowPath = "data/feet_shadow.png";
+    
+    // listeners
+    protected EventListenerList listenerList = new EventListenerList();
     /// the mass, the x, the y);
     Spinner(float m, float x, float y){
     	
@@ -81,56 +92,111 @@ class Spinner{
 
 		if(velocity.x > 0.02){
 			velocity.x += friction.x;
-			// // pApp.println(" velocity.x > 0.02 : " + velocity.x + " + " + friction.x);
+			isSpinningX = true;
+			// pApp.println(" velocity.x > 0.02 : " + velocity.x + " + " + friction.x);
 		}
 		
 		if( velocity.x < -0.02){
 			velocity.x -= friction.x;
+			isSpinningX = true;
 			// pApp.println(" velocity.x < -0.02 : " + velocity.x + " + " + friction.x);
 		}
 		
-		if(velocity.x < 0.02 && velocity.x > -.002){
+		if(velocity.x < 0.02 && velocity.x > -.02){
 			velocity.x = 0;
 			velocity.x = 0;
-			/// // pApp.println("Zero!");
+			
+			isSpinningZ = false;
+			// pApp.println("Zero! X");
 		}
 		
 		/////
 		
 		if(velocity.y > 0.02){
 			velocity.y += friction.y;
+			isSpinningY = true;
 			// pApp.println("velocity.y > 0.02" + velocity.y + " + " + friction.y);
 		}
 		
 		if( velocity.y < -0.02){
 			velocity.y -= friction.y;
+			isSpinningY = true;
 			// pApp.println("velocity.y < -0.02 " + velocity.y + " + " + friction.y);
 		}
 		
 		if(velocity.y < 0.02 && velocity.y > -.02){
 			velocity.y = 0;
 			velocity.y = 0;
+			// pApp.println("Zero! Y");
+			
+			isSpinningY = false;
 		}
 		
 		if(velocity.z > 0.02){
 			velocity.z += friction.z;
+			isSpinningZ = true;
 			// pApp.println("velocity.z > 0.02" + velocity.z + " + " + friction.z);
 		}
 		
 		if( velocity.z < -0.02){
 			velocity.z -= friction.z;
+			isSpinningZ = true;
 			// pApp.println("velocity.z < -0.02 " + velocity.z + " + " + friction.z);
 		}
 		
 		if(velocity.z < 0.02 && velocity.z > -.02){
 			velocity.z = 0;
 			velocity.z = 0;
+			
+			isSpinningZ = false;
+			// pApp.println("Zero! Z");
+		}
+
+		/// if all three velocities are not zero, keep adding to the score
+		if(velocity.x != 0 || velocity.y != 0 || velocity.z != 0){
+			
+			thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore -= velocity.x;
+			float curDistance = thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore;
+			
+			// check for achievments
+			/// if more than five feet
+			if(curDistance > 5 && curDistance < 15){
+				
+				
+	        	launchCheevo(null, "Small Steps");
+			}
+			
+			if(curDistance > 20 && curDistance < 25){
+				
+				
+	        	launchCheevo(null, "Toddler");
+			}
+			
+			if(curDistance > 1350 && curDistance <1355){
+				
+				launchCheevo(null, "Quarter Horse");
+				
+			}
+			
+			
+			
+			
+			if(curDistance > 5280 && curDistance < 5285){
+				
+				
+	        	launchCheevo(null, "Milestone");
+			}
+			
 		}
 		
-    	
-		if(velocity.x != 0 && velocity.y != 0 && velocity.z != 0){
-			thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += velocity.x;
+		/// check to see if has stopped
+		
+		if(isSpinningX == false && isSpinningY == false && isSpinningZ == false){
+			
+			//// pApp.println("SPINNER HAS STOPPED!");
 		}
+		
+		
 		velocity.add(acceleration);
         location.add(velocity);
         acceleration.mult(0);
@@ -222,5 +288,24 @@ class Spinner{
 
     }
     
-}
-/// end mover class
+    ///////////////////////////
+    ////// listeners //////////
+    ///////////////////////////
+    public void addMyEventListener(MyEventListener listener) {
+        listenerList.add(MyEventListener.class, listener);
+      }
+      public void removeMyEventListener(MyEventListener listener) {
+        listenerList.remove(MyEventListener.class, listener);
+      }
+      void launchCheevo(MyEvent evt, String tCheev) {
+    	  pApp.println("EVENT: " + tCheev);
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = 0; i < listeners.length; i = i+2) {
+          if (listeners[i] == MyEventListener.class) {
+            ((MyEventListener) listeners[i+1]).myEventOccurred(evt, tCheev);
+          }
+        }
+      }
+      
+    
+}/// end mover class

@@ -253,7 +253,9 @@ class Paddle{
     	ps.run();
     }
     
-    ////// listeners
+    ///////////////////////////
+    ////// listeners //////////
+    ///////////////////////////
     public void addMyEventListener(MyEventListener listener) {
         listenerList.add(MyEventListener.class, listener);
       }

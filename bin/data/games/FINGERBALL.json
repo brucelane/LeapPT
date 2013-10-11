@@ -1,14 +1,14 @@
 {
     "FINGERBALL": [
         {
-            "name": "first finger cheevo",
+            "name": "First Touch",
             "description": "started the game for the first time",
-            "image": "data\/cheevos\/cheevo0.png"
+            "image": "data\/cheevos\/cheevo3.png"
         },
         {
-            "name": "second finger cheevo",
-            "description": "started the game for the second time",
-            "image": "data\/cheevos\/cheevo5.png"
+            "name": "Fast Hands",
+            "description": "Kept the ball alive for 1 minute",
+            "image": "data\/cheevos\/cheevo4.png"
         }
     ]
 }

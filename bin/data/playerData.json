@@ -1,10 +1,10 @@
 {
 
 "name":"player1","total_time":"0:0:00","rank":"noob","difficulty":"1",
-"achievements":["first baby on fire cheevo", "first finger cheevo"],
-"FINGERBALL":[0,0,0.0,0,0,0,"Fngerball is a basketball game","finger thumb","finger ball main pic"],
-"BABYONFIRE":[0,0,0.0,0,0,0,"Baby on Fire description","baby on fire thumbnail","baby on fire main pic"],
-"BREAKOUT":[44071,0,0.0,0,0,0,"Breakout info which is a long and exciting description","breakout thumbnail","breakout main picture"],
-"MULTIFEET":[0,0,0.0,0,0,0,"multi feet info that describes all about the multi feet game","multi feet thumbnail","multi feet main picture"]
+"achievements":["Toddler", "Babies on Fire"],
+"FINGERBALL":[0,0,0.0,0,0,0,"Fingerball is a basketball game that you control by using the Leap Motion controller to manipulate the ball. You can bounce and dribble the ball-- extra points if you make a basket!","data\/games\/thumbnail_fingerball.png","finger ball main pic"],
+"BABYONFIRE":[0,0,0.0,0,0,0,"Baby on fire is a game that has not been built yet, but it should be tons of fun and you lose points if you let the baby get lit on fire.","data\/games\/thumbnail_multifeet.png","baby on fire main pic"],
+"BREAKOUT":[44071,0,0.0,0,0,0,"Breakout your basic Pong game, except you use the Leap Motion controller to track your hand movement. The player loses a turn when the ball touches the bottom of the screen. To prevent this from happening, the player has a movable paddle to bounce the ball upward, keeping it in play. Get extra points for multiple rebounds in a row!","data\/games\/thumbnail_breakout.png","breakout main picture"],
+"MULTIFEET":[0,0,0.0,0,0,0,"'Swipe' with the Leap Motion controller to move the mulitipedal avatar through the landscape. The more distance you cover, the more points you get. You can also go in reverse-- keep an eye out for extra achievments.","data\/games\/thumbnail_multifeet.png","multi feet main picture"]
 
 }

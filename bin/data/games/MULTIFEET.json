@@ -1,14 +1,31 @@
 {
     "MULTIFEET": [
-{
-            "name": "first feet cheevo",
-            "description": "started multi feet for the first time",
-            "image": "data/cheevos/cheevo3.png"
+	{
+            "name": "Small Steps",
+            "description": "Walked Five Feet in Multifeet",
+            "image": "data/cheevos/cheevo16.png"
         },
+	{
+            "name": "Moonwalker",
+            "description": "Walked Backward in Multifeet",
+            "image": "data/cheevos/cheevo15.png"
+        },
+
+	{
+            "name": "Quarter Horse",
+            "description": "Ran a Quarter of a Mile",
+            "image": "data/cheevos/cheevo2.png"
+        },
+	{
+            "name": "Milestone",
+            "description": "Ran a full Mile in Multifeet",
+            "image": "data/cheevos/cheevo20.png"
+        },
+
         {
-            "name": "second feet cheevo",
-            "description": "ran ten feet in multi feet",
-            "image": "data/cheevos/cheevo11.png"
+            "name": "Toddler",
+            "description": "Ran Ten Feet in Multifeet",
+            "image": "data/cheevos/cheevo21.png"
         }
 
     ]
