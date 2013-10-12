@@ -60,6 +60,8 @@ public class PlayerProfile {
 	 }
 	 
 	 
+	 
+	 
 	 public void getPlayerData(){
 		 try {
 			 
@@ -132,6 +134,8 @@ public class PlayerProfile {
 							theGameProf.curLevel = ((Long) msg.get(j)).intValue();
 						}
 						//// extra data
+						
+						/*
 						if(j ==6){
 							theGameProf.gameInfo = ((String) msg.get(j));
 						}
@@ -141,18 +145,10 @@ public class PlayerProfile {
 						if(j ==8){
 							theGameProf.gameMainPic = ((String) msg.get(j));
 						}
+						*/
 					}
 					
 					GameStats.add(theGameProf);
-					
-					/*
-					System.out.println(theGameProf.highScore);
-					System.out.println(theGameProf.timeSpent);
-					System.out.println(theGameProf.percentComp);
-			 		System.out.println(theGameProf.numWins);			
-		 			System.out.println(theGameProf.numLosses);			
-					System.out.println(theGameProf.curLevel);
-					*/
 					
 					statLength = msg.size(); /// save length of stat list for writing to the json file later
 					System.out.println("Stat length: " + statLength + " " + msg.size());

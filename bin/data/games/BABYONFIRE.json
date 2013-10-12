@@ -1,15 +1,18 @@
 {
+    "name": "BABY ON FIRE",
+    "description": "Baby on fire is a game that has not been built yet, but it should be tons of fun and you lose points if you let the baby get lit on fire.",
+    "main_image": "data\/games\/thumbnail_multifeet.png",
+    "thumbnail": "data\/games\/thumbnail_multifeet.png",
     "BABYONFIRE": [
-{
+        {
             "name": "Babies on Fire",
             "description": "Started Baby on Fire for the 1st time",
-            "image": "data\/cheevos\/cheevo8.png"
+            "image": "data/cheevos/cheevo8.png"
         },
         {
             "name": "Better throw him in the Water",
             "description": "Started Baby on Fire for the 2nd time",
-            "image": "data\/cheevos\/cheevo20.png"
+            "image": "data/cheevos/cheevo20.png"
         }
-
     ]
 }
