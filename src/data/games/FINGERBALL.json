@@ -1,0 +1,18 @@
+{
+    "name": "FINGERBALL",
+    "description": "Fingerball is a basketball game that you control by using the Leap Motion controller to manipulate the ball. You can bounce and dribble the ball-- extra points if you make a basket!",
+    "main_image": "data\/games\/thumbnail_fingerball.png",
+    "thumbnail": "data\/games\/thumbnail_fingerball.png",
+    "FINGERBALL": [
+        {
+            "name": "First Touch",
+            "description": "started the game for the first time",
+            "image": "data/cheevos/cheevo3.png"
+        },
+        {
+            "name": "Fast Hands",
+            "description": "Kept the ball alive for 1 minute",
+            "image": "data/cheevos/cheevo4.png"
+        }
+    ]
+}

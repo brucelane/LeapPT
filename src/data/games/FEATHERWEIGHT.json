@@ -1,0 +1,18 @@
+{
+    "name": "FEATHERWEIGHT",
+    "description": "Open your hand to lift the feather! The longer and farther apart you stretch, the higher the feather goes",
+    "main_image": "data/games/thumbnail_breakout.png",
+    "thumbnail": "data/games/thumbnail_breakout.png",
+    "FEATHERWEIGHT": [
+        {
+            "name": "Lock On",
+            "description": "Your Hand Has Been Registered",
+            "image": "data/cheevos/cheevo6.png"
+        },
+        {
+            "name": "Second Bounce",
+            "description": "Bounced for the second time in Featherweight",
+            "image": "data/cheevos/cheevo7.png"
+        }
+    ]
+}

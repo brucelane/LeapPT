@@ -1,0 +1,33 @@
+{
+    "name": "MULTIFEET",
+    "description": "'Swipe' with the Leap Motion controller to move the mulitipedal avatar through the landscape. The more distance you cover, the more points you get. You can also go in reverse-- keep an eye out for extra achievments.",
+    "main_image": "data\/games\/thumbnail_multifeet.png",
+    "thumbnail": "data\/games\/thumbnail_multifeet.png",
+    "MULTIFEET": [
+        {
+            "name": "Small Steps",
+            "description": "Walked Five Feet in Multifeet",
+            "image": "data/cheevos/cheevo16.png"
+        },
+        {
+            "name": "Moonwalker",
+            "description": "Walked Backward in Multifeet",
+            "image": "data/cheevos/cheevo15.png"
+        },
+        {
+            "name": "Quarter Horse",
+            "description": "Ran a Quarter of a Mile",
+            "image": "data/cheevos/cheevo2.png"
+        },
+        {
+            "name": "Milestone",
+            "description": "Ran a full Mile in Multifeet",
+            "image": "data/cheevos/cheevo20.png"
+        },
+        {
+            "name": "Toddler",
+            "description": "Ran Ten Feet in Multifeet",
+            "image": "data/cheevos/cheevo21.png"
+        }
+    ]
+}

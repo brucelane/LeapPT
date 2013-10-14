@@ -109,6 +109,8 @@ public class Main extends PApplet{
 	ArrayList<Bouncer> bouncers;
 	ArrayList<Spinner> spinners;
 	ArrayList<Breakout> breakouts;
+	ArrayList<Feather> feathers;
+	ArrayList<Lifter> lifters;
 	
 	/// game objects //
 	boolean gestureCheck = false;
@@ -141,6 +143,13 @@ public class Main extends PApplet{
 	Paddle thePaddle;
 	int totalBreakouts = 1;
 	
+	/// featherlight
+	Lifter theLifter; // Repulsor theRepulsor;
+	Feather theFeather; //Bouncer theBouncer;
+	int totalFeathers = 1;
+	int totalLifters = 1;
+	
+	
 	TimerClass theTimer;
 	
 	float curMarker; // marker for particular time
@@ -164,6 +173,8 @@ public class Main extends PApplet{
 	  bouncers = new ArrayList();
 	  spinners = new ArrayList();
 	  breakouts = new ArrayList();
+	  lifters = new ArrayList();
+	  feathers = new ArrayList();
 	  //
 	  //
 	  theTimer = new TimerClass();
@@ -194,17 +205,23 @@ public class Main extends PApplet{
 	  spawnMovers();
 	  // bouncers
 	  spawnBouncers();
-	  
+	  // spinners
 	  spawnSpinners();
   	  //
 	  spawnBreakouts();
+	  //
+	  spawnFeathers();
+	  //
+	  spawnLifters();
 	  
-	  //	BackgroundTiles theBground;
 	  theBground = new BackgroundTiles(0,0,0);
 	  theAttractor = new Attractor(gravWeight);
 	  theRepulsor = new Repulsor(gravWeight);
 	  theShaker = new Shaker(0);
 	  thePaddle = new Paddle(gravWeight);
+	  theLifter = new Lifter(gravWeight);
+	  
+	  
 	  
 	  
 	  ///////////////////////////
@@ -237,80 +254,6 @@ public class Main extends PApplet{
 	//// listeners
 
 	
-	///// control events need to be implemented in main
-	///// for some reason
-	public void controlEvent(ControlEvent theEvent) {
-		  // DropdownList is of type ControlGroup.
-		  // A controlEvent will be triggered from inside the ControlGroup class.
-		  // therefore you need to check the originator of the Event with
-		  // if (theEvent.isGroup())
-		  // to avoid an error message thrown by controlP5.
-
-		 
-		  // println("P5 EVENT" + theEvent.getController().getId());
-		 
-		  if(theEvent.isController()){
-			 // println("CLICK" + theEvent.getController().getId());
-			 println("Name" + theEvent.getName());
-		  }
-		  if (theEvent.isFrom("CLOSE")){
-			  isPaused = false;
-			  theTimer.running = true;
-			  theMessaging.closeMessage();
-		  }
-		  
-		  if (theEvent.isFrom("GAMES MENU")){
-			  theMessaging.showGameMenu();
-			  // show the default game
-			  theMessaging.showGameInfo(0);
-		  }
-		  
-		  if (theEvent.isFrom("PROGRESS")){
-
-			  theMessaging.showStats();
-		  }
-		  
-		  if (theEvent.isFrom("SETTINGS")){
-
-			  theMessaging.showSettings();
-		  }
-		  /// game menu actions
-		  if (theEvent.isFrom("PLAY GAME")){
-			 
-			  isPaused = false;
-			  theMessaging.closeMessage();
-			  startNewGame(theMessaging.newGameID);
-		  }
-		  
-		  
-		  if (theEvent.isFrom("GAME 0")){
-			  theMessaging.showGameInfo(0);
-			  // theMessaging.messageState = "showMenu";
-		  }
-		  if (theEvent.isFrom("GAME 1")){
-			  theMessaging.showGameInfo(1);
-			  // theMessaging.messageState = "showMenu";
-		  }
-		  
-		  if (theEvent.isFrom("GAME 2")){
-			  theMessaging.showGameInfo(2);
-			  // theMessaging.messageState = "showMenu";
-		  }
-		  if (theEvent.isFrom("GAME 3")){
-			  theMessaging.showGameInfo(3);
-			  // theMessaging.messageState = "showMenu";
-		  }
-		  if (theEvent.isFrom("GAME 4")){
-			  theMessaging.showGameInfo(4);
-			  theMessaging.messageState = "showMenu";
-		  }
-		  if (theEvent.isFrom("GAME 5")){
-			  
-			  theMessaging.showGameInfo(5);
-			  // theMessaging.messageState = "showMenu";
-		  }
-		  
-	}
 	
 
 	public void draw(){
@@ -360,8 +303,10 @@ public class Main extends PApplet{
 			break;
 			
 		case 3:
-			doAttractor();
-			drawMovers();
+
+			doLifters();
+			drawFeather();
+
 			break;
 			
 		case 4:
@@ -657,6 +602,75 @@ public class Main extends PApplet{
 	        dBouncer.display();
 	    }
 	}
+	
+	///////// FEATHERS AND LIFTERS
+	public void spawnFeathers(){
+
+	    // feathers.clear();
+	    for (int i=0; i< totalFeathers; i++){
+	        feathers.add(new Feather(random(1.1f,5),0,0f));  
+	    } 
+		
+	}
+	
+	public void spawnLifters(){
+		
+	}
+	
+	
+	public void doLifters(){
+	////// do the LEAP //////////
+		  for (Map.Entry entry : fingerPositions.entrySet()){
+			  
+		    Integer fingerId = (Integer) entry.getKey();
+		    Vector position = (Vector) entry.getValue();
+	
+		    // show finger colors
+		    // fill(fingerColors.get(fingerId), 65);
+		    stroke(255);
+		    strokeWeight(1);
+		    
+		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
+		   ////  pushMatrix();
+		    
+		    //// create a lifter
+		    theLifter = new Lifter(.1f);
+		    lifters.add(theLifter);
+		    
+		    
+		    //// tell it to interact with the feather
+		    theLifter.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
+		    theLifter.display();
+		    
+		    /// kill the lifter
+		    if(lifters.size() > fingerPositions.size()){
+		    	
+		    	lifters.remove(theLifter);
+		    }
+		    // lifters.remove(theLifter);
+
+		    //// move the ellipse in the z index
+		    //// translate(0,0,300);
+		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+		    /// popMatrix();
+	
+		  }
+		
+	}
+	public void drawFeather(){
+		 Feather dFeather = feathers.get(0);
+	       
+	     for(int j=0; j<lifters.size(); j++){
+        	Lifter tLifter = lifters.get(j);
+        	PVector l = tLifter.repulse(dFeather);
+	        dFeather.applyForce(l);
+	        dFeather.update();
+	        dFeather.checkEdges();
+ 	
+	      }
+	     
+	      dFeather.display();
+	}
 		
 	
   /////////////////////////////////////
@@ -810,25 +824,100 @@ public class Main extends PApplet{
 
 	//// this lerps the positions
 
-	float leapToScreenX(float x)
-	{
+	float leapToScreenX(float x){
 	  float c = width / 2.0f;
-	  if (x > 0.0)
-	  {
+	  if (x > 0.0){
 	    return lerp(c, width, x/LEAP_WIDTH);
 	  }
-	  else
-	  {
+	  else{
 	    return lerp(c, 0.0f, -x/LEAP_WIDTH);
 	  }
 	}
 
-	float leapToScreenY(float y)
-	{
+	float leapToScreenY(float y){
 	  return lerp(height, 0.0f, y/LEAP_HEIGHT);
 	}
 	
 	////// end leap input //////
+	
+	
+	////////////////////////////
+	//// NAVIGATION CONTROL //////////////
+	//////////////////////////////////
+	
+	///// control events need to be implemented in main
+	///// for some reason
+	public void controlEvent(ControlEvent theEvent) {
+		// DropdownList is of type ControlGroup.
+		// A controlEvent will be triggered from inside the ControlGroup class.
+		// therefore you need to check the originator of the Event with
+		// if (theEvent.isGroup())
+		// to avoid an error message thrown by controlP5.
+		
+		
+		// println("P5 EVENT" + theEvent.getController().getId());
+		
+		if(theEvent.isController()){
+			// println("CLICK" + theEvent.getController().getId());
+			println("Name" + theEvent.getName());
+		}
+		if (theEvent.isFrom("CLOSE")){
+			isPaused = false;
+			theTimer.running = true;
+			theMessaging.closeMessage();
+		}
+		
+		if (theEvent.isFrom("GAMES MENU")){
+			theMessaging.showGameMenu();
+			// show the default game
+			theMessaging.showGameInfo(0);
+		}
+		
+		if (theEvent.isFrom("PROGRESS")){
+		
+			theMessaging.showStats();
+		}
+		
+		if (theEvent.isFrom("SETTINGS")){
+		
+			theMessaging.showSettings();
+		}
+		/// game menu actions
+		if (theEvent.isFrom("PLAY GAME")){
+		
+			isPaused = false;
+			theMessaging.closeMessage();
+			startNewGame(theMessaging.newGameID);
+		}
+		
+		
+		if (theEvent.isFrom("GAME 0")){
+			theMessaging.showGameInfo(0);
+			// theMessaging.messageState = "showMenu";
+		}
+		if (theEvent.isFrom("GAME 1")){
+			theMessaging.showGameInfo(1);
+			// theMessaging.messageState = "showMenu";
+		}
+		
+		if (theEvent.isFrom("GAME 2")){
+			theMessaging.showGameInfo(2);
+			// theMessaging.messageState = "showMenu";
+		}
+		if (theEvent.isFrom("GAME 3")){
+			theMessaging.showGameInfo(3);
+			// theMessaging.messageState = "showMenu";
+		}
+		if (theEvent.isFrom("GAME 4")){
+			theMessaging.showGameInfo(4);
+		}
+		if (theEvent.isFrom("GAME 5")){
+		
+			theMessaging.showGameInfo(5);
+			// theMessaging.messageState = "showMenu";
+		}
+	
+	}
 	
 	///////////////////////////////
 	////// GAME STATE FUNCTION ////
@@ -1010,6 +1099,8 @@ public class Main extends PApplet{
 				doPrevGame();
 			      
 			} 
+	    	
+	    	
 		 }
 	    
 	    //// reg keys

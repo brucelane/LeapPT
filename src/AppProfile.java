@@ -88,7 +88,8 @@ public class AppProfile {
 	   gameMode.add("FINGERBALL");
 	   gameMode.add("MULTIFEET");
 	   gameMode.add("BREAKOUT");
-	   gameMode.add("BABYONFIRE");
+	   gameMode.add("FEATHERWEIGHT");
+	   gameMode.add("GRABBER");
 	   
 	   //// add rank types
 	   ranktypes.add("BEGINNER");

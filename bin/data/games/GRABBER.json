@@ -1,0 +1,18 @@
+{
+    "name": "GRABBER",
+    "description": "Open your hand to grab the box! The longer you hold it still, the more points you get!",
+    "main_image": "data/games/thumbnail_breakout.png",
+    "thumbnail": "data/games/thumbnail_breakout.png",
+    "GRABBER": [
+        {
+            "name": "Lock On",
+            "description": "Your Hand Has Been Registered",
+            "image": "data/cheevos/cheevo6.png"
+        },
+        {
+            "name": "Second Bounce",
+            "description": "Bounced for the second time in Featherweight",
+            "image": "data/cheevos/cheevo7.png"
+        }
+    ]
+}
