@@ -17,6 +17,7 @@ public class FingerDrums {
 	
 	PImage theBground;
 	String bgroundPath;
+	TimerClass seqTimer;
 	
 	//// HOT AREA
 	float theX;
@@ -40,7 +41,7 @@ public class FingerDrums {
     	pApp = theAppProfile.pApp;
     	//// sound control
     	theSoundControl = theSoundControl.getInstance();
-    	/// player profile gives you scoring
+     	/// player profile gives you scoring
     	thePlayerProfile = thePlayerProfile.getInstance();
 		
 		
@@ -55,7 +56,9 @@ public class FingerDrums {
     	theY = theAppProfile.theHeight/2;
     	theWidth = 100;
     	theHeight = 100;
-		
+  	  	// sequencer timer
+  	  	seqTimer = new TimerClass();
+  	  	seqTimer.start();
 	}
 	
 	public void checkHit(float tx, float ty, float tz){
@@ -93,9 +96,23 @@ public class FingerDrums {
 	 void doImpactSounds(){
 	   //// play a random sound
 	   //// from the sound control class
-	   int theRnd = (int)pApp.random(4);
+	   int theRnd = (int)pApp.random(3);
 	   /// pApp.println("wall hit: " + theRnd);
-	   theSoundControl.playLaserSounds(theRnd);
+	   //theSoundControl.playLaserSounds(theRnd);
+	   switch (theRnd) {
+			case 0:
+				theSoundControl.playKick();
+				break;
+			case 1:
+				theSoundControl.playSnare();
+				break;
+			case 2:
+				theSoundControl.playHihat();
+				break;
+			default:
+				break;
+			}
+     	
 
 	 }
 	    

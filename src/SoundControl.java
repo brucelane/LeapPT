@@ -20,7 +20,11 @@ class SoundControl extends PApplet{
 	AudioPlayer wall1;
 	AudioPlayer wall2;
 	AudioInput input;
-	
+
+	AudioSample kick;
+	AudioSample snare;
+	AudioSample hihat;
+
 	
 	PApplet pApp;
 	AppProfile theAppProfile;
@@ -39,6 +43,11 @@ class SoundControl extends PApplet{
 	    rattle = minim.loadSample("sounds/metalrattle.wav", 512);
 	    sheet = minim.loadSample("sounds/metalsheet.wav", 512);
 	    snares = minim.loadSample("sounds/metalsnares.wav", 512);
+	    
+	    kick = minim.loadSample("sounds/kick.wav", 512);
+	    snare = minim.loadSample("sounds/snare.wav", 512);
+	    hihat = minim.loadSample("sounds/hihat.wav", 512);
+	    
 	    /*
 	    clash1 = minim.loadSample("sounds/clash01.wav", 512);
 	    clash2 = minim.loadSample("sounds/Swing01.wav", 512);
@@ -53,15 +62,21 @@ class SoundControl extends PApplet{
 	    } catch(Exception e){
 	    	
 	    	pApp.println(e);
-	    }
-	    
+	    }    
 
-	    wall1 = minim.loadFile("sounds/5clash2.wav");
-	     
+	    wall1 = minim.loadFile("sounds/5clash2.wav");     
 	    
 	    
 	}
-	
+	void playKick(){		
+		kick.trigger();		
+	}
+	void playSnare(){		
+		snare.trigger();		
+	}
+	void playHihat(){		
+		hihat.trigger();		
+	}
 	void initSoundControl(){
 	
 		
