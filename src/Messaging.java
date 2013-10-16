@@ -53,6 +53,7 @@ public class Messaging implements ControlListener{
 	 Button game2Button;
 	 Button game3Button;
 	 Button game4Button;
+	 Button game5Button;
 	 
 	 // settings menu ui
 	 Button saveGameButton;
@@ -126,7 +127,7 @@ public class Messaging implements ControlListener{
 		 chivHeight = 45;
 		 
 		 /// game info thumb pic
-		 gameInfoThumbX =  bgX + tabMenuImg.width - 220 - theMargin2;	
+		 gameInfoThumbX =  bgX + tabMenuImg.width - 215 - theMargin2;	
 		 gameInfoThumbY =  bgY + theMargin2 * 2 + theMargin;
 		 
 		 HeaderFont = pApp.createFont("Neutra Text",22, true); /// normal fonts
@@ -315,6 +316,7 @@ public class Messaging implements ControlListener{
 		 game2Button.show();
 		 game3Button.show();
 		 game4Button.show();
+		 game5Button.show();
 		 playButton.show();
 
 	 }
@@ -327,6 +329,7 @@ public class Messaging implements ControlListener{
 		 game2Button.hide();
 		 game3Button.hide();
 		 game4Button.hide();
+		 game5Button.hide();
 		 playButton.hide();
 		 
 	 }
@@ -663,7 +666,15 @@ public class Messaging implements ControlListener{
 			      .setColorBackground(pApp.color(200,200,200,35))
 			      .setColorActive(pApp.color(255,35))
 				  ;
-				 
+		
+		game5Button = cp5.addButton("GAME 5")
+				  .setPosition(bgX + theMargin *2, bgY + theMargin2*9)
+				  // .setImage(closeImg)
+				  .setSize(150,40)
+			      .setColorForeground(pApp.color(125,125,125,165))
+			      .setColorBackground(pApp.color(200,200,200,35))
+			      .setColorActive(pApp.color(255,35))
+				  ;		 
 
 		
 		hideGameMenuButtons();
@@ -813,6 +824,12 @@ public class Messaging implements ControlListener{
 		 .setSize(18)
 		 ;
 		 
+		 cp5.getController("GAME 5")
+		 .getCaptionLabel()
+		 .setFont(navPFont)
+		 .setSize(18)
+		 ;
+		 
 		 /////// TEXT BOXES ////////////////
 		 
 		 //// stat window
@@ -833,11 +850,11 @@ public class Messaging implements ControlListener{
          /// statTextArea.addDrawable(arg0)
 
          
-         //// text box window
+         //// game info box window
          
          gameInfoTextArea = cp5.addTextarea("gameinfotext")
                  .setPosition(bgX + 215, bgY + 100)
-                 .setSize(280,286)
+                 .setSize(275,286)
                  .setFont(BodyFont)
                  .setLineHeight(20)
                  .setColor(pApp.color(255))

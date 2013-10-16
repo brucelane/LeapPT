@@ -1,0 +1,18 @@
+{
+    "name": "FINGERDRUMS",
+    "description": "Bruce Lane from Batchass and Rey Menta has made an amazing drumming game! 'Push' towards the game in time with the rhythm and something will happen!",
+    "main_image": "data\/games\/thumbnail_fingerdrums.png",
+    "thumbnail": "data\/games\/thumbnail_fingerdrums.png",
+    "FINGERDRUMS": [
+        {
+            "name": "Can I Kick It?",
+            "description": "Hit a drum for the fifth time",
+            "image": "data/cheevos/cheevo13.png"
+        },
+        {
+            "name": "Max Roach",
+            "description": "Beat the previous high score",
+            "image": "data/cheevos/cheevo24.png"
+        }
+    ]
+}

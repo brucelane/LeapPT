@@ -89,9 +89,14 @@ public class PlayerProfile {
 				/// add to the player achievent array
 				
 				JSONArray achievMent = (JSONArray) jsonObject.get("achievements");
-				for(int k=0; k< achievMent.size(); k++){
-					CheevoNames.add(((String) achievMent.get(k)));
-					/// pApp.println("Current cheevo: " + CheevoNames.get(k));
+				try{
+					for(int k=0; k < achievMent.size(); k++){
+						CheevoNames.add(((String) achievMent.get(k)));
+						pApp.println("Current cheevo: " + CheevoNames.get(k));
+					}
+				} catch (Exception e){
+					
+					pApp.println("player achievment error: " + e);
 				}
 				
 				// now that we have player data,
@@ -151,7 +156,7 @@ public class PlayerProfile {
 					GameStats.add(theGameProf);
 					
 					statLength = msg.size(); /// save length of stat list for writing to the json file later
-					System.out.println("Stat length: " + statLength + " " + msg.size());
+					////  System.out.println("Stat length: " + statLength + " " + msg.size());
 				}
 				 
 		 

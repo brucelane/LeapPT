@@ -3,7 +3,6 @@ import processing.opengl.PGraphicsOpenGL;
 
 import java.util.EventListener;
 import java.util.EventObject;
-
 import javax.swing.event.EventListenerList;
 
 class Spinner{
@@ -11,7 +10,6 @@ class Spinner{
 	PApplet pApp;
 	AppProfile theAppProfile;
 	PlayerProfile thePlayerProfile;
-	  
 	SoundControl theSoundControl;
 	  
     PVector location;

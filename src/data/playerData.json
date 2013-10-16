@@ -2,11 +2,10 @@
 
 "name":"player1","total_time":"0:0:00","rank":"noob","difficulty":"1",
 "achievements":["Toddler", "Babies on Fire"],
-"FINGERBALL":[0,0,0.0,0,0,0,"Fngerball is a basketball game","finger thumb","finger ball main pic"],
-"BABYONFIRE":[0,0,0.0,0,0,0,"Baby on Fire description","baby on fire thumbnail","baby on fire main pic"],
-"BREAKOUT":[44071,0,0.0,0,0,0,"Breakout info which is a long and exciting description","breakout thumbnail","breakout main picture"],
-"MULTIFEET":[0,0,0.0,0,0,0,"multi feet info that describes all about the multi feet game","multi feet thumbnail","multi feet main picture"],
-"FEATHERWEIGHT":[0,0,0.0,0,0,0,"FEATHERWEIGHT","FEATHERWEIGHT","FEATHERWEIGHT"],
-"GRABBER":[0,0,0.0,0,0,0,"GRABBER","GRABBER","GRABBER"]
-
+"FINGERBALL":[0,0,0.0,0,0,0],
+"BREAKOUT":[0,0,0.0,0,0,0],
+"MULTIFEET":[0,0,0.0,0,0,0],
+"FEATHERWEIGHT":[0,0,0.0,0,0,0],
+"GRABBER":[0,0,0.0,0,0,0],
+"FINGERDRUMS":[0,0,0.0,0,0,0],
 }

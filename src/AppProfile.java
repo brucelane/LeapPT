@@ -22,7 +22,7 @@ public class AppProfile {
  ArrayList<String> ranktypes = new ArrayList();
  int rankID = 0;
  
- int gameID = 0;
+ int gameID = 3;
 
  /// soundParams
  ArrayList<String> soundsStarWars = new ArrayList();
@@ -52,16 +52,26 @@ public class AppProfile {
    public void initData(){
 	   
 	   pApp.println("INITIALIZING APP");
-	   //// add sounds
-	   //// clean this
-	   /*
-	   soundsStarWars.add("sounds/laserhit_short1.wav");
-	   soundsStarWars.add("sounds/laserhit_short2.wav");
-	   soundsStarWars.add("sounds/laserhit_short3.wav");
-	   soundsStarWars.add("sounds/laserhit_short4.wav");
-	   soundsStarWars.add("sounds/laserhit_short5.wav");
-	   */
 	   
+	   
+	   /// add game mode types
+	   gameMode.add("FINGERBALL");
+	   gameMode.add("MULTIFEET");
+	   gameMode.add("BREAKOUT");
+	   gameMode.add("FEATHERWEIGHT");
+	   gameMode.add("GRABBER");
+	   gameMode.add("FINGERDRUMS");
+	   
+
+	   //// add rank types
+	   ranktypes.add("BEGINNER");
+	   ranktypes.add("INTERN");
+	   ranktypes.add("APPRENTICE");
+	   ranktypes.add("JOURNEYMAN");
+	   ranktypes.add("CRAFTSMAN");
+	   ranktypes.add("MASTER"); 
+	   
+	   //// add sounds ///////
 	   soundsStarWars.add("sounds/swing1.wav");
 	   soundsStarWars.add("sounds/swing2.wav");
 	   soundsStarWars.add("sounds/swing3.wav");
@@ -69,8 +79,7 @@ public class AppProfile {
 	   soundsStarWars.add("sounds/Spin1.wav");
 	   soundsStarWars.add("sounds/Spin2.wav");
 	   soundsStarWars.add("sounds/Honk_sad.mp3");
-	   
-	   
+
 	   soundsLasers.add("sounds/lasrhit3.wav");
 	   soundsLasers.add("sounds/lasrhit1.wav");
 	   soundsLasers.add("sounds/laserhit_short1.wav");
@@ -83,21 +92,7 @@ public class AppProfile {
 	   soundsBasketball.add("sounds/basketball_sounds/bball_3.wav");
 	   soundsBasketball.add("sounds/basketball_sounds/bball_4.wav");
 	   soundsBasketball.add("sounds/basketball_sounds/bball_5.wav");
-	   
-	   /// add game mode types
-	   gameMode.add("FINGERBALL");
-	   gameMode.add("MULTIFEET");
-	   gameMode.add("BREAKOUT");
-	   gameMode.add("FEATHERWEIGHT");
-	   gameMode.add("GRABBER");
-	   
-	   //// add rank types
-	   ranktypes.add("BEGINNER");
-	   ranktypes.add("INTERN");
-	   ranktypes.add("APPRENTICE");
-	   ranktypes.add("JOURNEYMAN");
-	   ranktypes.add("CRAFTSMAN");
-	   ranktypes.add("MASTER"); 
+
 
    }
 

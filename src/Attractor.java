@@ -25,7 +25,7 @@ class Attractor{
     	theSoundControl = theSoundControl.getInstance();
     	
         location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
-        mass = 180;
+        mass = 650;
         G = theG;
         
         //

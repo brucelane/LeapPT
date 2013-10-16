@@ -1,8 +1,8 @@
 {
     "name": "BABY ON FIRE",
     "description": "Baby on fire is a game that has not been built yet, but it should be tons of fun and you lose points if you let the baby get lit on fire.",
-    "main_image": "data\/games\/thumbnail_multifeet.png",
-    "thumbnail": "data\/games\/thumbnail_multifeet.png",
+    "main_image": "data/games/thumbnail_multifeet.png",
+    "thumbnail": "data/games/thumbnail_multifeet.png",
     "BABYONFIRE": [
         {
             "name": "Babies on Fire",

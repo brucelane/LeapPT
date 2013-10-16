@@ -149,6 +149,10 @@ public class Main extends PApplet{
 	int totalFeathers = 1;
 	int totalLifters = 1;
 	
+	/// fingerdrums
+	
+	FingerDrums theFingerDrums;
+	
 	
 	TimerClass theTimer;
 	
@@ -184,7 +188,7 @@ public class Main extends PApplet{
 	  // size(16*50, 9*50);
 	 //  size(800,600, OPENGL);
 
-	  background(20);
+
 	  frameRate(60);
 	  ellipseMode(CENTER);
 
@@ -211,8 +215,7 @@ public class Main extends PApplet{
 	  spawnBreakouts();
 	  //
 	  spawnFeathers();
-	  //
-	  spawnLifters();
+
 	  
 	  theBground = new BackgroundTiles(0,0,0);
 	  theAttractor = new Attractor(gravWeight);
@@ -221,6 +224,16 @@ public class Main extends PApplet{
 	  thePaddle = new Paddle(gravWeight);
 	  theLifter = new Lifter(gravWeight);
 	  
+	  //// FINGER DRUMS ////
+	  theFingerDrums = new FingerDrums();
+	  
+	  /// add achievment listener
+	  theFingerDrums.addMyEventListener(new MyEventListener() {
+	      public void myEventOccurred(MyEvent evt, String tCheev) {
+	          /// System.out.println("fired");
+	          initAchievement(tCheev);
+	        }
+	  });
 	  
 	  
 	  
@@ -246,21 +259,28 @@ public class Main extends PApplet{
 	  /// text images panels
 	  controlPanel = loadImage(panelPath);
 	  cheevoBground = loadImage(chevBgroundPath);
-	  /// init the GUI
-	  initGUI();
+	 
+	  noSmooth();
+	  
+	  
+	  /// make game menu be the init 
+	  theMessaging.showGameMenu();
+	  /// show default game
+	  theMessaging.showGameInfo(0);
+	  // it's paused! unPause it!
+	  isPaused = true;
 
 	}
 	
 	//// listeners
 
-	
-	
 
 	public void draw(){
 		
-	  //// make a nice background ///
-	  background(0);
-	  
+	  ////// make a nice background ///
+	  //background(165);
+	  fill(0,0,0);
+	  rect(0,0,theAppProfile.theWidth, theAppProfile.theHeight);
 	  
 	  
 	  if(!isPaused){
@@ -316,7 +336,11 @@ public class Main extends PApplet{
 		
 		case 5:
 			
-			break;	
+			doFingerDrums();
+			
+		case 6:
+			
+			break;
 		}
 		
 		if(showCheevo){
@@ -608,17 +632,16 @@ public class Main extends PApplet{
 
 	    // feathers.clear();
 	    for (int i=0; i< totalFeathers; i++){
-	        feathers.add(new Feather(random(1.1f,5),0,0f));  
+	        feathers.add(new Feather(random(1.1f,5)));  
 	    } 
-		
-	}
-	
-	public void spawnLifters(){
 		
 	}
 	
 	
 	public void doLifters(){
+		
+	//// empty the old array
+	lifters = new ArrayList();
 	////// do the LEAP //////////
 		  for (Map.Entry entry : fingerPositions.entrySet()){
 			  
@@ -627,6 +650,7 @@ public class Main extends PApplet{
 	
 		    // show finger colors
 		    // fill(fingerColors.get(fingerId), 65);
+		    fill(0,0,0,0);
 		    stroke(255);
 		    strokeWeight(1);
 		    
@@ -634,44 +658,82 @@ public class Main extends PApplet{
 		   ////  pushMatrix();
 		    
 		    //// create a lifter
-		    theLifter = new Lifter(.1f);
+		    theLifter = new Lifter(1.3f);
 		    lifters.add(theLifter);
+		    
 		    
 		    
 		    //// tell it to interact with the feather
 		    theLifter.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
 		    theLifter.display();
 		    
-		    /// kill the lifter
-		    if(lifters.size() > fingerPositions.size()){
-		    	
-		    	lifters.remove(theLifter);
-		    }
-		    // lifters.remove(theLifter);
-
+		    
 		    //// move the ellipse in the z index
 		    //// translate(0,0,300);
 		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
 		    /// popMatrix();
 	
 		  }
-		
+		  
 	}
+	
+
 	public void drawFeather(){
 		 Feather dFeather = feathers.get(0);
 	       
 	     for(int j=0; j<lifters.size(); j++){
         	Lifter tLifter = lifters.get(j);
-        	PVector l = tLifter.repulse(dFeather);
-	        dFeather.applyForce(l);
-	        dFeather.update();
-	        dFeather.checkEdges();
+        	
+        	if(tLifter != null){
+        		PVector l = tLifter.repulse(dFeather);
+        	}
+        	/// gets the force betweem feather and each lifter
+        	
+
  	
 	      }
-	     
+	        // dFeather.applyForce(l);
+	      dFeather.update();
+	      dFeather.checkEdges();
 	      dFeather.display();
 	}
 		
+	
+	/////// FINGERDRUMS ////////
+	
+	public void doFingerDrums(){
+		////// do the LEAP //////////
+	  for (Map.Entry entry : fingerPositions.entrySet()){
+		  
+	    Integer fingerId = (Integer) entry.getKey();
+	    Vector position = (Vector) entry.getValue();
+
+	    // show finger colors
+	    // fill(fingerColors.get(fingerId), 65);
+	    fill(0,0,0,0);
+	    stroke(255);
+	    strokeWeight(1);
+	    
+	    /// this makes the finger tracking circles a nice size
+	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
+	  
+	    
+	    //// tell it to interact with the fingerdrums
+	    theFingerDrums.checkHit(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
+	    
+	    
+	    //// move the ellipse in the z index
+	    //// translate(0,0,300);
+	    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+	    /// popMatrix();
+
+	  }
+		
+		theFingerDrums.display();
+	}
+	
+	
+	
 	
   /////////////////////////////////////
   /////// LEAP INPUT /////////////////
@@ -807,6 +869,7 @@ public class Main extends PApplet{
 
 		  		   } else {
 		  			 fingerPositions.remove(fingerId,finger.tipPosition());
+		  			 /// println("NUM FINGERS : " + fingerPositions.size());
 		  		   }
 		  	  } catch(Exception e){
 		  		  
@@ -939,16 +1002,8 @@ public class Main extends PApplet{
 	///// CREATE INTERFACE ////
 	//////////////////////////////
 
-	private void initGUI() {
-		
-		
-		
-	}
-
 	private void doGUI(){
-
 		image(controlPanel, 0, 0);
-		
 		/// parse score
 		
 		/// this is too fancy
