@@ -152,7 +152,7 @@ public class Main extends PApplet{
 	/// fingerdrums
 	
 	FingerDrums theFingerDrums;
-	
+	int currentSec;
 	
 	TimerClass theTimer;
 	
@@ -225,6 +225,7 @@ public class Main extends PApplet{
 	  theLifter = new Lifter(gravWeight);
 	  
 	  //// FINGER DRUMS ////
+	  currentSec = 0;
 	  theFingerDrums = new FingerDrums();
 	  
 	  /// add achievment listener
@@ -269,6 +270,9 @@ public class Main extends PApplet{
 	  theMessaging.showGameInfo(0);
 	  // it's paused! unPause it!
 	  isPaused = true;
+
+	  // Bruce, remove 
+	  theMessaging.showGameInfo(5);
 
 	}
 	
@@ -730,6 +734,26 @@ public class Main extends PApplet{
 	  }
 		
 		theFingerDrums.display();
+		int sec = (int) ( ( theTimer.getElapsedTime() - curMarker ) / 1000 );
+		if ( sec != currentSec )
+		{
+			currentSec = sec;
+			theFingerDrums.secChanged( currentSec );
+			println( currentSec );
+			
+		}
+		
+		/*curMarker =  theTimer.getElapsedTime();
+		int getElapsedTime() {
+	        int elapsed;
+	        if (running) {
+	             elapsed = ( pApp.millis() - startTime);
+	        }
+	        else {
+	            elapsed = (stopTime - startTime);
+	        }
+	        return elapsed;
+	    }*/
 	}
 	
 	
