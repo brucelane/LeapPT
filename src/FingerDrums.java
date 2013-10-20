@@ -36,20 +36,29 @@ public class FingerDrums {
 	private float hihatWidth = 137;
 	private float hihatHeight = 38;
 	// sequencer
-	private String[] patternz={"13231323","10201020","10201120"};
+	private String[] patternz={"10002000","13231323","10201020","10201120"};
+	private int noteCount = 8; // size of the pattern
 	private int[] notes;
+	private int[] pattern;
 	private boolean playMode = false;
 	private boolean seqStarted = false;
-	private float tempoMs = 1000;
+	//private float tempoMs = 1000;
 	private int currentNote = 0;
 	private int currentPattern = 0;
 	private int currentPatternNotesCount = 0;
-	private int noteCount = 8;
 	/// current hits
 	private int currentHit = 0;
 	private int fingerHit = 0;
 	private boolean fingerReady = false;
+	private boolean fadeReady = false;
 	private boolean win = true;
+	private int alphaDecrement = 10;
+	private int kickAlpha = 0;
+	private int snareAlpha = 0;
+	private int hihatAlpha = 0;
+	private int kickColor = 192;
+	private int snareColor = 192;
+	private int hihatColor = 192;
 	
 	// listeners
 	protected EventListenerList listenerList = new EventListenerList();
@@ -75,6 +84,7 @@ public class FingerDrums {
 
   	  	// sequencer 
     	notes = new int[noteCount];
+    	pattern = new int[noteCount];
   	  	playMode = true;
 	}
 	
@@ -87,48 +97,77 @@ public class FingerDrums {
 		pApp.fill(0,0,255,65);
 		
 		pApp.ellipse(tx, ty,25, 25);
+		//pApp.println( "checkHit fingerReady:" + fingerReady );
 		// avoid multiple hits
 		if ( fingerReady )
-		{
-		
+		{			
+			// wait for next hit after a while
+			fingerReady = false;
 			if( theAppProfile.curNumFingers > 0 )
 			{
 				if ( playMode == false )
 				{
-					// wait for next hit after a while
-					fingerReady = false;
+					fingerHit = 0;
 					if ( tx > kickX && tx < kickX + kickWidth && ty > kickY && ty < kickY + kickWidth )
 					{	
+						pApp.println("kick, tx:" + tx + " ty:" + ty );
+						
 						fingerHit = 1;
 					}
 					if ( tx > snareX && tx < snareX + snareWidth && ty > snareY && ty < snareY + snareWidth )
 					{	
+						pApp.println( "snare, tx:" + tx + " ty:" + ty );
 						fingerHit = 2;
 					}
 					if ( tx > hihatX && tx < hihatX + hihatWidth && ty > hihatY && ty < hihatY + hihatWidth )
 					{	
+						pApp.println( "hihat, tx:" + tx + " ty:" + ty );
 						fingerHit = 3;
 					}
-					hitDrum( fingerHit, 1 );
-					if ( notes[currentHit] == fingerHit )
+					if ( fingerHit == 0 )
 					{
-						
+						//nothing hit
+						fingerReady = true;
 					}
 					else
 					{
-						win = false;
-					}
-					currentHit++;
-					if ( currentHit > currentPatternNotesCount)
-					{
-						// check if won achievement
-						if ( win )
+						hitDrum( fingerHit );
+						pApp.println("currentHit:" + currentHit + " notes[currentHit]:" + notes[currentHit] + " fingerHit:" + fingerHit + " win:" + win );
+						if ( notes[currentHit] == fingerHit )
 						{
-							launchCheevo(null, "Can I Kick It?");
+							pApp.println( " win:" + win );
+							
 						}
-						// leapmode end
-						playMode = true;
+						else
+						{
+							win = false;
+						}
+						
+						if ( currentHit >= currentPatternNotesCount - 1)
+						{
+							// reset 
+							currentHit = 0;
+							// check if won achievement
+							if ( win )
+							{
+								launchCheevo(null, "Can I Kick It?");
+							}
+							else
+							{
+								pApp.println( "lost" );
+								launchCheevo(null, "Can I Kick It?");
+							}
+							// leapmode end
+							seqStarted = false;
+							playMode = true;
+						}
+						else
+						{
+							currentHit++;
+						}
 					}
+					 
+					
 				}
 				
 				//// pApp.println("YOU HAVE HIT THE DRUM");
@@ -163,35 +202,44 @@ public class FingerDrums {
 		for (int i = 0; i < noteCount; i++) {
 			int element = Integer.parseInt( patternz[currentPattern].substring( i, i+1 ) );
 			pApp.println("currentPatternNotesCount:" + currentPatternNotesCount + " element:" + element);
+			pattern[currentPatternNotesCount] = element;
 			// get rid of silences
 			if ( element > 0 )
 			{
 				notes[currentPatternNotesCount++] = element;
 			}
 		}
+		if ( currentPattern < patternz.length-1 )
+		{
+			currentPattern++;
+		}
+		else
+		{
+			currentPattern = 0;
+		}
+		pApp.println("initPattern, currentPattern:" + currentPattern + " patternz.length:" + patternz.length );
 	 }
-	 private void hitDrum( int hit, int color )
+	 private void hitDrum( int hit )
 	 {
 		 pApp.println("hitDrum:" + hit);
 		 switch (hit) {
 			case 1:
-				// kick
-				pApp.fill(255,0,255,165);
-				pApp.ellipse(kickX, kickY, kickWidth, kickHeight);
+				// kick				
 				theSoundControl.playKick();
-
+				kickAlpha = 255;
+				fingerReady = false;
 				break;
 			case 2:
 				// snare
-				pApp.fill(0,0,255,165);
-				pApp.ellipse(snareX, snareY, snareWidth, snareHeight);
 				theSoundControl.playSnare();
+				snareAlpha = 255;
+				fingerReady = false;
 				break;
 			case 3:
 				// hihat
-				pApp.fill(0,255,0,165);
-				pApp.ellipse(hihatX, hihatY, hihatWidth, hihatHeight);
 				theSoundControl.playHihat();
+				hihatAlpha = 255;
+				fingerReady = false;
 				break;
 			default:
 				// 0 : nothing
@@ -200,10 +248,11 @@ public class FingerDrums {
 	 }
 	 public void secChanged( int currentSec )
 	 {
-		currentNote = currentSec % 8;
-		pApp.println("playmode:" + playMode + " currentNote:" + currentNote);
+		currentNote = currentSec % noteCount;
+		
 		if ( playMode == true )
 		{
+			pApp.println("playmode started");
 			// if we are on 1st beat and the sequencer has not started, we start playback
 			if ( seqStarted == false && currentNote == 0 )
 			{
@@ -212,14 +261,15 @@ public class FingerDrums {
 			}
 			if ( seqStarted == true )
 			{		
-			 	pApp.println(notes[currentNote]);
-				int currentPatternIndex = notes[currentNote];
-				hitDrum(currentPatternIndex, 0);
+			 	pApp.println(pattern[currentNote]);
+				int currentPatternIndex = pattern[currentNote];
+				if ( currentPatternIndex > 0 ) hitDrum(currentPatternIndex);
 				// if it's the end of the pattern, we stop playback
-				if ( currentNote == 7 )
+				if ( currentNote == noteCount - 1 )
 				{
 					playMode = false;
 					seqStarted = false;
+					fingerReady = true;	
 				}
 				
 			}
@@ -230,16 +280,18 @@ public class FingerDrums {
 			// we start recording finger hits
 			if ( seqStarted == false )
 			{
+				pApp.println( "leapmotion game mode" );
 				initLeap();
 				seqStarted = true;				
 			}
 			else
 			{
-				if ( fingerReady == false )
-				{
-					
-					fingerReady = true;				
-				}
+				//delay the finger hits
+//				if ( fingerReady == false )
+//				{
+//					pApp.println( "fingerReady:" + fingerReady );
+//					fingerReady = true;				
+//				}
 			}
 		}
 	 }
@@ -247,17 +299,37 @@ public class FingerDrums {
 		
 		//// draw background
 		pApp.image(theBground, 0, 0);
-		
-		
-		// draw the "hot" area
-		
+
+		//pApp.strokeWeight(0); // Eric, check if needs to be reset in main.java when leaving this game
 		pApp.fill(255,0,0,165);
-		// kick
-		//pApp.ellipse(kickX, kickY, kickWidth, kickHeight);
+		fadeReady = true;
+		// kick	
+		if ( kickAlpha > alphaDecrement )
+		{
+			kickAlpha -= alphaDecrement;
+			fadeReady = false;
+		}
+		
+		pApp.fill( kickColor, 0, 0, kickAlpha );
+		pApp.ellipse( kickX, kickY, kickWidth, kickHeight );		
 		// snare
-		//pApp.ellipse(snareX, snareY, snareWidth, snareHeight);
+		if ( snareAlpha > alphaDecrement )
+		{
+			snareAlpha -= alphaDecrement;
+			fadeReady = false;
+		}
+		pApp.fill( 0, 0, snareColor, snareAlpha);	
+		pApp.ellipse( snareX, snareY, snareWidth, snareHeight );
 		// hihat
-		//pApp.ellipse(hihatX, hihatY, hihatWidth, hihatHeight);
+		if ( hihatAlpha > alphaDecrement )
+		{
+			hihatAlpha -= alphaDecrement;
+			fadeReady = false;
+		}
+		pApp.fill( 0, hihatColor, 0, hihatAlpha);		
+		pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
+		// if animation finished we are ready for another hit
+		if ( fadeReady ) fingerReady = true;
 	}
 	
 	
