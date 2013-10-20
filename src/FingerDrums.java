@@ -52,7 +52,7 @@ public class FingerDrums {
 	private boolean fingerReady = false;
 	private boolean fadeReady = false;
 	private boolean win = true;
-	private int alphaDecrement = 10;
+	private int alphaDecrement = 2;
 	private int kickAlpha = 0;
 	private int snareAlpha = 0;
 	private int hihatAlpha = 0;
@@ -155,7 +155,7 @@ public class FingerDrums {
 							else
 							{
 								pApp.println( "lost" );
-								launchCheevo(null, "Can I Kick It?");
+								//launchCheevo(null, "Can I Kick It?");
 							}
 							// leapmode end
 							seqStarted = false;
@@ -202,7 +202,7 @@ public class FingerDrums {
 		for (int i = 0; i < noteCount; i++) {
 			int element = Integer.parseInt( patternz[currentPattern].substring( i, i+1 ) );
 			pApp.println("currentPatternNotesCount:" + currentPatternNotesCount + " element:" + element);
-			pattern[currentPatternNotesCount] = element;
+			pattern[i] = element;
 			// get rid of silences
 			if ( element > 0 )
 			{
@@ -261,7 +261,7 @@ public class FingerDrums {
 			}
 			if ( seqStarted == true )
 			{		
-			 	pApp.println(pattern[currentNote]);
+			 	pApp.println("currentNote:" + currentNote + " pattern[currentNote]:"  +pattern[currentNote]);
 				int currentPatternIndex = pattern[currentNote];
 				if ( currentPatternIndex > 0 ) hitDrum(currentPatternIndex);
 				// if it's the end of the pattern, we stop playback
