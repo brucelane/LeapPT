@@ -7,7 +7,17 @@
         {
             "name": "Lock On",
             "description": "Your Hand Has Been Registered",
-            "image": "data/cheevos/cheevo6.png"
+            "image": "data/cheevos/cheevo23.png"
+        },
+	{
+            "name": "Level One",
+            "description": "Completed Level One in FeatherWeight",
+            "image": "data/cheevos/cheevo11.png"
+        },
+	{
+            "name": "Hummingbird",
+            "description": "Hovered feather for 10 seconds",
+            "image": "data/cheevos/cheevo23.png"
         },
         {
             "name": "Second Bounce",

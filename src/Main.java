@@ -6,9 +6,13 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 //// import java.util.Vector;
+
+
+
 
 
 
@@ -29,7 +33,9 @@ import com.leapmotion.leap.Vector;
 import com.leapmotion.leap.Gesture.State;
 import com.leapmotion.leap.processing.LeapMotion;
 
+import controlP5.Button;
 import controlP5.ControlEvent;
+import controlP5.ControlFont;
 import controlP5.ControlP5;
 /// minim audio
 import ddf.minim.AudioSample;
@@ -53,16 +59,39 @@ public class Main extends PApplet{
 
 	int curNumFingers;
 	
-	// text and UI display
+	// UI display images ///////
 	PImage controlPanel;
 	PImage cheevoBadge;
 	PImage cheevoBground;
+	PImage footerBground;
+	PImage mainBground;
+	
+	/// button images
+	PImage b_MainMenu;
+	PImage b_MainMenuR;
+	
+	PImage b_PlayPause;
+	PImage b_PlayPauseR;
+	
+	String b_ppPath = "data/butt_playPause.png";
+	String b_ppPathR = "data/butt_playPauseR.png";
+	
+	String b_mmPath = "data/butt_mainMenu.png";
+	String b_mmPathR = "data/butt_mainMenuR.png";
+	
+	// Top Level Nav
+	Button playPauseButton;
+	Button menuButton;
 	
 	String chevBgroundPath = "data/achievement_bground.png";
+	String footerBgPath = "data/footer_bground.png";
+	///// control and images
+	String panelPath = "data/nav_bground_2.png";
 	
 	 //// interface elements
 	ControlP5 cp5;
 	ControlP5 ControlEvent;
+	ControlFont topNavPFont;
 	
 	String theScore = "0";
 	String theTime = "0";
@@ -71,11 +100,18 @@ public class Main extends PApplet{
 	
 	/// game state data
 	boolean isPaused = false;
-	
-	
+	boolean isMenuShowing = false;
+
 	///// fonts
-	PFont ScoreFont = createFont("Neutra Text",22, true); /// normal fonts
-	PFont pfont = createFont("Neutra Text",10, true); // use true/false for smooth/no-smooth for Control fonts
+	PFont ScoreFont = createFont("Gotham Rounded",22, true); /// normal fonts
+	PFont pfont = createFont("Gotham Rounded",10, true); // use true/false for smooth/no-smooth for Control fonts
+	PFont mainNavFont = createFont("Gotham Rounded",  22, true);
+
+	/// font colors
+	int blueNav;
+	int whiteNav;
+	int blueNavTransp;
+	int whiteNavTransp;
 	
 	int numFingers = 0;
 
@@ -89,8 +125,8 @@ public class Main extends PApplet{
 	float theY = 0;
 	float theZ = 0;
 	
-	///// control and images
-	String panelPath = "data/control_panel2.png";
+	// margins and spacing
+	int topMargin = 20;
 
 	// app profile
 	AppProfile theAppProfile;
@@ -161,7 +197,15 @@ public class Main extends PApplet{
 	MyEventListener listener;
 
 	public void setup(){	
+		
 	  size(tWidth,tHeight, OPENGL);
+	  colorMode(RGB);
+	  smooth();
+	  
+	  /*
+	  
+	  textMode(SHAPE);
+	  */
 	  /// set up app profile
 	  theAppProfile = theAppProfile.getInstance();
 	  theAppProfile.initApp(this);
@@ -186,8 +230,7 @@ public class Main extends PApplet{
 	  tWidth = theAppProfile.theWidth;
 	  tHeight = theAppProfile.theHeight;
 	  // size(16*50, 9*50);
-	 //  size(800,600, OPENGL);
-
+	  //  size(800,600, OPENGL);
 
 	  frameRate(60);
 	  ellipseMode(CENTER);
@@ -215,7 +258,6 @@ public class Main extends PApplet{
 	  spawnBreakouts();
 	  //
 	  spawnFeathers();
-
 	  
 	  theBground = new BackgroundTiles(0,0,0);
 	  theAttractor = new Attractor(gravWeight);
@@ -225,18 +267,15 @@ public class Main extends PApplet{
 	  theLifter = new Lifter(gravWeight);
 	  
 	  //// FINGER DRUMS ////
-	  currentSec = 0;
 	  theFingerDrums = new FingerDrums();
 	  
-	  /// add achievment listener
+	  /// add achievment listener 
 	  theFingerDrums.addMyEventListener(new MyEventListener() {
 	      public void myEventOccurred(MyEvent evt, String tCheev) {
 	          /// System.out.println("fired");
 	          initAchievement(tCheev);
 	        }
 	  });
-	  
-	  
 	  
 	  ///////////////////////////
 	// add achievment listeners
@@ -255,24 +294,44 @@ public class Main extends PApplet{
           initAchievement(tCheev);
         }
       });
+	  
+	  feathers.get(0).addMyEventListener(new MyEventListener() {
+	      public void myEventOccurred(MyEvent evt, String tCheev) {
+	          /// System.out.println("fired");
+	          initAchievement(tCheev);
+	        }
+	  });
   
 
-	  /// text images panels
+	  ///  GUI assets /////////////////////
+	  cp5 = new ControlP5(this);
+	  
 	  controlPanel = loadImage(panelPath);
 	  cheevoBground = loadImage(chevBgroundPath);
-	 
-	  noSmooth();
-	  
-	  
-	  /// make game menu be the init 
-	  theMessaging.showGameMenu();
-	  /// show default game
-	  theMessaging.showGameInfo(0);
-	  // it's paused! unPause it!
-	  isPaused = true;
+	  footerBground = loadImage(footerBgPath);
+	  mainBground = loadImage("data/backgrounds/bground_main.png");
+	  // button assets
+	  b_MainMenu = loadImage(b_mmPath);
+	  b_MainMenuR = loadImage(b_mmPathR);
+		
+	  b_PlayPause = loadImage(b_ppPath);
+	  b_PlayPauseR = loadImage(b_ppPathR);
 
-	  // Bruce, remove 
-	  theMessaging.showGameInfo(5);
+		// Top Level Nav
+	  
+	  topNavPFont = new ControlFont(mainNavFont, 241);
+	  //
+	  blueNav = color(0,123,234);
+	  whiteNav = color(255,255,255);
+	  blueNavTransp = color(0,123,234,35);
+	  whiteNavTransp = color(255,255,255,35);
+
+
+	  /// make game menu be the init 
+	  
+	  doMenu();
+	 
+	  initGUI();
 
 	}
 	
@@ -280,25 +339,27 @@ public class Main extends PApplet{
 
 
 	public void draw(){
-		
 	  ////// make a nice background ///
-	  //background(165);
-	  fill(0,0,0);
-	  rect(0,0,theAppProfile.theWidth, theAppProfile.theHeight);
+	  background(0,0,0,0);
+	  //fill(0,0,0);
+	  // rect(0,0,theAppProfile.theWidth, theAppProfile.theHeight);
 	  
 	  
 	  if(!isPaused){
+		  // 
 		  renderGame();
-		  doGUI();
+		  // 
 	  } else {
+		  image(mainBground, 0,0);
 		  
-		  doGUI();
 		  theMessaging.drawMessageBox();
 		  theTimer.running = false;
 	  }
+	  /// 
 	  
-	  
+	  doGUI();
 
+	  //// 
 	}
 	
 	
@@ -328,8 +389,9 @@ public class Main extends PApplet{
 			
 		case 3:
 
-			doLifters();
+			
 			drawFeather();
+			doLifters();
 
 			break;
 			
@@ -352,9 +414,64 @@ public class Main extends PApplet{
 			showAchievment();
 		}
 		
+		
 	}
 	
-	/////////////// 
+	///// START AND STOP GAMES /////////////
+	public void startNewGame(int tId){
+		
+		thePlayerProfile.GameStats.get(theAppProfile.gameID).timeSpent = theTimer.getElapsedTime();
+	    theTimer.stop();
+	    theTime = "";
+	    
+		try{ 
+			gestureCheck = false;
+		} catch (Exception e){
+			println("Can't kill listeners");
+		}
+
+		theAppProfile.gameID = tId;
+		theTimer.start();
+		
+		switch (theAppProfile.gameID){
+			case 0:
+			
+				break;
+			
+			case 1:
+				
+				break;
+				
+			case 2:
+				
+				break;
+				
+			case 3: /// featherweight
+				
+				feathers.get(0).startNewGame();
+				break;
+				
+			case 4:
+				
+				break;
+				
+			case 5:
+				
+				break;
+				
+				
+			default:
+				
+				break;
+			
+		
+		
+		
+		}
+		
+	}
+
+
 	public void doNextGame(){
 		//// 
 
@@ -401,22 +518,7 @@ public class Main extends PApplet{
 		
 	}
 	
-	public void startNewGame(int tId){
-		
-		thePlayerProfile.GameStats.get(theAppProfile.gameID).timeSpent = theTimer.getElapsedTime();
-	    theTimer.stop();
-	    theTime = "";
-	    
-		try{ 
-			gestureCheck = false;
-		} catch (Exception e){
-			println("Can't kill listeners");
-		}
-
-		theAppProfile.gameID = tId;
-		theTimer.start();
-		
-	}
+	
 	
     /////////////////////////////////////
     ////////// GAME MECHANICS BY TYPE ///
@@ -647,16 +749,13 @@ public class Main extends PApplet{
 	//// empty the old array
 	lifters = new ArrayList();
 	////// do the LEAP //////////
+	hint(DISABLE_DEPTH_TEST);
 		  for (Map.Entry entry : fingerPositions.entrySet()){
 			  
 		    Integer fingerId = (Integer) entry.getKey();
 		    Vector position = (Vector) entry.getValue();
 	
-		    // show finger colors
-		    // fill(fingerColors.get(fingerId), 65);
-		    fill(0,0,0,0);
-		    stroke(255);
-		    strokeWeight(1);
+
 		    
 		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
 		   ////  pushMatrix();
@@ -666,19 +765,21 @@ public class Main extends PApplet{
 		    lifters.add(theLifter);
 		    
 		    
-		    
 		    //// tell it to interact with the feather
 		    theLifter.update(leapToScreenX(position.getX()), leapToScreenY(position.getY()), 300);
 		    theLifter.display();
 		    
+		    // show finger colors
+		    // fill(fingerColors.get(fingerId), 65);
 		    
-		    //// move the ellipse in the z index
-		    //// translate(0,0,300);
-		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize/2, tSize/2);
+		    stroke(255);
+		    //// fill(0);
+		    strokeWeight(1);
+		    ellipse(leapToScreenX(position.getX()), leapToScreenY(position.getY()), tSize*1.75f, tSize*1.75f);
 		    /// popMatrix();
 	
 		  }
-		  
+		 hint(ENABLE_DEPTH_TEST);
 	}
 	
 
@@ -690,13 +791,14 @@ public class Main extends PApplet{
         	
         	if(tLifter != null){
         		PVector l = tLifter.repulse(dFeather);
+        		dFeather.applyForce(l);
         	}
         	/// gets the force betweem feather and each lifter
         	
 
  	
 	      }
-	        // dFeather.applyForce(l);
+	      
 	      dFeather.update();
 	      dFeather.checkEdges();
 	      dFeather.display();
@@ -755,6 +857,7 @@ public class Main extends PApplet{
 	        return elapsed;
 	    }*/
 	}
+	
 	
 	
 	
@@ -948,13 +1051,37 @@ public class Main extends PApplet{
 			// println("CLICK" + theEvent.getController().getId());
 			println("Name" + theEvent.getName());
 		}
-		if (theEvent.isFrom("CLOSE")){
-			isPaused = false;
-			theTimer.running = true;
-			theMessaging.closeMessage();
+		if (theEvent.isFrom("MAIN MENU")){
+
+			doMenu();
 		}
 		
-		if (theEvent.isFrom("GAMES MENU")){
+		if (theEvent.isFrom("PLAY/PAUSE")){
+			doPause();
+		}
+		
+		if (theEvent.isFrom("CLOSE")){
+			isPaused = false;
+			isMenuShowing = false;
+			theTimer.running = true;
+			theMessaging.closeMessage();
+			//// startNewGame(theAppProfile.gameID);
+		}
+		// this needs to be for all classes
+		
+		if (theEvent.isFrom("CLOSEGAMEMESS")){
+
+			feathers.get(0).thePopup.closeMessage();
+			/// start new level?
+			feathers.get(0).doNextLevel();
+		}
+		
+		if (theEvent.isFrom("ABOUT")){
+			theMessaging.showAbout();
+			
+		}
+		
+		if (theEvent.isFrom("GAMES")){
 			theMessaging.showGameMenu();
 			// show the default game
 			theMessaging.showGameInfo(0);
@@ -971,7 +1098,7 @@ public class Main extends PApplet{
 		}
 		/// game menu actions
 		if (theEvent.isFrom("PLAY GAME")){
-		
+			isMenuShowing = false;
 			isPaused = false;
 			theMessaging.closeMessage();
 			startNewGame(theMessaging.newGameID);
@@ -1011,7 +1138,27 @@ public class Main extends PApplet{
 	//////////////////////////////
 	
 	public void doPause(){
-		isPaused = true;
+		/// if the menu is showing
+		/// hide it and unpause
+		if(isMenuShowing){
+			
+			isPaused = false;
+			isMenuShowing = false;
+			theTimer.running = true;
+			theMessaging.closeMessage();
+			
+		} else {
+			if(isPaused){
+				
+				isPaused = false;
+				theTimer.running = true;
+			} else {
+				
+				isPaused = true;
+				theTimer.running = false;
+			}
+		}
+		
 		
 		/// do messaging
 	}
@@ -1022,62 +1169,100 @@ public class Main extends PApplet{
 		// do messaging
 	}
 	
+	public void doMenu(){
+		isMenuShowing = true;
+		isPaused = true;
+		theMessaging.showAbout();
+
+	}
+	
 	//////////////////////////////
 	///// CREATE INTERFACE ////
 	//////////////////////////////
+	
+	private void initGUI(){
+		
+		 PImage[] playPauseImgs = {b_PlayPause,b_PlayPauseR,b_PlayPauseR};
+		 PImage[] menuImgs = {b_MainMenu,b_MainMenuR,b_MainMenuR};
+		 
+		
+		 playPauseButton = cp5.addButton("MAIN MENU")
+				  .setPosition(theAppProfile.theWidth - 320, topMargin)
+				  .setImages(menuImgs)
+				  .updateSize()
+				  ;
+		 menuButton = cp5.addButton("PLAY/PAUSE")
+				  .setPosition(theAppProfile.theWidth - 320, topMargin *3.5f)
+				  .setImages(playPauseImgs)
+				  .updateSize()
+				  
+				  ;
+	}
 
 	private void doGUI(){
-		image(controlPanel, 0, 0);
+		
+		
 		/// parse score
 		
 		/// this is too fancy
-	
+		image(footerBground, 0, theAppProfile.theHeight - footerBground.height);
+		
 		//// need to assign this to specific game
 		/// not player score in general
-		theScore = String.valueOf(thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore);
-		
-		int hour = theTimer.hour();
-		int min = theTimer.minute();
-		int sec = theTimer.second();
-		
-		if(theTimer.hour() <=0){
-			hour = 000;
-		}
-		if(theTimer.minute() <=0){
-			min = 000;
-		}
-		if(theTimer.second() <=0){
-			sec = 000;
-		}
-		theTime = hour + ":" + min + ":" + sec + ":" + theTimer.milisecond(); /// String.valueOf(theAppProfile.scoredata);
 
-		/// diaplay config
-		theRank = theAppProfile.ranktypes.get(theAppProfile.rankID);
-		theGameType = theAppProfile.gameMode.get(theAppProfile.gameID);
+		image(controlPanel, 0, 0);
 
-		textFont(ScoreFont, 22);
-		fill(255,255,0);
-		text(theGameType, 160, 38);
-		text(theRank, 90, 70);
-		text(theTime, 470, 72);
-
-		fill(255);
-		
-		//// check for type of game it is
-		/// for multifeet, you give distance
-		/// not points
-		if(theGameType == "MULTIFEET"){
-
-			String tScore = theScore + " feet";
-			textFont(ScoreFont, 28);
-			text(tScore, 830, 100);
+		/*
+		if(isMenuShowing == false){
 			
-		} else {
-			textFont(ScoreFont, 28);
-			text(theScore, 830, 100);
+			theScore = String.valueOf(thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore);
 			
-		}
+			int hour = theTimer.hour();
+			int min = theTimer.minute();
+			int sec = theTimer.second();
+			
+			if(theTimer.hour() <=0){
+				hour = 000;
+			}
+			if(theTimer.minute() <=0){
+				min = 000;
+			}
+			if(theTimer.second() <=0){
+				sec = 000;
+			}
+			theTime = hour + ":" + min + ":" + sec + ":" + theTimer.milisecond(); /// String.valueOf(theAppProfile.scoredata);
+	
+			/// diaplay config
+			theRank = theAppProfile.ranktypes.get(theAppProfile.rankID);
+			theGameType = theAppProfile.gameMode.get(theAppProfile.gameID);
+	
+			textFont(mainNavFont, 28);
+			fill(whiteNav);
+			text(theGameType, theAppProfile.theWidth/2 - 150, 100);
+			text(theRank, theAppProfile.theWidth - 180, theAppProfile.theHeight - 50);
+			/// text(theTime, 125, theAppProfile.theHeight - 10);
+			
+			/// display current score
+			//// check for type of game it is
+			/// for multifeet, you give distance
+			/// not points
+			if(theGameType == "MULTIFEET"){
+
+				String tScore = theScore + " feet";
+				textFont(mainNavFont, 28);
+				text(tScore, 125, theAppProfile.theHeight - 50);
+				
+			} else {
+				textFont(mainNavFont, 28);
+				text(theScore, 125, theAppProfile.theHeight - 50);
+				
+			}
+			
+
 		
+		}
+
+		*/
 		
 	}
 	
@@ -1097,7 +1282,7 @@ public class Main extends PApplet{
 		boolean hasCheevo = false;
 		for(int j=0; j<thePlayerProfile.CheevoNames.size(); j++){
 			
-			println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
+			// println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
 			if(thePlayerProfile.CheevoNames.get(j).equals(cheevoName)){
 				hasCheevo = true;
 			}
@@ -1112,7 +1297,7 @@ public class Main extends PApplet{
 			for (int i=0; i<thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.size(); i++){
 				
 				if(cheevoName.equals(thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i))){
-					println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
+					// println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
 					// add cheevo to the player profile
 					thePlayerProfile.addAchievement(cheevoName);
 					/// re-init the cheevo display in "progress"
@@ -1186,25 +1371,20 @@ public class Main extends PApplet{
 		if (key == 'r') {
 
 		}
-		if (key == 'a'){
+		if (key == ' '){
 			
+			doPause();
 		}
 		
 		if (key == 's'){
 			thePlayerProfile.savePlayerData();
 		}
 		
-		if (key == 'p'){
-			if(isPaused){
-				isPaused = false;
-				
-			} else {
-				theMessaging.showGameMenu();
-				/// show default game
-				theMessaging.showGameInfo(0);
-				// it's paused! unPause it!
-				isPaused = true;
-			}
+		if (key == 'm'){
+			
+			doMenu();
+			
+			
 		}
 		
 		

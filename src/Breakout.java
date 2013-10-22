@@ -33,7 +33,7 @@ class Breakout{
     int impactCounter;
     
     PImage bottomBorder;
-    String borderPath = "data/bottom_border_breakout.png";
+    String borderPath = "data/games/bottom_border_breakout.png";
     
     /// the mass, the x, the y);
     Breakout(float m, float x, float y){

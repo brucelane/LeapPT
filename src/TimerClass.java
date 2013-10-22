@@ -2,7 +2,9 @@ import processing.core.*;
 // This class based on code found here: http://www.goldb.org/stopwatchjava.html
 
 class TimerClass {
-	int startTime = 0, stopTime = 0;
+	
+	int startTime = 0, stopTime = 0; 
+	int curTimeMarker = 0;
 	boolean running = false;  
   
 

@@ -48,8 +48,8 @@ class Spinner{
     
     PImage feetImg;
     PImage shadowImg;
-    String feetImgPath = "data/feet_circle_medium.png";
-    String shadowPath = "data/feet_shadow.png";
+    String feetImgPath = "data/games/feet_circle_medium.png";
+    String shadowPath = "data/games/feet_shadow.png";
     
     // listeners
     protected EventListenerList listenerList = new EventListenerList();
@@ -180,8 +180,6 @@ class Spinner{
 			
 			
 			if(curDistance > 5280 && curDistance < 5285){
-				
-				
 	        	launchCheevo(null, "Milestone");
 			}
 			

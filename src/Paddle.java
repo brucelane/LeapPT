@@ -14,7 +14,7 @@ class Paddle{
 	SoundControl theSoundControl;
 	
 	PImage paddleImg;
-	String paddlePath = "data/paddle_base_resized.png";
+	String paddlePath = "data/games/paddle_base_resized.png";
 	
 	PVector theFloor;
 

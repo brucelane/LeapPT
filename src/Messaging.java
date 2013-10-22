@@ -17,12 +17,28 @@ public class Messaging implements ControlListener{
 	 
 	 PImage bgroundImg;
 	 PImage tabMenuImg;
+	 PImage tabAboutImg;
 	 PImage tabStatsImg;
 	 PImage tabSettingsImg;
-	 PImage closeImg;
 	 PImage gameThumbImg;
 	 
+	 /// navigation images
+	 PImage aboutBtImg;
+	 PImage gamesBtImg;
+	 PImage progBtImg;
+	 PImage settBtImg;
+	 PImage aboutBtImgR;
+	 PImage gamesBtImgR;
+	 PImage progBtImgR;
+	 PImage settBtImgR;
+	 //
+	 PImage closeImg;
+	 PImage closeImgR;
+	 PImage playGameImg;
+	 PImage playGameImgR;
+
 	 String bgroundImgPath = "data/message_bground.png";
+	 String tabAbtImgPath = "data/tab_about.png";
 	 String tabMenuImgPath = "data/tab_game_menu.png";
 	 String tabStatsImgPath = "data/tab_stats.png";
 	 String tabSettgsImgPath = "data/tab_settings.png";
@@ -37,14 +53,18 @@ public class Messaging implements ControlListener{
 	 ControlFont controlPFont;
 	 ControlFont navPFont;
 	 
+	 /// color for nav fonts
+	 int blueNav;
+	 int whiteNav;
 	 //// interface elements
 	 ControlP5 cp5;
 	 ControlP5 ControlEvent;
 	 
 	 // general ui
 	 Button closeButton;
+	 Button aboutButton;
 	 Button statsButton;
-	 Button menuButton;
+	 Button gamesButton;
 	 Button settingsButton;
 	 
 	 // menu ui
@@ -110,13 +130,27 @@ public class Messaging implements ControlListener{
 		 
 		 thePlayerProfile = thePlayerProfile.getInstance();
 		 
-		 /// bgroundImg = pApp.loadImage(bgroundImgPath);
-		 
+		 tabAboutImg = pApp.loadImage(tabAbtImgPath);
 		 tabMenuImg = pApp.loadImage(tabMenuImgPath);
 		 tabStatsImg = pApp.loadImage(tabStatsImgPath);
 		 tabSettingsImg = pApp.loadImage(tabSettgsImgPath);
+
+		 closeImg = pApp.loadImage("data/close_button.png");
+		 closeImgR = pApp.loadImage("data/close_buttonR.png");
 		 
-		 closeImg = pApp.loadImage(closeImgPath);
+		 playGameImg = pApp.loadImage("data/butt_playGame.png");
+		 playGameImgR = pApp.loadImage("data/butt_playGameR.png");
+		 
+		 /// main nav images
+		 aboutBtImg = pApp.loadImage("data/butt_about.png");
+		 gamesBtImg = pApp.loadImage("data/butt_games.png");
+		 progBtImg = pApp.loadImage("data/butt_progress.png");
+		 settBtImg = pApp.loadImage("data/butt_settings.png");
+		 aboutBtImgR = pApp.loadImage("data/butt_aboutR.png");
+		 gamesBtImgR = pApp.loadImage("data/butt_gamesR.png");
+		 progBtImgR = pApp.loadImage("data/butt_progressR.png");
+		 settBtImgR = pApp.loadImage("data/butt_settingsR.png");
+		 
 		 
 		 bgX = theAppProfile.theWidth/2 - tabMenuImg.width/2;		 
 		 bgY = theAppProfile.theHeight/2 - tabMenuImg.height/2;
@@ -139,6 +173,8 @@ public class Messaging implements ControlListener{
 		 navPFont = new ControlFont(BodyFont, 241);
 		 controlPFont = new ControlFont(ButtonFont,241);
 		 
+		 blueNav = pApp.color(0,123,234);
+		 whiteNav = pApp.color(255,255,255);
 		 theTimer = new TimerClass();
 		 
 		 initGUI();
@@ -151,11 +187,12 @@ public class Messaging implements ControlListener{
 		 hideGameMenuButtons();
 		 hideSettingsMenuButtons();
 		 closeButton.hide(); 
-		 menuButton.hide();
+		 gamesButton.hide();
 		 statsButton.hide();
 		 settingsButton.hide();
 		 statTextArea.hide();  
 		 gameInfoTextArea.hide();
+		 aboutButton.hide();
 	 }
 	 
 	 public void showBasicInterface(){
@@ -184,6 +221,10 @@ public class Messaging implements ControlListener{
 		 } else if (messageState == "loseMessage"){ 
 			 
 			 // showLose();
+			 
+		 } else if (messageState == "showAbout"){ 
+			 
+			 pApp.image(tabAboutImg, bgX, bgY);
 			 
 		 } else if (messageState == "showStats"){
 			
@@ -216,18 +257,14 @@ public class Messaging implements ControlListener{
 		 /// pApp.text(tHead, bgX + theMargin, bgY + theMargin);
 		 // pApp.text(tMess, bgX + theMargin, bgY + theMargin + 50);
 	 }
-	 
-
-	 
+	  
 	 ///////////////////////////////////////////////
 	 /////// SHOW and HIDE CONFIGURATIONS ////////
 	 //////////////////////////////////////
 	 
 	 public void showWin(){
 		 // buttons
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
+		 showMainMenuButtons();
 		 
 		 /// text
 		 statTextArea.hide();    
@@ -236,37 +273,66 @@ public class Messaging implements ControlListener{
 	 
 	 public void showLose(){
 		 // buttons
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
+		 showMainMenuButtons();
 		 
 		 /// text
 		 statTextArea.hide();    
 	 }
-
+	 
+	 public void showAbout(){
+		 
+		 messageState = "showAbout";		 
+		 /// activate button style
+		 
+		  cp5.getController("ABOUT")
+		  .setColorBackground(pApp.color(125,125,125,165))
+		  ;
+		 
+		  cp5.getController("GAMES")
+		  .setColorBackground(pApp.color(200,200,200,0))
+		  ;
+		  
+		  cp5.getController("PROGRESS")
+		  .setColorBackground(pApp.color(200,200,200,0))
+		  ;
+		  
+		  cp5.getController("SETTINGS")
+		  .setColorBackground(pApp.color(200,200,200,0))
+		  ;
+		  
+		 // buttons
+		  showMainMenuButtons();
+		 //		 
+		 hideSettingsMenuButtons();
+		 hideGameMenuButtons();
+		 showMainMenuButtons();
+		 /// show and hide text
+		 statTextArea.hide();
+		 gameInfoTextArea.hide();
+		 
+	 }
 	 public void showStats(){
 		 setStats();
 		 
 		 messageState = "showStats";
 		 
 		 /// activate button style
+		 cp5.getController("ABOUT")
+		  .setColorBackground(pApp.color(200,200,200,0))
+		  ;
+		 
+		  cp5.getController("GAMES")
+		  .setColorBackground(pApp.color(200,200,200,0))
+		  ;
 		  cp5.getController("PROGRESS")
 		  .setColorBackground(pApp.color(125,125,125,165))
-
-		  ;
-		  cp5.getController("GAMES MENU")
-		  .setColorBackground(pApp.color(200,200,200,0))
-
 		  ;
 		  cp5.getController("SETTINGS")
 		  .setColorBackground(pApp.color(200,200,200,0))
-
 		  ;
 		  
 		 // buttons
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
+		  showMainMenuButtons();
 		 //
 		 
 		 hideSettingsMenuButtons();
@@ -279,15 +345,16 @@ public class Messaging implements ControlListener{
 	 
 	 public void showGameMenu(){
 		 messageState = "showMenu";
-		 // buttons
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
-		 settingsButton.show();	
+		
 		 
 		 /// do button styles
 		 /// activate button style
-		  cp5.getController("GAMES MENU")
+		 cp5.getController("ABOUT")
+		  .setColorBackground(pApp.color(200,200,200,0))
+
+		  ;
+		 
+		  cp5.getController("GAMES")
 		  .setColorBackground(pApp.color(125,125,125,165))
 
 		  ;
@@ -303,10 +370,21 @@ public class Messaging implements ControlListener{
 		 
 		 hideSettingsMenuButtons();
 		 showGameMenuButtons();
+		 showMainMenuButtons();
 
 		 /// text
 		 statTextArea.hide();   
 		 gameInfoTextArea.show();
+	 }
+	 
+	 public void showMainMenuButtons(){
+		 // buttons
+		 closeButton.show();
+		 aboutButton.show();
+		 gamesButton.show();
+		 statsButton.show();
+		 settingsButton.show();	
+		 
 	 }
 	 
 	 public void showGameMenuButtons(){
@@ -336,14 +414,16 @@ public class Messaging implements ControlListener{
 	 
 	 public void showSettings(){
 		 messageState = "settings";
-		 // buttons
-		 closeButton.show();
-		 menuButton.show();
-		 statsButton.show();
-		 
+		
 		 /// do button styles
 		 /// activate button style 
-		  cp5.getController("GAMES MENU")
+		 
+		 cp5.getController("ABOUT")
+		  .setColorBackground(pApp.color(200,200,200,0))
+
+		  ;
+		 
+		  cp5.getController("GAMES")
 		  .setColorBackground(pApp.color(200,200,200,0))
 
 		  ;
@@ -355,7 +435,8 @@ public class Messaging implements ControlListener{
 		  .setColorBackground(pApp.color(125,125,125,165))
 
 		  ;
-		 
+		  
+		  showMainMenuButtons();
 		 showSettingsMenuButtons();
 		 hideGameMenuButtons();
 
@@ -412,12 +493,8 @@ public class Messaging implements ControlListener{
 		 } catch (Exception e){
 			 
 			 pApp.println("game image error:  " + e);
-		 }
-		 
-		 
+		 } 
 	 }
-	 
-	 
 	 
 	 ///////// set achievments from player profile ////////////
 	 
@@ -446,7 +523,6 @@ public class Messaging implements ControlListener{
 						 String cheevDesc = thePlayerProfile.GameStats.get(j).CheevoDescription.get(k);
 						 String cheevPath = thePlayerProfile.GameStats.get(j).CheevoImage.get(k);
 						 
-						 pApp.println("CURRENT PLAYER CHEEVOS: " + tCheevName);
 						 Achievment tCheevObj  = new Achievment(tCheevName, cheevDesc, cheevPath);
 						 tCheevObj.tX = chvDispX;
 						 tCheevObj.tY = chvDispY + (i*chivHeight);
@@ -460,13 +536,12 @@ public class Messaging implements ControlListener{
 			
 			
 		 }
-		 
+		 showAchievments();
 	 }
 	 
 	 public void showAchievments(){
 		 
-		 for(int i=0; i<PlayerAchievments.size(); i++){
-			 
+		 for(int i=0; i < PlayerAchievments.size(); i++){
 			 Achievment tCheev = PlayerAchievments.get(i);
 			 tCheev.displayCheevo();
 		 }
@@ -515,6 +590,7 @@ public class Messaging implements ControlListener{
 							statData += "current level: " + thePlayerProfile.GameStats.get(i).curLevel + "\n";
 						}
 			    	}
+			    	statData += "\n";
 
 			    }
 			    
@@ -535,22 +611,19 @@ public class Messaging implements ControlListener{
 		 
 	 }
 	 
-	 
 	 ///////// INTERFACE ELEMENTS
 
 	public void initGUI(){
 		 
 		 
 		 //// GENERAL UI //////////
-		 
+		PImage[] closeMenuImg = {closeImg,closeImgR,closeImgR};
 		 closeButton = cp5.addButton("CLOSE")
 				  .setPosition(bgX + tabMenuImg.width - 60 - theMargin/2, bgY + theMargin/2)
 				  .updateSize()
-				  .setImage(closeImg)
+				  .setImages(closeMenuImg)
 				  .updateSize()
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,165))
-			      .setColorActive(pApp.color(200,200,200,165))
+			     
 				  ;
 				 
 				 
@@ -597,23 +670,17 @@ public class Messaging implements ControlListener{
 				      .setColorBackground(pApp.color(200,200,200,35))
 				      .setColorActive(pApp.color(255,35))
 					  ;
-						 
+	 
+		hideSettingsMenuButtons();	
+		
+		/// GAME MENU INTERFACE ///////
 
-		 
-				 
-		hideSettingsMenuButtons();		 
-		/// MENU WINDOW INTERFACE ///////
-				 
+		PImage[] playGameImgs = {playGameImg,playGameImgR,playGameImgR};
 		playButton = cp5.addButton("PLAY GAME")
 				  .setPosition(bgX + tabMenuImg.width - theMargin -150, bgY + tabMenuImg.height - theMargin * 3)
-				  // .setImage(closeImg)
-				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,65))
-			      .setColorBackground(pApp.color(255, 65))
-			      .setColorActive(pApp.color(200,200,200,165))
+				  .setImages(playGameImgs)
+				  .updateSize()
 				  ;
-		
-
 
 		/////// GAME BUTTONS ////////////////////////
 		game0Button = cp5.addButton("GAME 0")
@@ -679,93 +746,51 @@ public class Messaging implements ControlListener{
 		
 		hideGameMenuButtons();
 		
-
 		/// MAIN MESSAGING WINDOW INTERFACE ///////
-
-		 menuButton = cp5.addButton("GAMES MENU")
+		
+		PImage[] aboutImgs = {aboutBtImg,aboutBtImgR,aboutBtImgR};
+		PImage[] gamesImgs = {gamesBtImg,gamesBtImgR,gamesBtImgR};
+		PImage[] progImgs = {progBtImg,progBtImgR,progBtImgR};
+		PImage[] settImgs = {settBtImg,settBtImgR,settBtImgR};
+		
+		aboutButton = cp5.addButton("ABOUT")
 
 				  .setPosition(bgX + theMargin, bgY + theMargin)
-				  .setSize(170,30)
+				  .setImages(aboutImgs)
 				  .updateSize()
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,0))
-			      .setColorActive(pApp.color(255,0))
+				  ;
+		 
+		aboutButton.hide();
+		
+		 gamesButton = cp5.addButton("GAMES")
+
+				  .setPosition(bgX + theMargin*2 + 150, bgY + theMargin)
+				  .setImages(gamesImgs)
+				  .updateSize()
 				  ;
 				 
 				 
-		 menuButton.hide(); 
+		 gamesButton.hide(); 
 		 
 
 		 statsButton = cp5.addButton("PROGRESS")
 
-				  .setPosition(bgX + 260, bgY + theMargin)
-				  .setSize(140,30)
+				  .setPosition(bgX + theMargin*3 + 150*2, bgY + theMargin)
+				  .setImages(progImgs)
 				  .updateSize()
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,0))
-			      .setColorActive(pApp.color(255,0))
 				  ;
 		
 		 
 		 statsButton.hide(); 
 		 settingsButton = cp5.addButton("SETTINGS")
 
-				  .setPosition(bgX + 460, bgY + theMargin)
-				  .setSize(140,30)
+				  .setPosition(bgX + theMargin*4 + 150*3, bgY + theMargin)
+				  .setImages(settImgs)
 				  .updateSize()
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,0))
-			      .setColorActive(pApp.color(255,0))
 				  ;
 		 settingsButton.hide();	 
-		 
-				 
-		 
-		 //// SET FORMATTING FOR BUTTONS //////// 
 
-		 menuButton.captionLabel().getStyle().marginTop = 2;
-		 menuButton.captionLabel().getStyle().marginBottom = 2;
-		 menuButton.captionLabel().getStyle().marginLeft = 2;
-		 menuButton.captionLabel().getStyle().marginRight = 2;
-		 // menuButton.captionLabel().align(0,1);
-		 
-		 statsButton.captionLabel().getStyle().marginTop = 2;
-		 statsButton.captionLabel().getStyle().marginBottom = 2;
-		 statsButton.captionLabel().getStyle().marginLeft = 2;
-		 statsButton.captionLabel().getStyle().marginRight = 2;
-		// menuButton.captionLabel().align(0,1);
-		 
-		 settingsButton.captionLabel().getStyle().marginTop = 2;
-		 settingsButton.captionLabel().getStyle().marginBottom = 2;
-		 settingsButton.captionLabel().getStyle().marginLeft = 2;
-		 settingsButton.captionLabel().getStyle().marginRight = 2;
-		// menuButton.captionLabel().align(0,1);
 		
-		 /// top level menu buttons
-		 cp5.getController("PLAY GAME")
-		 .getCaptionLabel()
-		 .setFont(controlPFont)
-		 .setSize(24)
-		 ;
-		 
-		 
-		 cp5.getController("GAMES MENU")
-		 .getCaptionLabel()
-		 .setFont(controlPFont)
-		 .setSize(24)
-		 ;
-
-		 cp5.getController("PROGRESS")
-		 .getCaptionLabel()
-		 .setFont(controlPFont)
-		 .setSize(24)
-		 ;
-
-		 cp5.getController("SETTINGS")
-		 .getCaptionLabel()
-		 .setFont(controlPFont)
-		 .setSize(24)
-		 ;
 		 
 		 //// settings button
 		 cp5.getController("SAVE GAME")

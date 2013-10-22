@@ -38,6 +38,7 @@ class Achievment {
 	
 	public void displayCheevo(){
 		
+		pApp.fill(255);
 		pApp.textFont(HeaderFont, 20);
 		pApp.text(cheevName, tX + theMargin, tY);
 		pApp.textFont(DescFont, 16);

@@ -17,7 +17,7 @@ class Repulsor{
     float G;
     
     PImage bgroundImg;
-    String bgImgPath = "data/basketball_court2.png";
+    String bgImgPath = "data/games/basketball_court2.png";
     
     float friction = .01f; /// this is the slowdown for the movement
     
