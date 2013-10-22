@@ -21,6 +21,8 @@ public class FingerDrums {
 	PImage theBground;
 	String bgroundPath;
 	//TimerClass seqTimer;
+    /// game messages
+    GameMessaging thePopup;
 	
 	// drums areas
 	private float kickX = 550;
@@ -36,7 +38,7 @@ public class FingerDrums {
 	private float hihatWidth = 137;
 	private float hihatHeight = 38;
 	// sequencer
-	private String[] patternz={"10002000","13231323","10201020","10201120"};
+	private String[] patternz={"10101010","10002000","10201020","10201120","13231323"};
 	private int noteCount = 8; // size of the pattern
 	private int[] notes;
 	private int[] pattern;
@@ -44,7 +46,6 @@ public class FingerDrums {
 	private boolean seqStarted = false;
 	//private float tempoMs = 1000;
 	private int currentNote = 0;
-	private int currentPattern = 0;
 	private int currentPatternNotesCount = 0;
 	/// current hits
 	private int currentHit = 0;
@@ -59,6 +60,7 @@ public class FingerDrums {
 	private int kickColor = 192;
 	private int snareColor = 192;
 	private int hihatColor = 192;
+    private int curLevel = 0;
 	
 	// listeners
 	protected EventListenerList listenerList = new EventListenerList();
@@ -76,7 +78,7 @@ public class FingerDrums {
     	theSoundControl = theSoundControl.getInstance();
      	/// player profile gives you scoring
     	thePlayerProfile = thePlayerProfile.getInstance();
-		
+    	thePopup = new GameMessaging();
 		
     	/// load the bground image
     	bgroundPath = "data/games/fingerdrums.png";
@@ -86,8 +88,10 @@ public class FingerDrums {
     	notes = new int[noteCount];
     	pattern = new int[noteCount];
   	  	playMode = true;
+  	  	/// show first message
+		thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Listen to the drums part.\n\nThen try do play the same pattern!\nLet's start with 4 kick-drums", 255, 255);
 	}
-	
+		
 	public void checkHit(float tx, float ty, float tz){
 		
 		//// if a finger is over the "hot" area
@@ -156,11 +160,32 @@ public class FingerDrums {
 							else
 							{
 								pApp.println( "lost" );
-								launchCheevo(null, "no");
+					   			thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", 255, 255);
+					   		 
 							}
+
 							// leapmode end
 							seqStarted = false;
 							playMode = true;
+							// change current level
+							if ( curLevel < patternz.length-1 )
+							{
+								curLevel++;
+							}
+							else
+							{
+								curLevel = 0;
+							}
+							switch (curLevel)
+							{
+								case 1:
+									thePopup.initMessage(0, 0, "LEVEL 2", "Listen to the drums part.\n\nMeet the snare drum", 255, 255);
+							   		break;
+						    		
+						    	default:
+									thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Listen to the drums part.\n\nThen try do play the same pattern!", 255, 255);					    		
+						    		break;				    		
+					    	} // endswitch
 						}
 						else
 						{
@@ -170,25 +195,8 @@ public class FingerDrums {
 					 
 					
 				}
-				
-				//// pApp.println("YOU HAVE HIT THE DRUM");
-				//doImpactSounds();
-				
-				//// should put a timer here
-				//// so it doesn't multi-fire
-				//curHits +=1;
-				/// check for achievment
-				/// looks for the achievment listing
-				/// in the game info json file
-				/// you can rename the achievement,
-				/// change its description, change its icon
-				//			if(curHits > 5){
-				//				launchCheevo(null, "Can I Kick It?");
-				//				
-				//			}
 			}
 		}
-
 	}
 	 private void initLeap()
 	 {	
@@ -201,7 +209,7 @@ public class FingerDrums {
 		// setup sequencer pattern
 		currentPatternNotesCount = 0;
 		for (int i = 0; i < noteCount; i++) {
-			int element = Integer.parseInt( patternz[currentPattern].substring( i, i+1 ) );
+			int element = Integer.parseInt( patternz[curLevel].substring( i, i+1 ) );
 			pApp.println("currentPatternNotesCount:" + currentPatternNotesCount + " element:" + element);
 			pattern[i] = element;
 			// get rid of silences
@@ -210,15 +218,7 @@ public class FingerDrums {
 				notes[currentPatternNotesCount++] = element;
 			}
 		}
-		if ( currentPattern < patternz.length-1 )
-		{
-			currentPattern++;
-		}
-		else
-		{
-			currentPattern = 0;
-		}
-		pApp.println("initPattern, currentPattern:" + currentPattern + " patternz.length:" + patternz.length );
+		
 	 }
 	 private void hitDrum( int hit )
 	 {
@@ -254,6 +254,8 @@ public class FingerDrums {
 		if ( playMode == true )
 		{
 			pApp.println("playmode started");
+			// close message
+			if ( currentNote == noteCount - 1 ) thePopup.closeMessage();
 			// if we are on 1st beat and the sequencer has not started, we start playback
 			if ( seqStarted == false && currentNote == 0 )
 			{
@@ -284,15 +286,6 @@ public class FingerDrums {
 				pApp.println( "leapmotion game mode" );
 				initLeap();
 				seqStarted = true;				
-			}
-			else
-			{
-				//delay the finger hits
-//				if ( fingerReady == false )
-//				{
-//					pApp.println( "fingerReady:" + fingerReady );
-//					fingerReady = true;				
-//				}
 			}
 		}
 	 }
@@ -330,6 +323,11 @@ public class FingerDrums {
 		pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
 		// if animation finished we are ready for another hit
 		if ( fadeReady ) fingerReady = true;
+	    if(thePopup.showingMessage == true)
+	    {
+	    	thePopup.drawMessage();
+	    	   
+	    }
 	}
 	
 	
