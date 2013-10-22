@@ -136,7 +136,7 @@ public class FingerDrums {
 						if ( notes[currentHit] == fingerHit )
 						{
 							pApp.println( " win:" + win );
-							
+							thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 1;
 						}
 						else
 						{
@@ -150,12 +150,13 @@ public class FingerDrums {
 							// check if won achievement
 							if ( win )
 							{
+								thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 10;
 								launchCheevo(null, "Can I Kick It?");
 							}
 							else
 							{
 								pApp.println( "lost" );
-								//launchCheevo(null, "Can I Kick It?");
+								launchCheevo(null, "no");
 							}
 							// leapmode end
 							seqStarted = false;
@@ -300,7 +301,6 @@ public class FingerDrums {
 		//// draw background
 		pApp.image(theBground, 0, 0);
 
-		//pApp.strokeWeight(0); // Eric, check if needs to be reset in main.java when leaving this game
 		pApp.fill(255,0,0,165);
 		fadeReady = true;
 		// kick	
