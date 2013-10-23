@@ -86,6 +86,7 @@ public class Messaging implements ControlListener{
 	 //
 	 Textarea statTextArea;
 	 Textarea gameInfoTextArea;
+	 Textarea aboutTextArea;
 	 // 
 	 boolean showGameInfo = false;
 	 
@@ -267,7 +268,8 @@ public class Messaging implements ControlListener{
 		 showMainMenuButtons();
 		 
 		 /// text
-		 statTextArea.hide();    
+		 statTextArea.hide();  
+		 
 
 	 }
 	 
@@ -306,9 +308,12 @@ public class Messaging implements ControlListener{
 		 hideSettingsMenuButtons();
 		 hideGameMenuButtons();
 		 showMainMenuButtons();
+		 
 		 /// show and hide text
+		 aboutTextArea.show();
 		 statTextArea.hide();
 		 gameInfoTextArea.hide();
+		 
 		 
 	 }
 	 public void showStats(){
@@ -339,6 +344,7 @@ public class Messaging implements ControlListener{
 		 hideGameMenuButtons();
 
 		 /// show and hide text
+		 aboutTextArea.hide();
 		 statTextArea.show();
 		 gameInfoTextArea.hide();
 	 }
@@ -373,6 +379,7 @@ public class Messaging implements ControlListener{
 		 showMainMenuButtons();
 
 		 /// text
+		 aboutTextArea.hide();
 		 statTextArea.hide();   
 		 gameInfoTextArea.show();
 	 }
@@ -436,11 +443,12 @@ public class Messaging implements ControlListener{
 
 		  ;
 		  
-		  showMainMenuButtons();
+		 showMainMenuButtons();
 		 showSettingsMenuButtons();
 		 hideGameMenuButtons();
 
 		 /// text
+		 aboutTextArea.hide();
 		 statTextArea.hide();  
 		 gameInfoTextArea.hide();
 	 }
@@ -608,6 +616,24 @@ public class Messaging implements ControlListener{
 		 	String theCleaner = "";
 		 	statTextArea.setText(theCleaner);
 		    statTextArea.setText(statData);
+		 
+	 }
+	 
+	 private void parseAboutText(){
+		 String aboutData;
+		 aboutData = "Visual Touch Therapy is a software program that uses the Leap Motion gesture controller as an interface for physical therapy training for people with difficulty using their motor skills, such as those with spinal cord injuries, head injuries, nerve damage, or stroke patients.";
+		 aboutData += "\n\nIt uses conventional video game and sports games and imagery in conjunction with repetitive movement exercises as well as hand-eye co-ordination challenges, to provide a method of therapy that is rewarding and gives more immediate feedback than traditional methods.";
+		 aboutData += "\n\nEach of these games utilize a different motion-- side to side, 'swipes', tap, push and pull.";
+		 aboutData += "\n\nThe software platform is Processing/JAVA and the hardware is a traditional Leap Motion controller.";
+		 
+		 setAboutText(aboutData);
+		 
+	 }
+	 
+	 private void setAboutText(String aboutData){
+		    aboutTextArea.setText(aboutData);
+		 
+		 
 		 
 	 }
 	 
@@ -856,7 +882,19 @@ public class Messaging implements ControlListener{
 		 ;
 		 
 		 /////// TEXT BOXES ////////////////
-		 
+		 /// about text area
+		 aboutTextArea = cp5.addTextarea("abouttext")
+                 .setPosition(bgX + 38, bgY + 138)
+                 .setSize(310,268)
+                 .setFont(BodyFont)
+                 .setLineHeight(18)
+                 .setColor(pApp.color(255))
+                 .setColorBackground(pApp.color(255,65))
+                 .setColorForeground(pApp.color(255))
+		 		 .setColorActive(pApp.color(115,176,230));
+                 ;
+                 
+         aboutTextArea.hide();
 		 //// stat window
 		 statTextArea = cp5.addTextarea("stattext")
                  .setPosition(bgX + 20, bgY + 140)
@@ -890,7 +928,13 @@ public class Messaging implements ControlListener{
                  
           gameInfoTextArea.hide();     
          
-				 
+			
+          
+          
+          
+          ////// INIT ABOUT TEXT. SAVE THIS FOR LAST SINCE 
+          ////// it only needs to happen once
+          parseAboutText();
 	 }
 	 
 	 /// I shouldn't need this since it's listening in the main

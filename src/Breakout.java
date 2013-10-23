@@ -1,6 +1,8 @@
 import processing.core.*;
 import processing.opengl.PGraphicsOpenGL;
 
+import java.util.ArrayList;
+
 
 class Breakout{
 	
@@ -30,7 +32,18 @@ class Breakout{
     boolean hasImpact = false;
     boolean hasDamage = false;
     
+    
+    /// box vars
+    int numRows;
+    int numCols;
+    int numBoxes;
+    int boxColor;
+    
     int impactCounter;
+    
+    int curLevel = 1;
+    
+    ArrayList<BreakoutBox> breakBox;
     
     PImage bottomBorder;
     String borderPath = "data/games/bottom_border_breakout.png";
@@ -55,6 +68,28 @@ class Breakout{
         
         bottomBorder = pApp.loadImage(borderPath);
         
+        /// setup boxes
+        numCols = 8;
+        numRows = 2;
+        
+        
+        spawnBoxes(curLevel);
+        
+    }
+    
+    private void spawnBoxes(int tLevel){
+    	
+    	float boxWidth = theAppProfile.theWidth/numCols;
+    	float boxHeight = 20f;
+    	boxColor = pApp.color(255, 155, 0,165);
+    	for (int i = 0; i< numRows; i++){
+    		
+    		for(int j = 0; j<numCols; j++){
+    			//// x position, y position, z position, width, height, color
+    			
+    			BreakoutBox tBox = new BreakoutBox(j * boxWidth, i* boxHeight, 0.0f, boxWidth, boxHeight, boxColor);
+    		}
+    	}
     }
     
     /// force
@@ -161,6 +196,8 @@ class Breakout{
     
     void display(){
     	
+    	drawBoxes();
+    	
     	if(hasDamage && impactCounter >0){
     		
     		  pApp.fill(impactCounter,0,0);
@@ -194,6 +231,11 @@ class Breakout{
         
         
         pApp.image(bottomBorder, 0, theAppProfile.theHeight - bottomBorder.height);
+    }
+    
+    private void drawBoxes(){
+    	
+    	
     }
     
 }

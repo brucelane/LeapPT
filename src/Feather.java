@@ -176,13 +176,13 @@ class Feather{
 		        location = new PVector(theAppProfile.theWidth/2, respawnOrigin);
 		        velocity = new PVector(0,pApp.random(0,1.50f));
 		        acceleration = new PVector(0.0f,0.12f);
-		        gravityBase = new PVector(0, 0.0125f);
+		        gravityBase = new PVector(0, 0.0225f);
 		        gravity = new PVector(gravityBase.x, gravityBase.y);
 		        ////
 		        wind = new PVector(0, 0.0f);
 		        spin = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
 		        /// modifiers
-		   		windModifier = .0075f;
+		   		windModifier = .05f;
 
 		        break;
 		  
@@ -192,13 +192,13 @@ class Feather{
 	    		location = new PVector(theAppProfile.theWidth/2, respawnOrigin);
 		        velocity = new PVector(0,pApp.random(0,1.50f));
 		        acceleration = new PVector(0.0f,0.12f);
-		        gravityBase = new PVector(0, 0.0175f);
+		        gravityBase = new PVector(0, 0.03f);
 		        gravity = new PVector(gravityBase.x, gravityBase.y);
 		        ////
 		        wind = new PVector(0, 0.0f);
 		        spin = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
 		        /// modifiers
-		        windModifier = .0035f; // each level the modifier is less
+		        windModifier = .003f; // each level the modifier is less
 		        
 	    		break;
 	    ///////////// TIMER LEVEL
@@ -207,14 +207,13 @@ class Feather{
 	    		location = new PVector(theAppProfile.theWidth/2, respawnOrigin);
 		        velocity = new PVector(0,pApp.random(0,1.50f));
 		        acceleration = new PVector(0.0f,0.12f);
-		        gravityBase = new PVector(0, 0.0175f);
+		        gravityBase = new PVector(0, 0.04f);
 		        gravity = new PVector(gravityBase.x, gravityBase.y);
 		        ////
 		        wind = new PVector(0, 0.0f);
 		        spin = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
 		        /// modifiers
-		        windModifier = .0035f; // each level the modifier is less
-		        
+		        windModifier = .001f; // each level the modifier is less
 	    		
 	    		break;
 	    		
@@ -224,13 +223,13 @@ class Feather{
 	    		location = new PVector(theAppProfile.theWidth/2, respawnOrigin);
 		        velocity = new PVector(0,pApp.random(0,1.50f));
 		        acceleration = new PVector(0.0f,0.12f);
-		        gravityBase = new PVector(0, 0.0175f);
+		        gravityBase = new PVector(0, 0.05f);
 		        gravity = new PVector(gravityBase.x, gravityBase.y);
 		        ////
 		        wind = new PVector(0, 0.0f);
 		        spin = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
 		        /// modifiers
-		        windModifier = .0025f; // each level the modifier is less
+		        windModifier = .001f; // each level the modifier is less
 		        
 	    		break;
 	    		
@@ -471,10 +470,7 @@ class Feather{
     		
     		
     	} // endswitch
-    	
-    	
-    	
-        
+
     }
     
     
@@ -493,8 +489,8 @@ class Feather{
         	 spin.sub(f);
         }
 
-        
-        /// acceleration.add(f);
+        /// this gives it x movement, which we don't want
+        // acceleration.add(f);
         
     }
     
@@ -510,13 +506,25 @@ class Feather{
     }
     
     public void addLift(float theY){
+    	/// if there's a lot of fingers, ramp the antigravity down
     	
+    	/// if there's not so many fingers, ramp the antigravity up
+    	
+    	/// at higher levels, use finger position to lessen velocity
     	/// take the amount of gravity added
-    	if(theAppProfile.curNumFingers > 3){
-    		wind.y -= windModifier;
+    	if(theAppProfile.curNumFingers >= 4){
+    		wind.y -= windModifier + .004;
     		
     	}
-      	if(theAppProfile.curNumFingers <= 3){
+      	if(theAppProfile.curNumFingers == 3){
+    		wind.y -= windModifier + .003;
+    		
+    	}
+    	if(theAppProfile.curNumFingers == 2){
+    		wind.y -= windModifier + .002;
+    		
+    	}
+      	if(theAppProfile.curNumFingers == 1){
     		wind.y -= windModifier + .001;
     		
     	}
@@ -524,26 +532,28 @@ class Feather{
       	/// if above the feather, reduce velocity even more
     	if(theY < location.y){
     		
-    		float velAdj = pApp.map(theY - location.y, theAppProfile.theHeight, 0, 0, 1)*.1f;
+    		float velAdj = pApp.map(theY - location.y, theAppProfile.theHeight, 0, 0, 1)*.005f;
     		
     		velocity.y -= velAdj;
     		
     	}
     	
-    	/// if there's a lot of fingers, ramp the antigravity down
+    	// normalize wind
+    	if(wind.y<0 && theAppProfile.curNumFingers <=0){
+    		
+    		wind.y += .01;
+    	}
     	
-    	/// if there's not so many fingers, ramp the antigravity up
-    	
-    	/// at higher levels, use finger position to lessen velocity
+
     }
     public void update(){
     	/// normalize gravity
     	
     	if(gamePaused == false){
     		
-    		if(wind.y <= 0.0175f){
+    		if(wind.y <= 0.0145f){
         		
-        		wind.y += .01;
+        		wind.y += .02;
         		
         		/// pApp.println("Grav: " + gravity.y);
         	}
@@ -758,9 +768,12 @@ class Feather{
 			  /// do numbers
 			pApp.textFont(timerFont, 20);
 			  /// do z index to match feather position
-			pApp.text(theTimer.second() + " : 15 seconds", crossCntrX + crossLine/1.5f,crossCntrY -5);
+			pApp.text(theTimer.second() + " seconds", crossCntrX + crossLine/1.8f,crossCntrY -5);
 			  //pApp.textFont(readoutFontM);
-			pApp.text(" " + theAppProfile.curNumFingers + " x number fingers", crossCntrX + crossLine/2,crossCntrY + 20);
+			float fakeNums = location.y -  crossCntrY;
+			pApp.textFont(timerFont, 14);
+			pApp.text(" " + theAppProfile.curNumFingers + " x number fingers", crossCntrX + crossLine/2,crossCntrY + 15);
+			pApp.text(" v sync: " + fakeNums, crossCntrX + crossLine/2,crossCntrY + 30);
 			  //pApp.textFont(readoutFont);
 			  ///pApp.text(theLat, screenPos.x + 5,crossCntrY + 45);
 

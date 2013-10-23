@@ -60,7 +60,8 @@ public class FingerDrums {
 	private int kickColor = 192;
 	private int snareColor = 192;
 	private int hihatColor = 192;
-    private int curLevel = 0;
+    private int curLevel = -1;
+    private boolean gamePaused = true;
 	
 	// listeners
 	protected EventListenerList listenerList = new EventListenerList();
@@ -165,22 +166,18 @@ public class FingerDrums {
 							}
 
 							// leapmode end
+						    gamePaused = true;
 							seqStarted = false;
 							playMode = true;
-							// change current level
-							if ( curLevel < patternz.length-1 )
-							{
-								curLevel++;
-							}
-							else
-							{
-								curLevel = 0;
-							}
+							
 							switch (curLevel)
 							{
 								case 1:
-									thePopup.initMessage(0, 0, "LEVEL 2", "Listen to the drums part.\n\nMeet the snare drum", 255, 255);
+									thePopup.initMessage(0, 0, "LEVEL 2", "Listen to the drums part.\n\nMeet the snare drum.", 255, 255);
 							   		break;
+								case 2:
+									thePopup.initMessage(0, 0, "LEVEL 3", "Listen to the drums part.\n\n", 255, 255);
+									break;
 						    		
 						    	default:
 									thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Listen to the drums part.\n\nThen try do play the same pattern!", 255, 255);					    		
@@ -249,45 +246,65 @@ public class FingerDrums {
 	 }
 	 public void secChanged( int currentSec )
 	 {
-		currentNote = currentSec % noteCount;
-		
-		if ( playMode == true )
-		{
-			pApp.println("playmode started");
-			// close message
-			if ( currentNote == noteCount - 1 ) thePopup.closeMessage();
-			// if we are on 1st beat and the sequencer has not started, we start playback
-			if ( seqStarted == false && currentNote == 0 )
+		 if ( !gamePaused )
+		 {
+			// fixes the start from 0 thingy currentNote = currentSec % noteCount;
+			
+			if ( playMode == true )
 			{
-				initPattern();
-				seqStarted = true;				
-			}
-			if ( seqStarted == true )
-			{		
-			 	pApp.println("currentNote:" + currentNote + " pattern[currentNote]:"  +pattern[currentNote]);
-				int currentPatternIndex = pattern[currentNote];
-				if ( currentPatternIndex > 0 ) hitDrum(currentPatternIndex);
-				// if it's the end of the pattern, we stop playback
-				if ( currentNote == noteCount - 1 )
+				pApp.println("playmode started");
+				// close message
+				//if ( currentNote == noteCount - 1 ) thePopup.closeMessage();
+				// if we are on 1st beat and the sequencer has not started, we start playback
+				if ( seqStarted == false && currentNote == 0 )
 				{
-					playMode = false;
-					seqStarted = false;
-					fingerReady = true;	
+					initPattern();
+					seqStarted = true;				
 				}
-				
+				if ( seqStarted == true )
+				{		
+				 	pApp.println("currentNote:" + currentNote + " pattern[currentNote]:"  +pattern[currentNote]);
+					int currentPatternIndex = pattern[currentNote];
+					if ( currentPatternIndex > 0 ) hitDrum(currentPatternIndex);
+					// if it's the end of the pattern, we stop playback
+					if ( currentNote == noteCount - 1 )
+					{
+						playMode = false;
+						seqStarted = false;
+						fingerReady = true;	
+						gamePaused = true;	
+						thePopup.initMessage(0, 0, "YOUR TURN", "Play the drums part!", 255, 255);
+
+					}
+					
+				}
 			}
-		}
-		else
-		{
-			// playmode is done, now leapmotion game mode
-			// we start recording finger hits
-			if ( seqStarted == false )
+			else
 			{
-				pApp.println( "leapmotion game mode" );
-				initLeap();
-				seqStarted = true;				
+				// playmode is done, now leapmotion game mode
+				// we start recording finger hits
+				if ( seqStarted == false )
+				{
+					pApp.println( "leapmotion game mode" );
+					initLeap();
+					seqStarted = true;				
+				}
 			}
-		}
+			if ( currentNote <  noteCount - 1 )
+			{
+				currentNote++;
+			}
+			else
+			{
+				currentNote = 0;
+			}
+			
+		 }
+		 else
+		 {
+			 // game is paused, start from 0
+			 currentNote = 0;
+		 }
 	 }
 	 void display(){
 		
@@ -330,7 +347,16 @@ public class FingerDrums {
 	    }
 	}
 	
-	
+	//////// THIS IS CALLED FROM THE DIALOG CLOSE BUTTON
+	//////// YOU NEVER HIT THIS UNLESS YOU"RE STARTING A NEW LEVEL
+	public void doNextLevel()
+	{    	
+	   curLevel++;	
+	   if ( curLevel > patternz.length - 1) curLevel = 0;
+	   gamePaused = false;
+	    	
+	}
+	    	
 	 ///////////////////////////
     ////// achievment listeners //////////
     ///////////////////////////

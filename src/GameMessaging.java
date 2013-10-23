@@ -57,7 +57,6 @@ public class GameMessaging {
 			     
 				  ;
 				 
-				 
 				 closeButton.hide(); 
 		
 	}
@@ -116,6 +115,10 @@ public class GameMessaging {
 		theTimer.stop();
 		showingMessage = false;
 		closeButton.hide(); 
+		
+	}
+	public boolean isClosed(){
+		return closeButton.isVisible();
 		
 	}
 	

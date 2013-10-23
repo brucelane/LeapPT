@@ -1,6 +1,8 @@
 import processing.core.*;
 import ddf.minim.*;
 
+import java.util.ArrayList;
+
 
 class SoundControl extends PApplet{
 
@@ -24,6 +26,33 @@ class SoundControl extends PApplet{
 	AudioSample kick;
 	AudioSample snare;
 	AudioSample hihat;
+	
+	/// star wars sounds
+	AudioSample starWars1;
+	AudioSample starWars2;
+	AudioSample starWars3;
+	AudioSample starWars4;
+	AudioSample starWars5;
+	AudioSample starWars6;
+	AudioSample starWars7;
+	AudioSample starWars8;
+	
+	/// basketball sounds
+	AudioSample bBall1;
+	AudioSample bBall2;
+	AudioSample bBall3;
+	AudioSample bBall4;
+	AudioSample bBall5;
+	AudioSample bBall6;
+	AudioSample bBall7;
+	AudioSample bBall8;
+	
+	/// breakout sounds
+	
+	ArrayList<AudioSample> StarWarsSounds = new ArrayList();
+    ArrayList<AudioSample> SoundsLasers = new ArrayList();
+    ArrayList<AudioSample> SoundsBasketball = new ArrayList();
+    ArrayList<AudioSample> SoundsBreakout = new ArrayList();
 
 	
 	PApplet pApp;
@@ -31,6 +60,7 @@ class SoundControl extends PApplet{
 	
 
 	private static SoundControl instance = null;
+
 	
 	protected SoundControl() {
 	      // Exists only to defeat instantiation.
@@ -48,25 +78,40 @@ class SoundControl extends PApplet{
 	    snare = minim.loadSample("sounds/snare.wav", 512);
 	    hihat = minim.loadSample("sounds/hihat.wav", 512);
 	    
-	    /*
-	    clash1 = minim.loadSample("sounds/clash01.wav", 512);
-	    clash2 = minim.loadSample("sounds/Swing01.wav", 512);
-	    clash3 = minim.loadSample("sounds/lasrhit3.wav", 512); 
-	    	  
-	    clash4 = minim.loadSample("sounds/lasrhit1.wav", 512);
-	    clash5 = minim.loadSample("sounds/Spin 1.wav", 512);
-	      */
-	    try{
-	    	 clash6 = minim.loadSample("sounds/lasrhit3.wav", 512); 
-	  	   
-	    } catch(Exception e){
-	    	
-	    	pApp.println(e);
-	    }    
+	    ///// add star wars sounds
+	    
+	    starWars1 = minim.loadSample("sounds/swing1.wav");
+	    starWars2 = minim.loadSample("sounds/swing2.wav");
+	    starWars3 = minim.loadSample("sounds/swing3.wav");
+	    starWars4 = minim.loadSample("sounds/Swing01.wav");
+	    starWars5 = minim.loadSample("sounds/Spin1.wav");
+	    starWars6 = minim.loadSample("sounds/Spin2.wav");
+	    
+	    bBall1 = minim.loadSample("sounds/basketball_sounds/bball_1.wav");
+	    bBall2 = minim.loadSample("sounds/basketball_sounds/bball_2.wav");
+	    bBall3 = minim.loadSample("sounds/basketball_sounds/bball_3.wav");
+	    bBall4 = minim.loadSample("sounds/basketball_sounds/bball_4.wav");
+	    bBall5 = minim.loadSample("sounds/basketball_sounds/bball_5.wav");
 
-	    wall1 = minim.loadFile("sounds/5clash2.wav");     
-	    
-	    
+	
+	    addSoundsToArray();
+	}
+	
+	private void addSoundsToArray(){
+		StarWarsSounds.add(starWars1);
+		StarWarsSounds.add(starWars2);
+		StarWarsSounds.add(starWars3);
+		StarWarsSounds.add(starWars4);
+		StarWarsSounds.add(starWars5);
+		StarWarsSounds.add(starWars6);
+		
+		SoundsBasketball.add(bBall1);
+		SoundsBasketball.add(bBall2);
+		SoundsBasketball.add(bBall3);
+		SoundsBasketball.add(bBall4);
+		SoundsBasketball.add(bBall5);
+
+		
 	}
 	void playKick(){		
 		kick.trigger();		
@@ -81,14 +126,13 @@ class SoundControl extends PApplet{
 	
 		
 	}
-	
+
 	public static SoundControl getInstance() {
-      if(instance == null) {
-         instance = new SoundControl();
-      }
-      return instance;
-    }
-	
+	      if(instance == null) {
+	         instance = new SoundControl();
+	      }
+	      return instance;
+	}
 	///// STOP ALL
 	void stopAll(){
 		plate.close();
@@ -102,20 +146,12 @@ class SoundControl extends PApplet{
 	void playStarWarsSound(int theID){
 		
 		try{
-			String soundpath = theAppProfile.soundsStarWars.get(theID);
-			boolean isPlaying = wall1.isPlaying();
-			/// println(theID + " " + soundpath);
-			
-			if(isPlaying){
-				
-			} else {
-				wall1 = minim.loadFile(soundpath);
-				wall1.play();
-			}
+			AudioSample tSnd = StarWarsSounds.get(theID);
+			tSnd.trigger();
 			
 			
 		} catch (Exception e){
-			pApp.println("error loading sound: " + e);
+			pApp.println("error playing star wars sound: " + e);
 		}
 
 	}
@@ -124,40 +160,21 @@ class SoundControl extends PApplet{
 	void playLaserSounds(int theID){
 		String soundpath ="";
 		try{
-			soundpath = theAppProfile.soundsLasers.get(theID);
-			boolean isPlaying = wall1.isPlaying();
-			/// println(theID + " " + soundpath);
-			
-			if(isPlaying){
-				
-			} else {
-				wall1 = minim.loadFile(soundpath);
-				wall1.play();
-			}
 			
 			
 		} catch (Exception e){
-			pApp.println("error loading sound: " + soundpath);
+			pApp.println("error loading lazer sound: " + soundpath);
 		}
 		
 	}
 	
 	void playBasketballSound(int theID){
 		try{
-			String soundpath = theAppProfile.soundsBasketball.get(theID);
-			boolean isPlaying = wall1.isPlaying();
-			/// println(theID + " " + soundpath);
-			
-			if(isPlaying){
-				
-			} else {
-				wall1 = minim.loadFile(soundpath);
-				wall1.play();
-			}
-			
+			AudioSample tSound = SoundsBasketball.get(theID);
+			tSound.trigger();
 			
 		} catch (Exception e){
-			pApp.println("error loading sound: " + e);
+			pApp.println("error loading basketball sound: " + e);
 		}
 		
 	}
@@ -195,6 +212,8 @@ class SoundControl extends PApplet{
 		minim.stop();
 	}
 	
-
+	
+	
+	
 
 }

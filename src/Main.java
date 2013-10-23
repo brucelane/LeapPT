@@ -818,7 +818,7 @@ public class Main extends PApplet{
 	    // fill(fingerColors.get(fingerId), 65);
 	    fill(0,0,0,0);
 	    stroke(255);
-	    strokeWeight(1);
+	    strokeWeight(0);
 	    
 	    /// this makes the finger tracking circles a nice size
 	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
@@ -841,7 +841,7 @@ public class Main extends PApplet{
 		{
 			currentSec = sec;
 			theFingerDrums.secChanged( currentSec );
-			println( currentSec );
+			//println( currentSec );
 			
 		}
 		
@@ -1063,7 +1063,7 @@ public class Main extends PApplet{
 		if (theEvent.isFrom("CLOSE")){
 			isPaused = false;
 			isMenuShowing = false;
-			theTimer.running = true;
+			//// theTimer.running = true;
 			theMessaging.closeMessage();
 			//// startNewGame(theAppProfile.gameID);
 		}
@@ -1071,9 +1071,31 @@ public class Main extends PApplet{
 		
 		if (theEvent.isFrom("CLOSEGAMEMESS")){
 
-			feathers.get(0).thePopup.closeMessage();
-			/// start new level?
-			feathers.get(0).doNextLevel();
+			switch(theAppProfile.gameID){
+
+				case 3:
+					feathers.get(0).thePopup.closeMessage();
+					/// start new level?
+					feathers.get(0).doNextLevel();
+					
+					break;
+					
+				case 5:
+					
+					///// close fingerdrums popup
+					theFingerDrums.thePopup.closeMessage();
+					/// start new level?
+					theFingerDrums.doNextLevel();
+					break;
+					
+					
+				default:
+						
+						break;
+				
+			
+			}
+			
 		}
 		
 		if (theEvent.isFrom("ABOUT")){
