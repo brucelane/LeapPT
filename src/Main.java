@@ -16,6 +16,8 @@ import javax.swing.event.EventListenerList;
 
 
 
+
+
 /// leap motion
 import com.leapmotion.leap.CircleGesture;
 import com.leapmotion.leap.Controller;
@@ -443,7 +445,7 @@ public class Main extends PApplet{
 				break;
 				
 			case 2:
-				
+				breakouts.get(0).startNewGame();
 				break;
 				
 			case 3: /// featherweight
@@ -457,6 +459,7 @@ public class Main extends PApplet{
 				
 			case 5:
 				
+				theFingerDrums.startNewGame();
 				break;
 				
 				
@@ -754,9 +757,7 @@ public class Main extends PApplet{
 			  
 		    Integer fingerId = (Integer) entry.getKey();
 		    Vector position = (Vector) entry.getValue();
-	
 
-		    
 		    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
 		   ////  pushMatrix();
 		    
@@ -818,7 +819,7 @@ public class Main extends PApplet{
 	    // fill(fingerColors.get(fingerId), 65);
 	    fill(0,0,0,0);
 	    stroke(255);
-	    strokeWeight(0);
+	    strokeWeight(1);
 	    
 	    /// this makes the finger tracking circles a nice size
 	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
@@ -841,7 +842,7 @@ public class Main extends PApplet{
 		{
 			currentSec = sec;
 			theFingerDrums.secChanged( currentSec );
-			//println( currentSec );
+			println( currentSec );
 			
 		}
 		
@@ -857,10 +858,6 @@ public class Main extends PApplet{
 	        return elapsed;
 	    }*/
 	}
-	
-	
-	
-	
 	
   /////////////////////////////////////
   /////// LEAP INPUT /////////////////
@@ -1049,7 +1046,7 @@ public class Main extends PApplet{
 		
 		if(theEvent.isController()){
 			// println("CLICK" + theEvent.getController().getId());
-			println("Name" + theEvent.getName());
+			/// println("Name" + theEvent.getName());
 		}
 		if (theEvent.isFrom("MAIN MENU")){
 
@@ -1073,6 +1070,12 @@ public class Main extends PApplet{
 
 			switch(theAppProfile.gameID){
 
+			
+				case 2:
+					
+					breakouts.get(0).thePopup.closeMessage();
+					breakouts.get(0).doNextLevel();
+					
 				case 3:
 					feathers.get(0).thePopup.closeMessage();
 					/// start new level?
@@ -1084,8 +1087,8 @@ public class Main extends PApplet{
 					
 					///// close fingerdrums popup
 					theFingerDrums.thePopup.closeMessage();
-					/// start new level?
 					theFingerDrums.doNextLevel();
+					
 					break;
 					
 					
@@ -1093,7 +1096,6 @@ public class Main extends PApplet{
 						
 						break;
 				
-			
 			}
 			
 		}
@@ -1112,6 +1114,7 @@ public class Main extends PApplet{
 		if (theEvent.isFrom("PROGRESS")){
 		
 			theMessaging.showStats();
+			theMessaging.loadPlayerAchievements();
 		}
 		
 		if (theEvent.isFrom("SETTINGS")){
@@ -1313,26 +1316,42 @@ public class Main extends PApplet{
 		/// if player doesn't have this achievement
 		/// then get the info, display it, and add to the
 		/// player data array
+		
+		
 		if(hasCheevo == false){	
+			
+			///// wait for the return, then load the image
 			showCheevo = true;
 			/// get the achievment data from the game profiles
+			
+			
 			for (int i=0; i<thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.size(); i++){
 				
 				if(cheevoName.equals(thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i))){
 					// println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
 					// add cheevo to the player profile
 					thePlayerProfile.addAchievement(cheevoName);
-					/// re-init the cheevo display in "progress"
+
+					// re-init the cheevo display in "progress"
 					/// should probably do this in a different thread
-					theMessaging.loadPlayerAchievements();
+					// theMessaging.loadPlayerAchievements();
 					
+					/// this doesnt work
+					/// thread("theMessaging.loadPlayerAchievments");
 					/// get ready to display the badge
 					cheevoDesc = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoDescription.get(i);
 					cheevoPath = thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoImage.get(i);
 				}
 			}
+
+			try{
+
+				cheevoBadge = loadImage(cheevoPath);
 			
-			cheevoBadge = loadImage(cheevoPath);
+			} catch (Exception e){
+				
+				println("Thread Trouble!" ) ;
+			}
 		}
 		
 	}

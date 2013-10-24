@@ -2,6 +2,9 @@ import processing.core.*;
 import controlP5.*; /// may have to remove this
 
 public class GameMessaging {
+	
+	private static GameMessaging instance = null;
+	 
 	PApplet pApp;
 	AppProfile theAppProfile;
 	
@@ -36,7 +39,7 @@ public class GameMessaging {
 	ControlP5 ControlEvent;
 	
 	///// the x, the y, the header text, the body text, the header color, the body color
-	GameMessaging(){
+	protected GameMessaging(){
 		
 		theTimer = new TimerClass();
 		theAppProfile = theAppProfile.getInstance();
@@ -57,9 +60,18 @@ public class GameMessaging {
 			     
 				  ;
 				 
+				 
 				 closeButton.hide(); 
 		
 	}
+	
+	////// defeat instantiation
+	public static GameMessaging getInstance() {
+	      if(instance == null) {
+	         instance = new GameMessaging();
+	      }
+	      return instance;
+	   }
 	
 	public void initMessage(float x, float y, String header, String body, int hC, int bC){
 		xPos = x;
@@ -115,10 +127,6 @@ public class GameMessaging {
 		theTimer.stop();
 		showingMessage = false;
 		closeButton.hide(); 
-		
-	}
-	public boolean isClosed(){
-		return closeButton.isVisible();
 		
 	}
 	

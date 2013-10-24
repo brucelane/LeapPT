@@ -21,9 +21,7 @@ class Paddle{
     float mass;
     PVector location;
     float G;
-    
-    int paddleWidth;
-    int paddleHeight;
+    float friction = .01f; /// this is the slowdown for the movement
     
     int theColor;
     int theR = 255;
@@ -33,12 +31,15 @@ class Paddle{
     
     Poly paddleHitState;
     
-    boolean isHit = false;
-    
+    // boolean isHit = false;
+
+    int paddleWidth;
+    int paddleHeight;
     int paddleY;
+    int floorBase;
     
-    float friction = .01f; /// this is the slowdown for the movement
-    
+    int curLevel;
+
     // listeners
     protected EventListenerList listenerList = new EventListenerList();
 	/// particles
@@ -51,18 +52,18 @@ class Paddle{
     	
         paddleWidth = 238;
         paddleHeight = 36;
-    	paddleY = theAppProfile.theHeight - paddleHeight*2;
+        
+        /// set the paddle position and the floor position
+    	paddleY = theAppProfile.theHeight - paddleHeight*4; /// paddle y position 
+    	floorBase = theAppProfile.theHeight - paddleHeight*3; ///  floor
     	
     	float[] x = { 20, 40, 40, 60, 60, 20 };
     	float[] y = { 20, 20, 40, 40, 60, 60 };
     	
     	
-    	paddleHitState = new Poly(x, y,4);
-    	
-    	theSoundControl = theSoundControl.getInstance();
-    	
+    	// paddleHitState = new Poly(x, y,4);
+
         location = new PVector(theAppProfile.theWidth/2, theAppProfile.theHeight/2);
-        
         /// the floor's position is the current position X and the height of the screen Y
         theFloor = new PVector(location.x, theAppProfile.theHeight);
         mass = 180;
@@ -75,7 +76,11 @@ class Paddle{
 	  	ps = new ParticleSystem(new PVector(theAppProfile.theWidth/2,50));
 	  	ps.addParticle();
 	  	//*/
+	  	
+	  	
     }
+	
+	
     
     public void update(float tX, float tY, float tZ){
     	
@@ -89,14 +94,14 @@ class Paddle{
     // returns it attraction
     PVector repulse(Breakout m){
     	
-    	/// moves towards attractor
-       //  PVector force = PVector.sub(location, m.location);
-        
+    	/// pApp.rect(location.x, location.y, paddleWidth, paddleHeight);
     	/// update the floor position
     	/// currently UNDER the location
-    	/// but I should make it under where
-    	/// the location is going!
     	theFloor.x = m.location.x;
+    	
+    	/// make sure the ball knows where to rebound from 
+    	/// this changes on different levels
+    	m.currentFloor = floorBase;
     	
         /// moves towards the floor
         PVector force = PVector.sub(theFloor, m.location);
@@ -144,6 +149,9 @@ class Paddle{
         	/// if it's hitting the bottom or top
         	/// then move it laterally depending on
         	/// what side it's hit on
+        	
+        	
+        	
         	if(paddleY > m.location.y -30){
         		m.velocity.y *= -1; 
         		
@@ -159,17 +167,18 @@ class Paddle{
         	}
         	/// move it in the other direction
         	if(paddleY < m.location.y + 30){
-        		m.velocity.y *= 1; 
+        		m.velocity.y *= 1.25; 
         		
-        		/// lateral mvt
-        		if(location.x + paddleWidth/2< m.location.x){
-        			/// pApp.println("On top Bounce Right");
+        		/// if the ball is hitting left of center
+        		if(m.location.x < location.x ){
+        			// pApp.println("On top Bounce Right");
         			m.velocity.x *= 1.25;
         		}
-        		if(location.x - paddleWidth/2> m.location.x){
+        		if(m.location.x > location.x){
         			m.velocity.x *= -1.25;
-        			/// pApp.println("On Top Bounce Left");
+        			// pApp.println("On Top Bounce Left");
         		}
+        		
         	}
         	
         	
@@ -211,7 +220,7 @@ class Paddle{
     } 
     
     void paddleImpactColor(){
-    	pApp.println("IMPACT COLOR");
+
         theR = 0;
         theG = 255;
         theB = 0;
@@ -245,6 +254,7 @@ class Paddle{
     	pApp.fill(theColor);
     	pApp.strokeWeight(0);
     	/// pApp.stroke(255,200);
+    	
     	pApp.rect((location.x-paddleWidth/2), paddleY, paddleWidth - 28, paddleHeight);
 
     	/// add paddle image

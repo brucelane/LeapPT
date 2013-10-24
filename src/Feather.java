@@ -87,14 +87,13 @@ class Feather{
 
     	thePlayerProfile = thePlayerProfile.getInstance();
     	theSoundControl = theSoundControl.getInstance();
+        thePopup = thePopup.getInstance();
     	 // = new SoundControl();
     	
     	theColor = pApp.color(theR,theG,theB,theA);
 
         theTexture = pApp.loadImage(texturePath);
         bgroundImg = pApp.loadImage(theBgroundImgPath);
-        
-        thePopup = new GameMessaging();
         
 		theTimer = new TimerClass();
 		
@@ -107,14 +106,14 @@ class Feather{
 		crossLine = 60*5; /// length of the crosshairs
 		    
     	
-    	curLevel = 3;
+    	curLevel = 1;
     }
     
     public void startNewGame(){
 
     	 /// do initial messags
     	thePopup.initMessage(0, 0, "WELCOME TO FEATHERWEIGHT!", "This game is designed to strenghten your extenders by opening, closing, and lifting your hand. First, we'll start off easy-- raise your hand to make the feather rise to the top of the screen five times!", 255, 255);
-        setBaseMoveParams();
+        setLevelParams();
     	
     }
     
@@ -163,7 +162,7 @@ class Feather{
     }
     
     ////// SET FEATHER MOVEMENT DEPENDING ON LEVEL ///////
-    private void setBaseMoveParams(){
+    private void setLevelParams(){
         
     	
     	/// change params depending on 
@@ -300,12 +299,12 @@ class Feather{
 	        	//// do particle effects and win sound
 	            //// location.y = respawnOrigin;
 	            /// doBounceSound();
-	            //// setBaseMoveParams();
+	            //// setLevelParams();
 	        ////// TOP HIT
 	        } else if (location.y< -50){
 	            doBounceSound();
 	            theAppProfile.scoredata += 23;
-	            setBaseMoveParams();
+	            setLevelParams();
 	            curHits +=1;
 	            location.y = respawnOrigin;
 	            //// test for status
@@ -344,12 +343,12 @@ class Feather{
 	        	//// do particle effects and win sound
 	            //// location.y = respawnOrigin;
 	            /// doBounceSound();
-	            //// setBaseMoveParams();
+	            //// setLevelParams();
 	        ////// TOP HIT
 	        } else if (location.y< -50){
 	            doBounceSound();
 	            theAppProfile.scoredata += 23;
-	            setBaseMoveParams();
+	            setLevelParams();
 	            curHits +=1;
 	            location.y = respawnOrigin;
 	            //// test for status
@@ -388,12 +387,12 @@ class Feather{
 	        	//// do particle effects and win sound
 	            //// location.y = respawnOrigin;
 	            /// doBounceSound();
-	            //// setBaseMoveParams();
+	            //// setLevelParams();
 	        ////// TOP HIT
 	        } else if (location.y< -50){
 	            doBounceSound();
 	            theAppProfile.scoredata += 23;
-	            setBaseMoveParams();
+	            setLevelParams();
 	            curHits +=1;
 	            location.y = respawnOrigin;
 	            //// test for status
@@ -455,7 +454,7 @@ class Feather{
 	        	/// do mistake sound
 	            doBounceSound();
 	            theAppProfile.scoredata += 23;
-	            setBaseMoveParams();
+	            setLevelParams();
 	            //// do a loop... maybe bounce it back?
 	            location.y = respawnOrigin;
 	            //// test for status

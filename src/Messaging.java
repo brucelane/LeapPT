@@ -507,7 +507,7 @@ public class Messaging implements ControlListener{
 	 ///////// set achievments from player profile ////////////
 	 
 	 public void loadPlayerAchievements(){
-		 
+
 		 // re init theachievment array in case
 		 // there's new cheevos
 		 
