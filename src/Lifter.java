@@ -139,8 +139,7 @@ class Lifter{
         	
         	f.hasImpact = true;
         	f.doImpactColor();
-        	f.doBounceSound();
-
+        	
         	thePlayerProfile.GameStats.get(theAppProfile.gameID).curScore += 123;
       	  
       	   

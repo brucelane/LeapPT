@@ -79,7 +79,7 @@ class Breakout{
    public void startNewGame(){
 	   gamePaused = true;
   	 /// do initial messags
-  	   thePopup.initMessage(0, 0, "WELCOME TO BREAKOUT!", "This game is designed to strenghten your upper and forearm co-ordination by using lateralmovements. First, we'll start off easy-- move your hand back and forth to bounce the ball against the block screen five times!", 255, 255);
+  	   thePopup.initMessage(0, 0, "WELCOME TO BREAKOUT!", "This game is designed to strenghten your upper and forearm co-ordination by using lateralmovements. First, we'll start off easy-- move your hand back and forth to bounce the ball against the block screen five times!", null, 255, 255);
   	   setLevelParams();
   	   spawnBoxes(curLevel);
   	
@@ -210,7 +210,7 @@ class Breakout{
 		case 1:
 			gamePaused = true;
         	/// show message
-        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one... but that was the easy part.\n\nNow you have to break a whole lot of boxes!", 255, 255);
+        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one... but that was the easy part.\n\nNow you have to break a whole lot of boxes!", null, 255, 255);
         	/// do next level
         	curLevel = 2;
 			break;
@@ -218,7 +218,7 @@ class Breakout{
 		case 2:
 			gamePaused = true;
         	/// show message
-        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one... but that was the easy part.\n\nNow you have to break a whole lot of boxes!", 255, 255);
+        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one... but that was the easy part.\n\nNow you have to break a whole lot of boxes!", null, 255, 255);
         	/// do next level
         	curLevel = 3;
 			break;
@@ -227,7 +227,7 @@ class Breakout{
 			
 			gamePaused = true;
         	/// show message
-        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... but don't get penisy.\n\nNow you have to break a whole lot of boxes!", 255, 255);
+        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... but don't get penisy.\n\nNow you have to break a whole lot of boxes!", null, 255, 255);
         	/// do next level
         	curLevel = 4;
 			break;

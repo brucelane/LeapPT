@@ -67,6 +67,7 @@ public class Main extends PApplet{
 	PImage cheevoBground;
 	PImage footerBground;
 	PImage mainBground;
+	PImage pauseIcon;
 	
 	/// button images
 	PImage b_MainMenu;
@@ -312,6 +313,7 @@ public class Main extends PApplet{
 	  cheevoBground = loadImage(chevBgroundPath);
 	  footerBground = loadImage(footerBgPath);
 	  mainBground = loadImage("data/backgrounds/bground_main.png");
+	  pauseIcon = loadImage("data/paused_button.png");
 	  // button assets
 	  b_MainMenu = loadImage(b_mmPath);
 	  b_MainMenuR = loadImage(b_mmPathR);
@@ -352,10 +354,20 @@ public class Main extends PApplet{
 		  renderGame();
 		  // 
 	  } else {
-		  image(mainBground, 0,0);
-		  
-		  theMessaging.drawMessageBox();
+		  // draw the game
+		  renderGame();
 		  theTimer.running = false;
+		  /// are we showing a menu
+		  /// if so, show it
+		  if(isMenuShowing){
+			  image(mainBground, 0,0);
+			  theMessaging.drawMessageBox(); 
+		
+		  /// otherwise show the pause icon
+		  } else {
+			  image(pauseIcon, theAppProfile.theWidth/2 - pauseIcon.width/2, theAppProfile.theHeight/2 - pauseIcon.height/2);
+			  
+		  }
 	  }
 	  /// 
 	  
@@ -1049,8 +1061,10 @@ public class Main extends PApplet{
 			/// println("Name" + theEvent.getName());
 		}
 		if (theEvent.isFrom("MAIN MENU")){
-
+			
 			doMenu();
+			/// make sure all the message boxes are hidden
+			closeGameMessageBox();
 		}
 		
 		if (theEvent.isFrom("PLAY/PAUSE")){
@@ -1058,45 +1072,47 @@ public class Main extends PApplet{
 		}
 		
 		if (theEvent.isFrom("CLOSE")){
-			isPaused = false;
+			
 			isMenuShowing = false;
-			//// theTimer.running = true;
+			isPaused = false;
 			theMessaging.closeMessage();
-			//// startNewGame(theAppProfile.gameID);
+			startNewGame(theMessaging.newGameID);
+			
+
 		}
 		// this needs to be for all classes
 		
 		if (theEvent.isFrom("CLOSEGAMEMESS")){
-
 			switch(theAppProfile.gameID){
 
 			
-				case 2:
-					
-					breakouts.get(0).thePopup.closeMessage();
-					breakouts.get(0).doNextLevel();
-					
-				case 3:
-					feathers.get(0).thePopup.closeMessage();
-					/// start new level?
-					feathers.get(0).doNextLevel();
-					
-					break;
-					
-				case 5:
-					
-					///// close fingerdrums popup
-					theFingerDrums.thePopup.closeMessage();
-					theFingerDrums.doNextLevel();
-					
-					break;
-					
-					
-				default:
-						
-						break;
+			case 2:
 				
+				breakouts.get(0).thePopup.closeMessage();
+				breakouts.get(0).doNextLevel();
+				
+			case 3:
+				feathers.get(0).thePopup.closeMessage();
+				/// start new level?
+				feathers.get(0).doNextLevel();
+				
+				break;
+				
+			case 5:
+				
+				///// close fingerdrums popup
+				theFingerDrums.thePopup.closeMessage();
+				theFingerDrums.doNextLevel();
+				
+				break;
+				
+				
+			default:
+					
+					break;
 			}
+			
+			closeGameMessageBox();
 			
 		}
 		
@@ -1158,6 +1174,13 @@ public class Main extends PApplet{
 	
 	}
 	
+	///// MAKES SURE THE GAME MESSAGE DIALOGS ARE ALL CLOSED
+	private void closeGameMessageBox(){
+
+		breakouts.get(0).thePopup.closeMessage();
+		feathers.get(0).thePopup.closeMessage();
+		theFingerDrums.thePopup.closeMessage();
+	}
 	///////////////////////////////
 	////// GAME STATE FUNCTION ////
 	//////////////////////////////
@@ -1171,21 +1194,66 @@ public class Main extends PApplet{
 			isMenuShowing = false;
 			theTimer.running = true;
 			theMessaging.closeMessage();
-			
+
+		
+			//// otherwise, let's pause the current game
 		} else {
 			if(isPaused){
 				
 				isPaused = false;
 				theTimer.running = true;
+				/// playPauseCurrentGame(false);
 			} else {
 				
 				isPaused = true;
 				theTimer.running = false;
+				/// playPauseCurrentGame(true);
 			}
 		}
 		
+		playPauseCurrentGame(isPaused);
+
+	}
+	
+	////// pause current game
+	public void playPauseCurrentGame(boolean playPause){
 		
-		/// do messaging
+		switch(theAppProfile.gameID){
+		
+		case 0:
+			
+			break;
+			
+		case 1:
+			
+			break;
+			
+		case 2:
+			
+			breakouts.get(0).gamePaused = playPause;
+			break;
+			
+			
+		case 3:
+			feathers.get(0).gamePaused = playPause;
+			break;
+			
+			
+		case 4:
+			
+			
+			break;
+			
+			
+		case 5:
+			
+			theFingerDrums.gamePaused = playPause;
+			break;
+		
+		
+		
+		}
+		
 	}
 	
 	public void doUnPause(){
@@ -1194,10 +1262,12 @@ public class Main extends PApplet{
 		// do messaging
 	}
 	
+	///// show default menu
 	public void doMenu(){
 		isMenuShowing = true;
 		isPaused = true;
 		theMessaging.showAbout();
+		playPauseCurrentGame(isPaused);
 
 	}
 	

@@ -49,10 +49,26 @@ class SoundControl extends PApplet{
 	
 	/// breakout sounds
 	
+	
+	
+	//// featherweight sounds
+	AudioSample featherGameStart;
+	AudioSample featherSuccess;
+	AudioSample featherRespawn;
+	
+	//// game state sounds
+	
+	AudioSample winLevel;
+	AudioSample loseLevel;
+	AudioSample newGame;
+	
 	ArrayList<AudioSample> StarWarsSounds = new ArrayList();
     ArrayList<AudioSample> SoundsLasers = new ArrayList();
     ArrayList<AudioSample> SoundsBasketball = new ArrayList();
     ArrayList<AudioSample> SoundsBreakout = new ArrayList();
+    ArrayList<AudioSample> SoundsFeatherweight = new ArrayList();
+    ArrayList<AudioSample> SoundtracksAll =  new ArrayList();
+    ArrayList<AudioSample> SoundsGameState = new ArrayList();
 
 	
 	PApplet pApp;
@@ -87,11 +103,25 @@ class SoundControl extends PApplet{
 	    starWars5 = minim.loadSample("sounds/Spin1.wav");
 	    starWars6 = minim.loadSample("sounds/Spin2.wav");
 	    
+	    //// add basketball sounds
 	    bBall1 = minim.loadSample("sounds/basketball_sounds/bball_1.wav");
 	    bBall2 = minim.loadSample("sounds/basketball_sounds/bball_2.wav");
 	    bBall3 = minim.loadSample("sounds/basketball_sounds/bball_3.wav");
 	    bBall4 = minim.loadSample("sounds/basketball_sounds/bball_4.wav");
 	    bBall5 = minim.loadSample("sounds/basketball_sounds/bball_5.wav");
+	    
+	    //// add breakout sounds
+	    
+	    /// add featherweight sounds
+		featherGameStart = minim.loadSample("sounds/feather_sounds/Gliss Arpeggios 01.wav");
+		featherRespawn = minim.loadSample("sounds/feather_sounds/Liquid Drops FX 02.wav");
+		featherSuccess = minim.loadSample("sounds/feather_sounds/Pulsing Logo Accent 01.wav"); /// change this
+	    
+	    //// add game state sounds
+	    winLevel = minim.loadSample("sounds/gamestate_sounds/Pulsing Logo Accent 01.wav");
+		loseLevel = minim.loadSample("sounds/gamestate_sounds/Alarm.wav");
+		newGame = minim.loadSample("sounds/gamestate_sounds/Synth Zap Accent 06.wav");
+		
 
 	
 	    addSoundsToArray();
@@ -110,7 +140,17 @@ class SoundControl extends PApplet{
 		SoundsBasketball.add(bBall3);
 		SoundsBasketball.add(bBall4);
 		SoundsBasketball.add(bBall5);
-
+		
+		// add feather sounds
+		
+		SoundsFeatherweight.add(featherRespawn);
+		SoundsFeatherweight.add(featherSuccess);
+		SoundsFeatherweight.add(featherGameStart);
+		
+		// add game state sounds
+		SoundsGameState.add(winLevel);
+		SoundsGameState.add(loseLevel);
+		SoundsGameState.add(newGame);
 		
 	}
 	void playKick(){		
@@ -179,6 +219,31 @@ class SoundControl extends PApplet{
 		
 	}
 	
+	void playFeatherSounds(int theID){
+		
+		try{
+			AudioSample tSound = SoundsFeatherweight.get(theID);
+			tSound.trigger();
+			
+		} catch (Exception e){
+			pApp.println("error loading feather sound: " + e);
+		}
+		
+	}
+	
+	void playGameStateSounds(int theID){
+		
+		try{
+			AudioSample tSound = SoundsGameState.get(theID);
+			tSound.trigger();
+			
+		} catch (Exception e){
+			pApp.println("error loading gamestate sound: " + e);
+		}
+		
+	}
+
+
 	///// ACTIVATE EACH
 	void triggerClash3(){
 		

@@ -112,7 +112,7 @@ class Feather{
     public void startNewGame(){
 
     	 /// do initial messags
-    	thePopup.initMessage(0, 0, "WELCOME TO FEATHERWEIGHT!", "This game is designed to strenghten your extenders by opening, closing, and lifting your hand. First, we'll start off easy-- raise your hand to make the feather rise to the top of the screen five times!", 255, 255);
+    	thePopup.initMessage(0, 0, "WELCOME TO FEATHERWEIGHT!", "This game is designed to strenghten your extenders by opening, closing, and lifting your hand. First, we'll start off easy-- raise your hand to make the feather rise to the top of the screen five times!", "data/games/gfx_fw_stage1.png",  255, 255);
         setLevelParams();
     	
     }
@@ -283,13 +283,13 @@ class Feather{
 	        if(location.x>theAppProfile.theWidth){
 	            location.x = theAppProfile.theWidth;
 	            velocity.x *= -.65;
-	            doBounceSound();
+	            
 	            theAppProfile.scoredata += 23;
 	
 	        } else if (location.x<0){
 	            velocity.x *= -.65;
 	            location.x = 0;
-	            doBounceSound();
+	           
 	            theAppProfile.scoredata += 23;
 	            
 	        }
@@ -298,21 +298,27 @@ class Feather{
 
 	        	//// do particle effects and win sound
 	            //// location.y = respawnOrigin;
-	            /// doBounceSound();
+	        	theSoundControl.playFeatherSounds(0);
 	            //// setLevelParams();
+
+	            //// make it bounce
+	            velocity.y *= -1.25;
 	        ////// TOP HIT
 	        } else if (location.y< -50){
-	            doBounceSound();
+	        	theSoundControl.playFeatherSounds(1);
 	            theAppProfile.scoredata += 23;
 	            setLevelParams();
 	            curHits +=1;
+	            
 	            location.y = respawnOrigin;
 	            //// test for status
 	            if(curHits == curLevel*5){
 	            	/// launchCheevo(null, "Level One");
 	            	gamePaused = true;
+	            	// game state control: win, lose, new game
+	            	theSoundControl.playGameStateSounds(0);
 	            	/// show message
-	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one. You are awesome! Let's try something a little harder-- you have to use all five fingers to make the feather rise to the top... and you have to do it ten times!", 255, 255);
+	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one. You are awesome! Let's try something a little harder-- you have to use all five fingers to make the feather rise to the top... and you have to do it ten times!", "data/games/gfx_fw_stage2.png", 255, 255);
 	            	/// do next level
 	            	curLevel = 2;
 	            }
@@ -327,13 +333,13 @@ class Feather{
 	        if(location.x>theAppProfile.theWidth){
 	            location.x = theAppProfile.theWidth;
 	            velocity.x *= -.65;
-	            doBounceSound();
+	            
 	            theAppProfile.scoredata += 23;
 	
 	        } else if (location.x<0){
 	            velocity.x *= -.65;
 	            location.x = 0;
-	            doBounceSound();
+	            
 	            theAppProfile.scoredata += 23;
 	            
 	        }
@@ -344,9 +350,12 @@ class Feather{
 	            //// location.y = respawnOrigin;
 	            /// doBounceSound();
 	            //// setLevelParams();
+
+	            //// make it bounce
+	        	velocity.y *= -1.25;
 	        ////// TOP HIT
 	        } else if (location.y< -50){
-	            doBounceSound();
+	        	theSoundControl.playFeatherSounds(1);
 	            theAppProfile.scoredata += 23;
 	            setLevelParams();
 	            curHits +=1;
@@ -355,8 +364,10 @@ class Feather{
 	            if(curHits == 15){
 	            	/// launchCheevo(null, "Level One");
 	            	gamePaused = true;
+	            	// game state control: win, lose, new game
+	            	theSoundControl.playGameStateSounds(0);
 	            	/// show message
-	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... but that was the easy part.\n\nNow you have to beat the timer! Get the feather to the top of the screen before the timer runs out!", 255, 255);
+	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... but that was the easy part.\n\nNow you have to beat the timer! Get the feather to the top of the screen before the timer runs out!", "data/games/gfx_fw_stage3.png", 255, 255);
 	            	/// do next level
 	            	curLevel = 3;
 	            }
@@ -365,19 +376,27 @@ class Feather{
 	        break;
         
 	   ///////// TIMER LEVEL //////////////////
+	        
+	        /*
+	         * 		SoundsFeatherweight.add(featherGameStart);
+		SoundsFeatherweight.add(featherRespawn);
+		SoundsFeatherweight.add(featherSuccess);
+		*/
     	case 3:
 
     		/// why am I looking at x positions?
 	        if(location.x>theAppProfile.theWidth){
 	            location.x = theAppProfile.theWidth;
 	            velocity.x *= -.65;
-	            doBounceSound();
+	            
+	            /// feather sound control respawn, success, new game
+	            theSoundControl.playFeatherSounds(0);
 	            theAppProfile.scoredata += 23;
 	
 	        } else if (location.x<0){
 	            velocity.x *= -.65;
 	            location.x = 0;
-	            doBounceSound();
+	            
 	            theAppProfile.scoredata += 23;
 	            
 	        }
@@ -388,9 +407,12 @@ class Feather{
 	            //// location.y = respawnOrigin;
 	            /// doBounceSound();
 	            //// setLevelParams();
+	        	 theSoundControl.playFeatherSounds(0);
+	            //// make it bounce
+	        	velocity.y *= -1.25;
 	        ////// TOP HIT
 	        } else if (location.y< -50){
-	            doBounceSound();
+	        	theSoundControl.playFeatherSounds(1);
 	            theAppProfile.scoredata += 23;
 	            setLevelParams();
 	            curHits +=1;
@@ -399,9 +421,11 @@ class Feather{
 	            if(theTimer.getElapsedTime() <= 15000 ){
 	            	theTimer.stop();
 	            	/// launchCheevo(null, "Level One");
+	            	// game state control: win, lose, new game
+	            	theSoundControl.playGameStateSounds(0);
 	            	gamePaused = true;
 	            	/// show message
-	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Amazing! You beat level three, and showed great courage under pressure.\n\nNow for something completely different. You have to make the feather hover in place. Open your hand all the way to make it lift, and close into a fist to make it drop. Keep it in the crosshairs for 15 seconds!", 255, 255);
+	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Amazing! You beat level three, and showed great courage under pressure.\n\nNow for something completely different. You have to make the feather hover in place. Open your hand all the way to make it lift, and close into a fist to make it drop. Keep it in the crosshairs for 15 seconds!", "data/games/gfx_fw_stage4.png", 255, 255);
 	            	/// do next level
 	            	curLevel = 4;
 	            }
@@ -434,7 +458,7 @@ class Feather{
 	            	/// launchCheevo(null, "Level One");
 	            	gamePaused = true;
 	            	/// show message
-	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "BOOM! Your powers are growing stronger, grasshopper. You have beaten level four, the final level. \n\nPerhaps that was not a sufficient test of your skill. Go to the settings panel in the main menu, and increase the difficulty... IF YOU DARE!", 255, 255);
+	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "BOOM! Your powers are growing stronger, grasshopper. You have beaten level four, the final level. \n\nPerhaps that was not a sufficient test of your skill. Go to the settings panel in the main menu, and increase the difficulty... IF YOU DARE!", null,255, 255);
 	            	/// do next level
 	            	curLevel = 4;
 	         }
@@ -442,9 +466,8 @@ class Feather{
    		 ////// BOTTOM HIT
 	        if(location.y>theAppProfile.theHeight){
 
-	        	 /// reset timer
-	        	
-	        	//// do mistake sound
+	        	// wrap it
+	        	location.y = respawnOrigin;
 	        	
 	        ////// TOP HIT
 	        } else if (location.y< -50){
@@ -452,11 +475,11 @@ class Feather{
 	        	/// reset timer
 	        	
 	        	/// do mistake sound
-	            doBounceSound();
+	        	theSoundControl.playFeatherSounds(0);
 	            theAppProfile.scoredata += 23;
 	            setLevelParams();
 	            //// do a loop... maybe bounce it back?
-	            location.y = respawnOrigin;
+	            location.y = theAppProfile.theHeight - 100;
 	            //// test for status
 	           
 	        }
@@ -617,14 +640,7 @@ class Feather{
 	   theSoundControl.playStarWarsSound(theRnd);
 
     }
-    
-    void doBounceSound(){
-       int theRnd = (int)pApp.random(4);
-   	   theSoundControl.playBasketballSound(theRnd);
-   	   /// pApp.println(theRnd);
-    }
-    
-    
+
     private void drawTimerDisplay(){
     	
     	int hour = theTimer.hour();
@@ -671,7 +687,7 @@ class Feather{
 
     			theTimer.stop();
     			/// show loser message
-    			thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", 255, 255);
+    			thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", null, 255, 255);
             	
     		 }
     		

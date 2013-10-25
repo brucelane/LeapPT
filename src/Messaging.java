@@ -187,11 +187,13 @@ public class Messaging implements ControlListener{
 
 		 hideGameMenuButtons();
 		 hideSettingsMenuButtons();
+		 
 		 closeButton.hide(); 
 		 gamesButton.hide();
 		 statsButton.hide();
 		 settingsButton.hide();
 		 statTextArea.hide();  
+		 aboutTextArea.hide();
 		 gameInfoTextArea.hide();
 		 aboutButton.hide();
 	 }

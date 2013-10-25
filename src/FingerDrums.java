@@ -62,7 +62,9 @@ public class FingerDrums {
         private int snareColor = 192;
         private int hihatColor = 192;
 	    private int curLevel = -1;
-	    private boolean gamePaused = true;
+	    
+	    /// need to turn this on and off from main
+	    public boolean gamePaused = true;
         
         // listeners
         protected EventListenerList listenerList = new EventListenerList();
@@ -96,7 +98,7 @@ public class FingerDrums {
         
         public void startNewGame(){
         	
-        	thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Follow along with the drum solo! Watch the flashing colors and listen for the tones...\n\nThen it's your turn! Repeat the pattern by moving your hand towards the Leap controller.\n\nFirst, let's start with 4 kick-drums", 255, 255);
+        	thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Follow along with the drum solo! Watch the flashing colors and listen for the tones...\n\nThen it's your turn! Repeat the pattern by moving your hand towards the Leap controller.\n\nFirst, let's start with 4 kick-drums", null,255, 255);
             
         }
                 
@@ -168,7 +170,7 @@ public class FingerDrums {
                                                         else
                                                         {
                                                                 pApp.println( "lost" );
-                                                                   thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", 255, 255);
+                                                                   thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", null, 255, 255);
                                                             
                                                         }
 
@@ -180,14 +182,14 @@ public class FingerDrums {
                                                         switch (curLevel)
                                                         {
                                                                 case 1:
-                                                                        thePopup.initMessage(0, 0, "LEVEL 2", "Listen to the drums part.\n\nMeet the snare drum.", 255, 255);
+                                                                        thePopup.initMessage(0, 0, "LEVEL 2", "Listen to the drums part.\n\nMeet the snare drum.", null, 255, 255);
                                                                            break;
                                                                 case 2:
-                                                                        thePopup.initMessage(0, 0, "LEVEL 3", "Listen to the drums part.\n\n", 255, 255);
+                                                                        thePopup.initMessage(0, 0, "LEVEL 3", "Listen to the drums part.\n\n", null, 255, 255);
                                                                         break;
                                                                     
                                                             default:
-                                                                        thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Listen to the drums part.\n\nThen try do play the same pattern!", 255, 255);                                                            
+                                                                        thePopup.initMessage(0, 0, "WELCOME TO FINGERDRUMS!", "Listen to the drums part.\n\nThen try do play the same pattern!", null, 255, 255);                                                            
                                                                     break;                                                    
                                                     } // endswitch
                                                 }
@@ -280,7 +282,7 @@ public class FingerDrums {
                                                 seqStarted = false;
                                                 fingerReady = true;        
                                                 gamePaused = true;        
-                                                thePopup.initMessage(0, 0, "YOUR TURN", "Play the drums part!", 255, 255);
+                                                thePopup.initMessage(0, 0, "YOUR TURN", "Play the drums part!", null, 255, 255);
 
                                         }
                                         
