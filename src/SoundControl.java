@@ -26,6 +26,7 @@ class SoundControl extends PApplet{
 	AudioSample kick;
 	AudioSample snare;
 	AudioSample hihat;
+	AudioSample cowbell;
 	
 	/// star wars sounds
 	AudioSample starWars1;
@@ -93,6 +94,7 @@ class SoundControl extends PApplet{
 	    kick = minim.loadSample("sounds/kick.wav", 512);
 	    snare = minim.loadSample("sounds/snare.wav", 512);
 	    hihat = minim.loadSample("sounds/hihat.wav", 512);
+	    cowbell = minim.loadSample("sounds/cowbell.wav", 512);
 	    
 	    ///// add star wars sounds
 	    
@@ -161,6 +163,9 @@ class SoundControl extends PApplet{
 	}
 	void playHihat(){		
 		hihat.trigger();		
+	}
+	void playCowbell(){		
+		cowbell.trigger();		
 	}
 	void initSoundControl(){
 	

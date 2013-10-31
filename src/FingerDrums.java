@@ -42,12 +42,12 @@ public class FingerDrums {
 	private float snareY = 400;
 	private float snareWidth = 210;
 	private float snareHeight = 310;
-	private float clapX = 510;
-	private float clapY = 250;
-	private float clapWidth = 310;
-	private float clapHeight = 210;
+	private float cowbellX = 510;
+	private float cowbellY = 250;
+	private float cowbellWidth = 310;
+	private float cowbellHeight = 210;
 	// sequencer
-	private String[] patternz={"10101010","10002000","10201020","10201120","13231323"};
+	private String[] patternz={"10203040","10101010","10002000","10201020","10201120","13231323"};
 	private int noteCount = 8; // size of the pattern
 	private int[] notes;
 	private int[] pattern;
@@ -65,10 +65,12 @@ public class FingerDrums {
 	private int alphaDecrement = 2;
 	private int kickAlpha = 0;
 	private int snareAlpha = 0;
+	private int cowbellAlpha = 0;
 	private int hihatAlpha = 0;
 	private int kickColor = 192;
 	private int snareColor = 192;
 	private int hihatColor = 192;
+	private int cowbellColor = 192;
 	private int curLevel = 0;
 
 	/// need to turn this on and off from main
@@ -148,6 +150,11 @@ public class FingerDrums {
 					{        
 						pApp.println( "hihat, tx:" + tx + " ty:" + ty );
 						fingerHit = 3;
+					}
+					if ( tx > cowbellX && tx < cowbellX + cowbellWidth && ty > cowbellY && ty < cowbellY + cowbellWidth )
+					{        
+						pApp.println( "cowbell, tx:" + tx + " ty:" + ty );
+						fingerHit = 4;
 					}
 					if ( fingerHit == 0 )
 					{
@@ -282,6 +289,12 @@ public class FingerDrums {
 			hihatAlpha = 255;
 			fingerReady = false;
 			break;
+		case 4:
+			// cowbell
+			theSoundControl.playCowbell();
+			cowbellAlpha = 255;
+			fingerReady = false;
+			break;
 		default:
 			// 0 : nothing
 			break;
@@ -391,6 +404,15 @@ public class FingerDrums {
 			}
 			pApp.fill( 0, hihatColor, 0, hihatAlpha);                
 			pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
+			// cowbell
+			if ( cowbellAlpha > alphaDecrement )
+			{
+				cowbellAlpha -= alphaDecrement;
+				fadeReady = false;
+				pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+			}
+			pApp.fill( 0, cowbellColor, 0, cowbellAlpha);                
+			pApp.ellipse( cowbellX, cowbellY, cowbellWidth, cowbellHeight );
 			// if animation finished we are ready for another hit
 			if ( fadeReady ) fingerReady = true;
 		}
