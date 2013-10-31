@@ -24,6 +24,7 @@ public class FingerDrums {
 	PImage theGreenPad;
 	PImage theBluePad;
 	PImage theYellowPad;
+	PImage theTempo;
 	String bgroundPath;
 	//TimerClass seqTimer;
 	/// game messages
@@ -62,10 +63,11 @@ public class FingerDrums {
 	private boolean fingerReady = false;
 	private boolean fadeReady = false;
 	private boolean win = true;
-	private int alphaDecrement = 2;
+	private int alphaDecrement = 10;
 	private int kickAlpha = 0;
 	private int snareAlpha = 0;
 	private int cowbellAlpha = 0;
+	private int tempoAlpha = 0;
 	private int hihatAlpha = 0;
 	private int kickColor = 192;
 	private int snareColor = 192;
@@ -102,6 +104,7 @@ public class FingerDrums {
 		theGreenPad = pApp.loadImage("data/games/fingerdrums_greenpad.png");
 		theBluePad = pApp.loadImage("data/games/fingerdrums_bluepad.png");
 		theYellowPad = pApp.loadImage("data/games/fingerdrums_yellowpad.png");
+		theTempo = pApp.loadImage("data/games/tempo.png");
 
 		// sequencer 
 		notes = new int[noteCount];
@@ -305,7 +308,7 @@ public class FingerDrums {
 		if ( !gamePaused )
 		{
 			// fixes the start from 0 thingy currentNote = currentSec % noteCount;
-
+			tempoAlpha = 255;
 			if ( playMode == true )
 			{
 				pApp.println("playmode started");
@@ -384,8 +387,8 @@ public class FingerDrums {
 				pApp.image(theBluePad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
 
-			pApp.fill( kickColor, 0, 0, kickAlpha );
-			pApp.ellipse( kickX, kickY, kickWidth, kickHeight );                
+//			pApp.fill( kickColor, 0, 0, kickAlpha );
+//			pApp.ellipse( kickX, kickY, kickWidth, kickHeight );                
 			// snare
 			if ( snareAlpha > alphaDecrement )
 			{
@@ -393,8 +396,8 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theGreenPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-			pApp.fill( 0, 0, snareColor, snareAlpha);        
-			pApp.ellipse( snareX, snareY, snareWidth, snareHeight );
+//			pApp.fill( 0, 0, snareColor, snareAlpha);        
+//			pApp.ellipse( snareX, snareY, snareWidth, snareHeight );
 			// hihat
 			if ( hihatAlpha > alphaDecrement )
 			{
@@ -402,8 +405,8 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theYellowPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-			pApp.fill( 0, hihatColor, 0, hihatAlpha);                
-			pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
+//			pApp.fill( 0, hihatColor, 0, hihatAlpha);                
+//			pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
 			// cowbell
 			if ( cowbellAlpha > alphaDecrement )
 			{
@@ -411,15 +414,20 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-			pApp.fill( 0, cowbellColor, 0, cowbellAlpha);                
-			pApp.ellipse( cowbellX, cowbellY, cowbellWidth, cowbellHeight );
+//			pApp.fill( 0, cowbellColor, 0, cowbellAlpha);                
+//			pApp.ellipse( cowbellX, cowbellY, cowbellWidth, cowbellHeight );
+			// tempo
+			if ( tempoAlpha > alphaDecrement )
+			{
+				tempoAlpha -= alphaDecrement;
+				pApp.image(theTempo, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+			}
 			// if animation finished we are ready for another hit
 			if ( fadeReady ) fingerReady = true;
 		}
 		if(thePopup.showingMessage == true)
 		{
 			thePopup.drawMessage();
-
 		}
 	}
 
