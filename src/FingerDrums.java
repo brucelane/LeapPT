@@ -74,6 +74,7 @@ public class FingerDrums {
 	private int hihatColor = 192;
 	private int cowbellColor = 192;
 	private int curLevel = 0;
+    private float theSpin = 0.01f;
 
 	/// need to turn this on and off from main
 	public boolean gamePaused = true;
@@ -366,15 +367,19 @@ public class FingerDrums {
 		}
 	}
 	void display(){
-
+		
 		//// draw background
 		pApp.image(theBground, 0, 0);
 
 		// place the drums image in the center
 		// when we rotate it, we'll have to do some
 		// annoying repositioning
-		pApp.image(theDrums,  theAppProfile.theWidth/2 - theDrums.width/2,  theAppProfile.theHeight/2- theDrums.height/2);
-
+		theSpin += 0.001;
+		pApp.pushMatrix();
+        pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);//, (float) -0.1); /// x,y and z?
+		pApp.rotateZ(theSpin); 
+		//pApp.image(theDrums,  theAppProfile.theWidth/2 - theDrums.width/2,  theAppProfile.theHeight/2- theDrums.height/2);
+		pApp.image(theDrums,  - theDrums.width/2,  -theDrums.height/2);
 		if(gamePaused == false)
 		{
 			fadeReady = true;
@@ -386,9 +391,7 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theBluePad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-
-//			pApp.fill( kickColor, 0, 0, kickAlpha );
-//			pApp.ellipse( kickX, kickY, kickWidth, kickHeight );                
+               
 			// snare
 			if ( snareAlpha > alphaDecrement )
 			{
@@ -396,8 +399,7 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theGreenPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-//			pApp.fill( 0, 0, snareColor, snareAlpha);        
-//			pApp.ellipse( snareX, snareY, snareWidth, snareHeight );
+
 			// hihat
 			if ( hihatAlpha > alphaDecrement )
 			{
@@ -405,8 +407,7 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theYellowPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-//			pApp.fill( 0, hihatColor, 0, hihatAlpha);                
-//			pApp.ellipse( hihatX, hihatY, hihatWidth, hihatHeight );
+
 			// cowbell
 			if ( cowbellAlpha > alphaDecrement )
 			{
@@ -414,8 +415,7 @@ public class FingerDrums {
 				fadeReady = false;
 				pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 			}
-//			pApp.fill( 0, cowbellColor, 0, cowbellAlpha);                
-//			pApp.ellipse( cowbellX, cowbellY, cowbellWidth, cowbellHeight );
+
 			// tempo
 			if ( tempoAlpha > alphaDecrement )
 			{
@@ -425,6 +425,8 @@ public class FingerDrums {
 			// if animation finished we are ready for another hit
 			if ( fadeReady ) fingerReady = true;
 		}
+		pApp.popMatrix();
+
 		if(thePopup.showingMessage == true)
 		{
 			thePopup.drawMessage();
