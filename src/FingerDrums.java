@@ -1,14 +1,10 @@
 import processing.core.*;
 
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.EventObject;
-import java.util.Vector;
-
 import javax.swing.event.EventListenerList;
 
-import controlP5.Println;
-import processing.opengl.PGraphicsOpenGL;
+import ijeoma.motion.*;
+import ijeoma.motion.tween.*; 
+
 
 public class FingerDrums {
 
@@ -78,6 +74,13 @@ public class FingerDrums {
 
 	/// need to turn this on and off from main
 	public boolean gamePaused = true;
+	
+	// tween
+	PFont font;
+
+	int c1, c2, c3, c4;
+	float x1, x2, x3, x4;
+	Sequence ts;
 
 	// listeners
 	protected EventListenerList listenerList = new EventListenerList();
@@ -111,7 +114,21 @@ public class FingerDrums {
 		notes = new int[noteCount];
 		pattern = new int[noteCount];
 		playMode = true;
+		
+		// tween
+		Motion.setup(pApp);
+
+		  c1 = c2 = c3 = c4 = pApp.color(255);
+		  x1 = x2 = x3 = x4 = -pApp.width;
+
+		  ts = new Sequence();
+		  ts.add(new Tween("x1", 100).add(this, "x1", (float)pApp.width).addColor(this, "c1",  pApp.color(0)));
+		  ts.add(new Tween("x2", 75).add(this, "x2", (float)pApp.width).addColor(this, "c2",  pApp.color(0)));
+		  ts.add(new Tween("x3", 50).add(this, "x3", (float)pApp.width).addColor(this, "c3",   pApp.color(0)));
+		  ts.add(new Tween("x4", 25).add(this, "x4", (float)pApp.width).addColor(this, "c4",   pApp.color(0)));
+		  ts.reverse().repeat().play();
 		/// show first message
+		
 	}
 
 	public void startNewGame(){
@@ -376,7 +393,7 @@ public class FingerDrums {
 		// annoying repositioning
 		theSpin += 0.001;
 		pApp.pushMatrix();
-        pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);//, (float) -0.1); /// x,y and z?
+        pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);// no z
 		pApp.rotateZ(theSpin); 
 		//pApp.image(theDrums,  theAppProfile.theWidth/2 - theDrums.width/2,  theAppProfile.theHeight/2- theDrums.height/2);
 		pApp.image(theDrums,  - theDrums.width/2,  -theDrums.height/2);
@@ -431,6 +448,14 @@ public class FingerDrums {
 		{
 			thePopup.drawMessage();
 		}
+		pApp.fill(c1);
+		pApp.rect(x1, 0, pApp.width, 100);
+		pApp.fill(c2);
+		pApp.rect(x2, 100, pApp.width, 100);
+		pApp.fill(c3);
+		pApp.rect(x3, 200, pApp.width, 100);
+		pApp.fill(c4);
+		pApp.rect(x4, 300, pApp.width, 100);
 	}
 
 

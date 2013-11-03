@@ -71,5 +71,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="LeapProcessing/natives"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/ijeomamotion.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
