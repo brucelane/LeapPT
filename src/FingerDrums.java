@@ -81,6 +81,7 @@ public class FingerDrums {
 	int c1, c2, c3, c4;
 	float x1, x2, x3, x4;
 	Sequence ts;
+	Tween t;
 
 	// listeners
 	protected EventListenerList listenerList = new EventListenerList();
@@ -121,14 +122,18 @@ public class FingerDrums {
 		  c1 = c2 = c3 = c4 = pApp.color(255);
 		  x1 = x2 = x3 = x4 = -pApp.width;
 
-		  ts = new Sequence();
-		  ts.add(new Tween("x1", 100).add(this, "x1", (float)pApp.width).addColor(this, "c1",  pApp.color(0)));
-		  ts.add(new Tween("x2", 75).add(this, "x2", (float)pApp.width).addColor(this, "c2",  pApp.color(0)));
-		  ts.add(new Tween("x3", 50).add(this, "x3", (float)pApp.width).addColor(this, "c3",   pApp.color(0)));
-		  ts.add(new Tween("x4", 25).add(this, "x4", (float)pApp.width).addColor(this, "c4",   pApp.color(0)));
-		  ts.reverse().repeat().play();
+//		  ts = new Sequence();
+//		  ts.add(new Tween("x1", 100).add(this, "x1", (float)pApp.width).addColor(this, "c1",  pApp.color(0)));
+//		  ts.add(new Tween("x2", 75).add(this, "x2", (float)pApp.width).addColor(this, "c2",  pApp.color(0)));
+//		  ts.add(new Tween("x3", 50).add(this, "x3", (float)pApp.width).addColor(this, "c3",   pApp.color(0)));
+//		  ts.add(new Tween("x4", 25).add(this, "x4", (float)pApp.width).addColor(this, "c4",   pApp.color(0)));
+//		  ts.reverse().repeat().play();
+		  
+		  t = new Tween(0, 360, 100);
+		  
+		  t.repeat(2);
+		  t.play();
 		/// show first message
-		
 	}
 
 	public void startNewGame(){
@@ -394,7 +399,10 @@ public class FingerDrums {
 		theSpin += 0.001;
 		pApp.pushMatrix();
         pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);// no z
-		pApp.rotateZ(theSpin); 
+		//pApp.rotateZ(theSpin); 
+     
+		//pApp.rotateZ(t.getPosition()); 
+        pApp.rotateZ(t.getTime()); 
 		//pApp.image(theDrums,  theAppProfile.theWidth/2 - theDrums.width/2,  theAppProfile.theHeight/2- theDrums.height/2);
 		pApp.image(theDrums,  - theDrums.width/2,  -theDrums.height/2);
 		if(gamePaused == false)
@@ -406,7 +414,8 @@ public class FingerDrums {
 			{
 				kickAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theBluePad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				//pApp.image(theBluePad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				pApp.image(theBluePad, -theDrums.width/2, -theDrums.height/2);
 			}
                
 			// snare
@@ -414,7 +423,8 @@ public class FingerDrums {
 			{
 				snareAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theGreenPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				//pApp.image(theGreenPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				pApp.image(theGreenPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// hihat
@@ -422,7 +432,8 @@ public class FingerDrums {
 			{
 				hihatAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theYellowPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				//pApp.image(theYellowPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				pApp.image(theYellowPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// cowbell
@@ -430,14 +441,16 @@ public class FingerDrums {
 			{
 				cowbellAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				//pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				pApp.image(theRedPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// tempo
 			if ( tempoAlpha > alphaDecrement )
 			{
 				tempoAlpha -= alphaDecrement;
-				pApp.image(theTempo, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				//pApp.image(theTempo, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
+				pApp.image(theTempo, -theDrums.width/2, -theDrums.height/2);
 			}
 			// if animation finished we are ready for another hit
 			if ( fadeReady ) fingerReady = true;
