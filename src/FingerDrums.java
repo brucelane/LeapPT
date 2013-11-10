@@ -66,11 +66,14 @@ public class FingerDrums {
 	private int tempoAlpha = 0;
 	private int hihatAlpha = 0;
 	private int curLevel = 0;
-	private int rotationDuration = 20;
+	private int rotationDuration = 200;
 	private int secondsPlayed = 0;
 	private int secondsTimeout = 10;
+	private final float PI4 = (float) Math.PI / 4; // 0.76f
+	private final float HALF_PI = (float) Math.PI / 2; // 1.57f
 	private final float TWO_PI = (float) Math.PI * 2; // 6.28f
-
+	private boolean debugging = true;
+	private String debugMsg = "debug mode";
 	/// need to turn this on and off from main
 	public boolean gamePaused = true;
 
@@ -115,8 +118,7 @@ public class FingerDrums {
 
 		// tween
 		Motion.setup(pApp);
-		t = new Tween(0, 1, 1000);
-
+		t = new Tween(0, 1, rotationDuration);
 		/// show first message
 	}
 
@@ -309,6 +311,12 @@ public class FingerDrums {
 			break;
 		}
 	}
+	public void resetTween()
+	{
+		t.stop();
+		t = new Tween( 0, 0, 1 );
+		t.play();
+	}
 	public void secChanged( int currentSec )
 	{
 		if ( !gamePaused )
@@ -317,20 +325,21 @@ public class FingerDrums {
 			tempoAlpha = 255;
 			if ( playMode == true )
 			{
-				pApp.println("playmode started");
 				// close message
-				//if ( currentNote == noteCount - 1 ) thePopup.closeMessage();
 				// if we are on 1st beat and the sequencer has not started, we start playback
 				if ( seqStarted == false && currentNote == 0 )
 				{
+					// reset tween
+					resetTween();
+					
 					initPattern();
 					seqStarted = true;  
 					secondsPlayed = 0;
 				}
 				if ( seqStarted == true )
-				{                
+				{      
+					t.stop();
 					int currentPatternIndex = pattern[currentNote];
-					pApp.println("currentNote:" + currentNote + " pattern[currentNote]:"  +pattern[currentNote]);
 					if ( currentPatternIndex > 0 ) 
 					{
 						if ( t.isPlaying() ) 
@@ -339,9 +348,10 @@ public class FingerDrums {
 						}
 						else
 						{
-							t.stop();
-							t = new Tween( TWO_PI / (currentPatternIndex + 1), TWO_PI / (currentPatternIndex + 2), rotationDuration );
+							
+							t = new Tween( 0, 1, rotationDuration );
 							t.play();
+							
 						}
 						hitDrum(currentPatternIndex);
 					}
@@ -355,6 +365,14 @@ public class FingerDrums {
 						thePopup.initMessage(0, 0, "YOUR TURN", "Play the drums part!", null, 255, 255);
 					}
 				}
+				if ( currentNote <  noteCount - 1 )
+				{
+					currentNote++;
+				}
+				else
+				{
+					currentNote = 0;
+				}
 			}
 			else
 			{
@@ -367,15 +385,6 @@ public class FingerDrums {
 					seqStarted = true;                                
 				}
 			}
-			if ( currentNote <  noteCount - 1 )
-			{
-				currentNote++;
-			}
-			else
-			{
-				currentNote = 0;
-			}
-
 		}
 		else
 		{
@@ -386,7 +395,8 @@ public class FingerDrums {
 			if ( !t.isPlaying() ) t.play();
 		}
 	}
-	void display(){
+	void display()
+	{
 
 		//// draw background
 		pApp.image(theBground, 0, 0);
@@ -396,11 +406,8 @@ public class FingerDrums {
 		// annoying repositioning
 		pApp.pushMatrix();
 		pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);// no z
-		pApp.rotateZ(t.getPosition() * TWO_PI ); //(in radians, values from 0 to TWO_PI)
-		pApp.println( "t.getPosition():" + t.getPosition() +  " * 6.28f=" + t.getPosition()*6.28f);
-		//pApp.rotateZ(t.getTime()); 
-		//pApp.image(theDrums,  theAppProfile.theWidth/2 - theDrums.width/2,  theAppProfile.theHeight/2- theDrums.height/2);
-		pApp.image(theDrums,  - theDrums.width/2,  -theDrums.height/2);
+		pApp.rotateZ( (t.getPosition() * HALF_PI * pattern[currentNote]) + HALF_PI/2); //(in radians, values from 0 to TWO_PI)
+		pApp.image(theDrums, -theDrums.width/2, -theDrums.height/2);
 		if(gamePaused == false)
 		{
 			fadeReady = true;
@@ -410,7 +417,6 @@ public class FingerDrums {
 			{
 				kickAlpha -= alphaDecrement;
 				fadeReady = false;
-				//pApp.image(theBluePad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 				pApp.image(theBluePad, -theDrums.width/2, -theDrums.height/2);
 			}
 
@@ -419,7 +425,6 @@ public class FingerDrums {
 			{
 				snareAlpha -= alphaDecrement;
 				fadeReady = false;
-				//pApp.image(theGreenPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 				pApp.image(theGreenPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
@@ -428,7 +433,6 @@ public class FingerDrums {
 			{
 				hihatAlpha -= alphaDecrement;
 				fadeReady = false;
-				//pApp.image(theYellowPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 				pApp.image(theYellowPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
@@ -437,7 +441,6 @@ public class FingerDrums {
 			{
 				cowbellAlpha -= alphaDecrement;
 				fadeReady = false;
-				//pApp.image(theRedPad, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 				pApp.image(theRedPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
@@ -445,7 +448,6 @@ public class FingerDrums {
 			if ( tempoAlpha > alphaDecrement )
 			{
 				tempoAlpha -= alphaDecrement;
-				//pApp.image(theTempo, theAppProfile.theWidth/2 - theDrums.width/2, theAppProfile.theHeight/2- theDrums.height/2);
 				pApp.image(theTempo, -theDrums.width/2, -theDrums.height/2);
 			}
 			// if animation finished we are ready for another hit
@@ -457,7 +459,11 @@ public class FingerDrums {
 		{
 			thePopup.drawMessage();
 		}
-
+		if ( debugging )
+		{
+			debugMsg = "pattern[currentNote]:" + pattern[currentNote] + " gamePaused:" + gamePaused + " playMode:" + playMode + " t.getPosition():" + t.getPosition();
+			pApp.text(debugMsg,  20, 600, 1000, 100);
+		}
 	}
 
 
