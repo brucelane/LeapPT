@@ -546,7 +546,7 @@ public class Messaging implements ControlListener{
 			
 			
 		 }
-		 showAchievments();
+		 /// showAchievments();
 	 }
 	 
 	 public void showAchievments(){
@@ -711,64 +711,64 @@ public class Messaging implements ControlListener{
 				  ;
 
 		/////// GAME BUTTONS ////////////////////////
-		game0Button = cp5.addButton("GAME 0")
+		game0Button = cp5.addButton("FINGERBALL")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*4)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,35))
+			      .setColorForeground(pApp.color(255,35))
+			      .setColorBackground(pApp.color(255,35))
 			      .setColorActive(pApp.color(255,35))
 				  ;
 				 
-		game1Button = cp5.addButton("GAME 1")
+		game1Button = cp5.addButton("MULTIFEET")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*5)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,35))
+			      .setColorForeground(pApp.color(255,35))
+			      .setColorBackground(pApp.color(255,35))
 			      .setColorActive(pApp.color(255,35))
 				  ;
 				 
 
 		
-		game2Button = cp5.addButton("GAME 2")
+		game2Button = cp5.addButton("FINGERBLOCKS")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*6)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
+			      .setColorActive(pApp.color(0,72,136))
 			      .setColorBackground(pApp.color(200,200,200,35))
-			      .setColorActive(pApp.color(255,35))
+			      .setColorActive(pApp.color(0,72,136))
 				  ;
 				 
 
 		
-		game3Button = cp5.addButton("GAME 3")
+		game3Button = cp5.addButton("FEATHERWEIGHT")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*7)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
+			      .setColorActive(pApp.color(0,72,136))
 			      .setColorBackground(pApp.color(200,200,200,35))
-			      .setColorActive(pApp.color(255,35))
+			      .setColorActive(pApp.color(0,72,136))
 				  ;
 				 
 
 		
-		game4Button = cp5.addButton("GAME 4")
+		game4Button = cp5.addButton("GRABBER")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*8)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
-			      .setColorBackground(pApp.color(200,200,200,35))
+			      .setColorForeground(pApp.color(255,35))
+			      .setColorBackground(pApp.color(255,35))
 			      .setColorActive(pApp.color(255,35))
 				  ;
 		
-		game5Button = cp5.addButton("GAME 5")
+		game5Button = cp5.addButton("FINGERDRUMS")
 				  .setPosition(bgX + theMargin *2, bgY + theMargin2*9)
 				  // .setImage(closeImg)
 				  .setSize(150,40)
-			      .setColorForeground(pApp.color(125,125,125,165))
+			      .setColorActive(pApp.color(0,72,136))
 			      .setColorBackground(pApp.color(200,200,200,35))
-			      .setColorActive(pApp.color(255,35))
+			      .setColorActive(pApp.color(0,72,136))
 				  ;		 
 
 		
@@ -847,37 +847,37 @@ public class Messaging implements ControlListener{
 			 
 		 
 		 //// games button
-		 cp5.getController("GAME 0")
+		 cp5.getController("FINGERBALL")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
 		 ;
 		 
-		 cp5.getController("GAME 1")
+		 cp5.getController("MULTIFEET")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
 		 ;
 		 
-		 cp5.getController("GAME 2")
+		 cp5.getController("FINGERBLOCKS")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
 		 ;
 		 
-		 cp5.getController("GAME 3")
+		 cp5.getController("FEATHERWEIGHT")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
 		 ;
 		 
-		 cp5.getController("GAME 4")
+		 cp5.getController("GRABBER")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
 		 ;
 		 
-		 cp5.getController("GAME 5")
+		 cp5.getController("FINGERDRUMS")
 		 .getCaptionLabel()
 		 .setFont(navPFont)
 		 .setSize(18)
@@ -899,10 +899,10 @@ public class Messaging implements ControlListener{
          aboutTextArea.hide();
 		 //// stat window
 		 statTextArea = cp5.addTextarea("stattext")
-                 .setPosition(bgX + 20, bgY + 140)
-                 .setSize(328,286)
-                 .setFont(BodyFont)
-                 .setLineHeight(14)
+                 .setPosition(bgX + 20, bgY + 140  + 180) /// the 190 puts it below the stat box
+                 .setSize(328,106)
+                 .setFont(statFont)
+                 .setLineHeight(12)
                  .setColor(pApp.color(255))
                  .setColorBackground(pApp.color(255,65))
                  .setColorForeground(pApp.color(255))

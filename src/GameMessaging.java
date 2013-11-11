@@ -92,13 +92,13 @@ public class GameMessaging {
 		// theTimer.start();
 		showingMessage = true;
 		
-		pApp.println(imgPath);
+		// pApp.println(imgPath);
 		if(imgPath == null){
 			isLargeMessage = false;
-			pApp.println("YOU HAVE A SMALL MESS");
+			
 			
 		} else {
-			pApp.println("YOU HAVE A LARGE MESS");
+		
 			isLargeMessage = true;
 			xtraImage = pApp.loadImage(imgPath);
 		}
@@ -116,7 +116,7 @@ public class GameMessaging {
 			closeButton.setPosition(theAppProfile.theWidth/2 -theBground.width/2 + theBground.width- closeImg.width/2, theAppProfile.theHeight/2 - theBgroundLg.height/2 - closeImg.height/2);
 			/// draw background
 			pApp.image(theBgroundLg, theAppProfile.theWidth/2 -theBground.width/2, theAppProfile.theHeight/2 - theBgroundLg.height/2);
-			pApp.image(xtraImage, xPos + theMargin, yPos + theMargin);
+			pApp.image(xtraImage, xPos + theBgroundLg.width/2 - xtraImage.width/2, yPos + theMargin);
 			/// draw text
 			pApp.textFont(headerFont, 18);
 			pApp.fill(headerColor);

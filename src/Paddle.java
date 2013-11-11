@@ -3,7 +3,7 @@ import processing.core.*;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import javax.swing.event.EventListenerList;
+
 
 
 class Paddle{
@@ -40,8 +40,6 @@ class Paddle{
     
     int curLevel;
 
-    // listeners
-    protected EventListenerList listenerList = new EventListenerList();
 	/// particles
 	ParticleSystem ps;
     
@@ -54,7 +52,7 @@ class Paddle{
         paddleHeight = 36;
         
         /// set the paddle position and the floor position
-    	paddleY = theAppProfile.theHeight - paddleHeight*4; /// paddle y position 
+    	paddleY = theAppProfile.theHeight - paddleHeight*3; /// paddle y position 
     	floorBase = theAppProfile.theHeight - paddleHeight*3; ///  floor
     	
     	float[] x = { 20, 40, 40, 60, 60, 20 };
@@ -153,6 +151,9 @@ class Paddle{
         	
         	
         	if(paddleY > m.location.y -30){
+        		
+        		///// remove underbouncing for now
+        		/*
         		m.velocity.y *= -1; 
         		
         		/// lateral mvt
@@ -164,6 +165,8 @@ class Paddle{
         			m.velocity.x *= -1.5;
         			/// pApp.println("Bounce Left");
         		}
+        		
+        		*/
         	}
         	/// move it in the other direction
         	if(paddleY < m.location.y + 30){
@@ -191,8 +194,7 @@ class Paddle{
         	m.doImpactColor();
         	m.doPaddleHit();
         	
-        	/// do cheevo
-        	fireMyEvent(null, "First Bounce");
+        	
         	//
         	theAppProfile.scoredata += 123;
         	
@@ -263,24 +265,7 @@ class Paddle{
     	ps.run();
     }
     
-    ///////////////////////////
-    ////// listeners //////////
-    ///////////////////////////
-    public void addMyEventListener(MyEventListener listener) {
-        listenerList.add(MyEventListener.class, listener);
-      }
-      public void removeMyEventListener(MyEventListener listener) {
-        listenerList.remove(MyEventListener.class, listener);
-      }
-      void fireMyEvent(MyEvent evt, String tCheev) {
-        Object[] listeners = listenerList.getListenerList();
-        for (int i = 0; i < listeners.length; i = i+2) {
-          if (listeners[i] == MyEventListener.class) {
-            ((MyEventListener) listeners[i+1]).myEventOccurred(evt, tCheev);
-          }
-        }
-      }
-
+  
 
     
 }//// end paddle class

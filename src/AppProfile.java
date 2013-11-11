@@ -22,7 +22,7 @@ public class AppProfile {
  ArrayList<String> ranktypes = new ArrayList();
  int rankID = 0;
  
- int gameID = 1;
+ int gameID = 3;
 
  /// soundParams
  ArrayList<String> soundsStarWars = new ArrayList();
@@ -57,7 +57,7 @@ public class AppProfile {
 	   /// add game mode types
 	   gameMode.add("FINGERBALL");
 	   gameMode.add("MULTIFEET");
-	   gameMode.add("BREAKOUT");
+	   gameMode.add("FINGERBLOCKS");
 	   gameMode.add("FEATHERWEIGHT");
 	   gameMode.add("GRABBER");
 	   gameMode.add("FINGERDRUMS");

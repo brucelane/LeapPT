@@ -62,6 +62,9 @@ class Feather{
     boolean firstPlayed = true;
     boolean isVisible = true;
     
+    /// cheevo toggles
+    boolean hasLockOn = false;
+    
     int impactCounter;
     
     PImage theTexture;
@@ -107,6 +110,7 @@ class Feather{
 		    
     	
     	curLevel = 1;
+    	setLevelParams();
     }
     
     public void startNewGame(){
@@ -313,6 +317,7 @@ class Feather{
 	            location.y = respawnOrigin;
 	            //// test for status
 	            if(curHits == curLevel*5){
+	            	launchCheevo(null, "First Feather");
 	            	/// launchCheevo(null, "Level One");
 	            	gamePaused = true;
 	            	// game state control: win, lose, new game
@@ -360,6 +365,11 @@ class Feather{
 	            setLevelParams();
 	            curHits +=1;
 	            location.y = respawnOrigin;
+	            
+	            if(curHits == 8){
+	            	
+	            	launchCheevo(null, "Persistant!");
+	            }
 	            //// test for status
 	            if(curHits == 15){
 	            	/// launchCheevo(null, "Level One");
@@ -454,8 +464,15 @@ class Feather{
     		
     		/// check to see if you've hovered enough
    		 	if(theTimer.getElapsedTime() >= 15000 ){
+   		 		
+   		 			if(hasLockOn == false){
+   		 				launchCheevo(null, "Lock On");
+   		 				hasLockOn = true;
+   		 			}
+   		 			
+   		 			theTimer.stop();
 	            	theTimer.stop();
-	            	/// launchCheevo(null, "Level One");
+
 	            	gamePaused = true;
 	            	/// show message
 	            	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "BOOM! Your powers are growing stronger, grasshopper. You have beaten level four, the final level. \n\nPerhaps that was not a sufficient test of your skill. Go to the settings panel in the main menu, and increase the difficulty... IF YOU DARE!", null,255, 255);
@@ -687,7 +704,7 @@ class Feather{
 
     			theTimer.stop();
     			/// show loser message
-    			thePopup.initMessage(0, 0, "YOU ARE A LOSER", "How does that make you feel? No one loves you. Go eat some fritos.\n\nMaybe you should go cry in the corner.", null, 255, 255);
+    			thePopup.initMessage(0, 0, "TIME IS UP!", "The timer has run out, but you can go ahead and try again.\n\nHit the close button and restart the level!", null, 255, 255);
             	
     		 }
     		

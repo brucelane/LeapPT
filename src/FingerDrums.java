@@ -66,7 +66,7 @@ public class FingerDrums {
 	private int tempoAlpha = 0;
 	private int hihatAlpha = 0;
 	private int curLevel = 0;
-	private int rotationDuration = 200;
+	private int rotationDuration = 50;
 	private int secondsPlayed = 0;
 	private int secondsTimeout = 10;
 	private final float PI4 = (float) Math.PI / 4; // 0.76f
@@ -76,6 +76,7 @@ public class FingerDrums {
 	private String debugMsg = "debug mode";
 	/// need to turn this on and off from main
 	public boolean gamePaused = true;
+	private int targetAngle = 8;
 
 	// tween
 	PFont font;
@@ -185,19 +186,15 @@ public class FingerDrums {
 						{
 							win = false;
 						}
-
 						if ( currentHit >= currentPatternNotesCount - 1)
 						{
 							endLevel();
-
 						}
 						else
 						{
 							currentHit++;
 						}
 					}
-
-
 				}
 			}
 		}
@@ -339,22 +336,22 @@ public class FingerDrums {
 				if ( seqStarted == true )
 				{      
 					t.stop();
-					int currentPatternIndex = pattern[currentNote];
-					if ( currentPatternIndex > 0 ) 
-					{
-						if ( t.isPlaying() ) 
+					if ( currentNote <  noteCount - 1 )
+					{							
+						pApp.println( "targetAngle:" + targetAngle + " pattern[currentNote+1]" + pattern[currentNote+1] + " pattern[currentNote]" + pattern[currentNote] );
+						if ( pattern[currentNote+1] > 0 && pattern[currentNote+1] != targetAngle ) 
 						{
-							pApp.println("t isPlaying, currentPatternIndex: " + currentPatternIndex);
-						}
-						else
-						{
-							
+							targetAngle = pattern[currentNote+1];
 							t = new Tween( 0, 1, rotationDuration );
 							t.play();
-							
 						}
-						hitDrum(currentPatternIndex);
+					}						
+					int currentDrum = pattern[currentNote];
+					if ( currentDrum > 0 ) 
+					{
+						hitDrum(currentDrum);
 					}
+					
 					// if it's the end of the pattern, we stop playback
 					if ( currentNote == noteCount - 1 )
 					{
@@ -362,7 +359,7 @@ public class FingerDrums {
 						seqStarted = false;
 						fingerReady = true;        
 						gamePaused = true;        
-						thePopup.initMessage(0, 0, "YOUR TURN", "Play the drums part!", null, 255, 255);
+						thePopup.initMessage(0, 0, "YOUR TURN !", "Play the drums part!", null, 255, 255);
 					}
 				}
 				if ( currentNote <  noteCount - 1 )
@@ -390,9 +387,15 @@ public class FingerDrums {
 		{
 			// game is paused, start from 0
 			currentNote = 0;
-			
-			//t.repeat(10);
-			if ( !t.isPlaying() ) t.play();
+
+			if ( !t.isPlaying() && playMode )
+			{
+				// small rotation while waiting
+				t = new Tween( 0, 1, rotationDuration*5 );
+				targetAngle = 4;
+				t.repeat(100);
+				t.play();
+			}
 		}
 	}
 	void display()
@@ -402,11 +405,9 @@ public class FingerDrums {
 		pApp.image(theBground, 0, 0);
 
 		// place the drums image in the center
-		// when we rotate it, we'll have to do some
-		// annoying repositioning
 		pApp.pushMatrix();
 		pApp.translate(theAppProfile.theWidth/2,  theAppProfile.theHeight/2);// no z
-		pApp.rotateZ( (t.getPosition() * HALF_PI * pattern[currentNote]) + HALF_PI/2); //(in radians, values from 0 to TWO_PI)
+		pApp.rotateZ( (t.getPosition() * HALF_PI * targetAngle) + HALF_PI/2); //(in radians, values from 0 to TWO_PI)
 		pApp.image(theDrums, -theDrums.width/2, -theDrums.height/2);
 		if(gamePaused == false)
 		{
@@ -417,7 +418,7 @@ public class FingerDrums {
 			{
 				kickAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theBluePad, -theDrums.width/2, -theDrums.height/2);
+				pApp.image(theGreenPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// snare
@@ -425,7 +426,7 @@ public class FingerDrums {
 			{
 				snareAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theGreenPad, -theDrums.width/2, -theDrums.height/2);
+				pApp.image(theYellowPad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// hihat
@@ -433,7 +434,7 @@ public class FingerDrums {
 			{
 				hihatAlpha -= alphaDecrement;
 				fadeReady = false;
-				pApp.image(theYellowPad, -theDrums.width/2, -theDrums.height/2);
+				pApp.image(theBluePad, -theDrums.width/2, -theDrums.height/2);
 			}
 
 			// cowbell
@@ -461,7 +462,7 @@ public class FingerDrums {
 		}
 		if ( debugging )
 		{
-			debugMsg = "pattern[currentNote]:" + pattern[currentNote] + " gamePaused:" + gamePaused + " playMode:" + playMode + " t.getPosition():" + t.getPosition();
+			debugMsg = "targetAngle:" + targetAngle + " pattern[currentNote]:" + pattern[currentNote] + " gamePaused:" + gamePaused + " playMode:" + playMode + " t.getPosition():" + t.getPosition();
 			pApp.text(debugMsg,  20, 600, 1000, 100);
 		}
 	}

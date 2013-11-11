@@ -12,12 +12,6 @@ import javax.swing.event.EventListenerList;
 //// import java.util.Vector;
 
 
-
-
-
-
-
-
 /// leap motion
 import com.leapmotion.leap.CircleGesture;
 import com.leapmotion.leap.Controller;
@@ -33,7 +27,8 @@ import com.leapmotion.leap.SwipeGesture;
 import com.leapmotion.leap.Tool;
 import com.leapmotion.leap.Vector;
 import com.leapmotion.leap.Gesture.State;
-import com.leapmotion.leap.processing.LeapMotion;
+// import com.leapmotion.leap.processing.LeapMotion;  //// removed this hoping it would fix app export problems
+/// import com.leapmotion.leap.processing.LeapMotion;
 
 import controlP5.Button;
 import controlP5.ControlEvent;
@@ -44,8 +39,10 @@ import ddf.minim.AudioSample;
 import ddf.minim.Minim;
 
 
-public class Main extends PApplet{
-	
+public class VisualTouchTherapy extends PApplet{
+	public static void main(String args[]) {
+	    PApplet.main(new String[] { "--present", "VisualTouchTherapy" });
+	  }
 	/// leap
 	LeapMotion leapMotion;
 	// controller and listeners
@@ -200,8 +197,8 @@ public class Main extends PApplet{
 	MyEventListener listener;
 
 	public void setup(){	
-		
-	  size(tWidth,tHeight, OPENGL);
+	  size(1024,768, OPENGL);
+	  // size(tWidth,tHeight, OPENGL);
 	  colorMode(RGB);
 	  smooth();
 	  
@@ -283,9 +280,9 @@ public class Main extends PApplet{
 	  ///////////////////////////
 	// add achievment listeners
 	  ///////////////////////////
-	  thePaddle.addMyEventListener(new MyEventListener() {
+	  breakouts.get(0).addMyEventListener(new MyEventListener() {
       public void myEventOccurred(MyEvent evt, String tCheev) {
-          /// System.out.println("fired");
+          System.out.println("fired" + tCheev);
           initAchievement(tCheev);
         }
       });
@@ -382,7 +379,7 @@ public class Main extends PApplet{
 	/////////////////////////////////////
 
 	public void renderGame(){
-		
+
 		switch (theAppProfile.gameID){
 		
 		case 0:
@@ -403,7 +400,6 @@ public class Main extends PApplet{
 			
 		case 3:
 
-			
 			drawFeather();
 			doLifters();
 
@@ -594,7 +590,7 @@ public class Main extends PApplet{
 	}
 	
 	
-	///////// BREAKOUT ////////////////
+	///////// FINGER BLOCKS ////////////////
 	
 	void spawnBreakouts(){
 	    // generate movers
@@ -830,8 +826,8 @@ public class Main extends PApplet{
 	    // show finger colors
 	    // fill(fingerColors.get(fingerId), 65);
 	    fill(0,0,0,0);
-	    stroke(255);
-	    strokeWeight(1);
+	    // stroke(255);
+	    // strokeWeight(0);
 	    
 	    /// this makes the finger tracking circles a nice size
 	    float tSize = map(position.getZ(), -100.0f, 100.0f, 0.0f ,20.0f);
@@ -854,7 +850,7 @@ public class Main extends PApplet{
 		{
 			currentSec = sec;
 			theFingerDrums.secChanged( currentSec );
-			println( currentSec );
+			//println( currentSec );
 			
 		}
 		
@@ -1142,31 +1138,39 @@ public class Main extends PApplet{
 			isMenuShowing = false;
 			isPaused = false;
 			theMessaging.closeMessage();
+			/// only play a few games
+			/*
+			if(theMessaging.newGameID == 2 || theMessaging.newGameID == 3){
+				startNewGame(theMessaging.newGameID);
+			
+			}
+			*/
+			
 			startNewGame(theMessaging.newGameID);
 		}
 		
 		
-		if (theEvent.isFrom("GAME 0")){
+		if (theEvent.isFrom("FINGERBALL")){
 			theMessaging.showGameInfo(0);
 			// theMessaging.messageState = "showMenu";
 		}
-		if (theEvent.isFrom("GAME 1")){
+		if (theEvent.isFrom("MULTIFEET")){
 			theMessaging.showGameInfo(1);
 			// theMessaging.messageState = "showMenu";
 		}
 		
-		if (theEvent.isFrom("GAME 2")){
+		if (theEvent.isFrom("FINGERBLOCKS")){
 			theMessaging.showGameInfo(2);
 			// theMessaging.messageState = "showMenu";
 		}
-		if (theEvent.isFrom("GAME 3")){
+		if (theEvent.isFrom("FEATHERWEIGHT")){
 			theMessaging.showGameInfo(3);
 			// theMessaging.messageState = "showMenu";
 		}
-		if (theEvent.isFrom("GAME 4")){
+		if (theEvent.isFrom("GRABBER")){
 			theMessaging.showGameInfo(4);
 		}
-		if (theEvent.isFrom("GAME 5")){
+		if (theEvent.isFrom("FINGERDRUMS")){
 		
 			theMessaging.showGameInfo(5);
 			// theMessaging.messageState = "showMenu";
@@ -1300,7 +1304,7 @@ public class Main extends PApplet{
 		/// parse score
 		
 		/// this is too fancy
-		image(footerBground, 0, theAppProfile.theHeight - footerBground.height);
+		image(footerBground, 0, theAppProfile.theHeight - footerBground.height/1.5f);
 		
 		//// need to assign this to specific game
 		/// not player score in general
@@ -1369,7 +1373,7 @@ public class Main extends PApplet{
 		/// set the time to start
 		/// displaying the achievment
 		
-		curMarker =  theTimer.getElapsedTime();
+		
 		cheevoName = tCheev;
 		
 		/// check to see if the player
@@ -1377,9 +1381,10 @@ public class Main extends PApplet{
 		boolean hasCheevo = false;
 		for(int j=0; j<thePlayerProfile.CheevoNames.size(); j++){
 			
-			// println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
+
 			if(thePlayerProfile.CheevoNames.get(j).equals(cheevoName)){
 				hasCheevo = true;
+				println("HAS: " + thePlayerProfile.CheevoNames.get(j) + " new: " + cheevoName);
 			}
 		}
 		
@@ -1392,16 +1397,19 @@ public class Main extends PApplet{
 			
 			///// wait for the return, then load the image
 			showCheevo = true;
+			
+			//// reset the achievment display time
+			curMarker =  theTimer.getElapsedTime();
 			/// get the achievment data from the game profiles
 			
 			
 			for (int i=0; i<thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.size(); i++){
 				
 				if(cheevoName.equals(thePlayerProfile.GameStats.get(theAppProfile.gameID).CheevoNames.get(i))){
-					// println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
+					println("Cheevo FOUND: " + cheevoPath + " " + cheevoDesc + " " + cheevoName);
 					// add cheevo to the player profile
 					thePlayerProfile.addAchievement(cheevoName);
-
+					hasCheevo = true;
 					// re-init the cheevo display in "progress"
 					/// should probably do this in a different thread
 					// theMessaging.loadPlayerAchievements();
@@ -1422,6 +1430,8 @@ public class Main extends PApplet{
 				
 				println("Thread Trouble!" ) ;
 			}
+		} else {
+			showCheevo = false;
 		}
 		
 	}
@@ -1430,24 +1440,33 @@ public class Main extends PApplet{
 		 //// draw the achievment
 		/// println("SHOW CHEEVO");
 		float tX = theAppProfile.theWidth/2 - cheevoBground.width/2;
-		float tY = theAppProfile.theHeight - cheevoBground.height - 100;
+		float tY = theAppProfile.theHeight - cheevoBground.height - 20;
 		String cheevData = "Achievment: " + cheevoName + "\n";
-		image(cheevoBground, tX, tY);
-		image(cheevoBadge, tX + 27, tY + 28);
 		
-		textFont(ScoreFont, 22);
-		fill(255);
-		text(cheevData, tX + 100, tY + 50);
-		textFont(ScoreFont, 18);
-		text(cheevoDesc, tX + 100, tY + 80);
 		
-		 /// retrieve the stat info
-		 if(theTimer.getElapsedTime() - 5000 >= curMarker){
+			/// println("Cheevo name: " + cheevoName);
+			image(cheevoBground, tX, tY);
+			image(cheevoBadge, tX + 27, tY + 28);
+		try{
+			
+			textFont(ScoreFont, 22);
+			fill(255);
+			text(cheevData, tX + 100, tY + 45);
+			textFont(ScoreFont, 16);
+			text(cheevoDesc, tX + 100, tY + 50, 320, 200);
+			
+			 /// retrieve the stat info
+			 if(theTimer.getElapsedTime() - 5000 >= curMarker){
 
-			hideAchievement();
-			 
-			 
-		 }
+				hideAchievement();
+				 
+				 
+			 }
+		} catch (Exception e){
+			
+			println("can't draw cheevo: " + e);
+		}
+		
 		 
 	 }
 	 

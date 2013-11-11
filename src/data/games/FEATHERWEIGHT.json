@@ -6,11 +6,11 @@
     "FEATHERWEIGHT": [
         {
             "name": "Lock On",
-            "description": "Your Hand Has Been Registered",
+            "description": "Feather Lock for 15 Seconds",
             "image": "data/cheevos/cheevo23.png"
         },
 	{
-            "name": "Level One",
+            "name": "First Feather",
             "description": "Completed Level One in FeatherWeight",
             "image": "data/cheevos/cheevo11.png"
         },
@@ -20,8 +20,8 @@
             "image": "data/cheevos/cheevo23.png"
         },
         {
-            "name": "Second Bounce",
-            "description": "Bounced for the second time in Featherweight",
+            "name": "Persistant",
+            "description": "Halfway through level two in Featherweight!",
             "image": "data/cheevos/cheevo7.png"
         }
     ]

@@ -1,8 +1,8 @@
 import processing.core.*;
-import processing.opengl.PGraphicsOpenGL;
+// import processing.opengl.PGraphicsOpenGL;
 
 import java.util.ArrayList;
-
+import javax.swing.event.EventListenerList;
 
 class Breakout{
 	
@@ -39,7 +39,7 @@ class Breakout{
 	float boxHeight;
     int numBoxes;
     int boxColor;
-    int boxTop = 250;
+    int boxTop = 150;
     
     //// paddle vars
     float paddleHeight;
@@ -52,11 +52,20 @@ class Breakout{
     boolean gamePaused = true;
     GameMessaging thePopup;
     
+    ///// THIS IS TEMPORARY AND WILL BE REMOVED
+    boolean hasFirstBounce = false;
+    boolean hasDestroyer = false;
+    boolean hasBreaking = false;
+    
     
     ArrayList<BreakoutBox> BreakBoxes = new ArrayList();
     
     PImage bottomBorder;
     String borderPath = "data/games/bottom_border_breakout.png";
+    
+
+    // listeners
+    protected EventListenerList listenerList = new EventListenerList();
     
     /// the mass, the x, the y);
     Breakout(float m, float x, float y){
@@ -69,7 +78,7 @@ class Breakout{
     	 // = new SoundControl();
     	
     	theColor = pApp.color(theR,theG,theB,theA);
-    	
+    	bottomBorder = pApp.loadImage(borderPath);
         mass = m;
 
         
@@ -79,7 +88,7 @@ class Breakout{
    public void startNewGame(){
 	   gamePaused = true;
   	 /// do initial messags
-  	   thePopup.initMessage(0, 0, "WELCOME TO BREAKOUT!", "This game is designed to strenghten your upper and forearm co-ordination by using lateralmovements. First, we'll start off easy-- move your hand back and forth to bounce the ball against the block screen five times!", null, 255, 255);
+  	   thePopup.initMessage(0, 0, "WELCOME TO FINGERBLOCKS!", "This game is designed to strenghten your upper and forearm co-ordination by using lateralmovements. First, we'll start off easy-- move your hand back and forth to bounce the ball against the blocks. For now, you only have two rows to get through.", null, 255, 255);
   	   setLevelParams();
   	   spawnBoxes(curLevel);
   	
@@ -133,6 +142,8 @@ class Breakout{
 		//// and unpause
 		gamePaused = false;
 		
+		pApp.println("CURRENT LEVLE: " + curLevel);
+		
 	}
 	
 	public void setLevelParams(){
@@ -141,33 +152,29 @@ class Breakout{
 			case 0:
 				
 				break;
-		   ///////// finger level
+		   ///////// big blocks level
 			case 1:
 				
 				/// set the location randomly, but make sure it's below the blocks!
 				location = new PVector(pApp.random(theAppProfile.theWidth), boxTop + numRows*boxHeight);
-		        velocity = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
+		        velocity = new PVector(pApp.random(-1.1f,5.1f),pApp.random(-0.1f,0.1f));
 		        acceleration = new PVector(0.1f,0.2f);
-		        
-		        bottomBorder = pApp.loadImage(borderPath);
-		        
 		        /// setup boxes
-		        numCols = 8;
+		        numCols = 5;
 		        numRows = 2;
-		        boxWidth = theAppProfile.theWidth/numCols;
-		        boxHeight = 20f;
+		        boxWidth = 204.8f; //theAppProfile.theWidth/numCols;
+		        boxHeight = 60f;
 		        spawnBoxes(curLevel);
 		        
 				break;
 				
-			//////// hand level	
+			//////// small blocks levle
 			case 2:
 			    	
-				location = new PVector(pApp.random(theAppProfile.theWidth), pApp.random(theAppProfile.theHeight/2));
-		        velocity = new PVector(pApp.random(-2.0f,2.0f),pApp.random(-2.0f,2.0f));
+				location = new PVector(pApp.random(theAppProfile.theWidth), boxTop + numRows*boxHeight + 10);
+		        velocity = new PVector(pApp.random(-0.1f,5.1f),pApp.random(-0.1f,0.1f));
 		        acceleration = new PVector(0.1f,0.2f);
 		        
-		        bottomBorder = pApp.loadImage(borderPath);
 		        
 		        /// setup boxes
 		        numCols = 8;
@@ -177,16 +184,37 @@ class Breakout{
 		        spawnBoxes(curLevel);
 		        
 			    break;
+			    
 			case 3:
-				//// TIMER level
-				// theTimer.stop();
-				// theTimer.start();
+				//// double hit blocks
+				/// set the location randomly, but make sure it's below the blocks!
+				location = new PVector(pApp.random(theAppProfile.theWidth), boxTop + numRows*boxHeight + boxHeight);
+		        velocity = new PVector(pApp.random(-1.1f,5.1f),pApp.random(-0.1f,0.1f));
+		        acceleration = new PVector(0.1f,0.2f);
+		        /// setup boxes
+		        numCols = 5;
+		        numRows = 2;
+		        boxWidth = 204.8f; //theAppProfile.theWidth/numCols;
+		        boxHeight = 60f;
+		        spawnBoxes(curLevel);
+		        
+				
 				break;
 				
 			case 4:
-				//// hover level
-				// theTimer.stop();
-				// theTimer.start();
+				
+				/// set the location randomly, but make sure it's below the blocks!
+				location = new PVector(pApp.random(theAppProfile.theWidth), boxTop + numRows*boxHeight);
+		        velocity = new PVector(pApp.random(-1.1f,5.1f),pApp.random(-0.1f,0.1f));
+		        acceleration = new PVector(0.1f,0.2f);
+		        /// setup boxes
+		      /// setup boxes
+		        numCols = 8;
+		        numRows = 2;
+		        boxWidth = theAppProfile.theWidth/numCols;
+		        boxHeight = 20f;
+		        spawnBoxes(curLevel);
+
 				break;
 			case 5:
 				
@@ -204,6 +232,8 @@ class Breakout{
 	
 	////// THIS IS CALLED WHEN LEVEL FINISHING PARAMETERS ARE MET ////////
 	private void endLevel(){
+		
+		pApp.println("END LEVEL");
 		switch(curLevel){
 		
 		
@@ -218,7 +248,7 @@ class Breakout{
 		case 2:
 			gamePaused = true;
         	/// show message
-        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level one... but that was the easy part.\n\nNow you have to break a whole lot of boxes!", null, 255, 255);
+        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... obviously this game presents very little challenge for you.\n\nFor the next level, each box has to be hit two times!", null, 255, 255);
         	/// do next level
         	curLevel = 3;
 			break;
@@ -227,7 +257,7 @@ class Breakout{
 			
 			gamePaused = true;
         	/// show message
-        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Great job! You have passed level two... but don't get penisy.\n\nNow you have to break a whole lot of boxes!", null, 255, 255);
+        	thePopup.initMessage(0, 0, "LEVEL COMPLETE", "Impressive! You have passed level three. Obviously these challenges are far too easy.\n\nNow you have to break a whole lot of boxes, and each one has to be broken twice!!", null, 255, 255);
         	/// do next level
         	curLevel = 4;
 			break;
@@ -239,15 +269,33 @@ class Breakout{
     /////// SPAWN BOXES //////////////
     private void spawnBoxes(int tLevel){
     	BreakBoxes.clear();
-    	boxWidth = theAppProfile.theWidth/numCols;
-    	boxHeight = 20f;
-    	boxColor = pApp.color(255, 0, 0,165);
+    	/// boxWidth = theAppProfile.theWidth/numCols;
+    	/// boxHeight = 20f;
+    	int numH = 1;
+
+		/// add level specific params
+		if(curLevel == 3){
+			boxColor = pApp.color(165,165,165, 165);
+			numH = 2;
+		} else {
+			boxColor = pApp.color(255, 0, 0,165);
+		}
+		
+		
+    	
     	for (int i = 0; i< numRows; i++){
     		
     		for(int j = 0; j<numCols; j++){
+    			
+    			
+    			BreakoutBox tBox = new BreakoutBox(j * boxWidth, (i* boxHeight) + boxTop, 0.0f, boxWidth, boxHeight, boxColor);
+    			tBox.numHits = numH;
 
-    			BreakoutBox tBox = new BreakoutBox(j * boxWidth, i* boxHeight + 250, 0.0f, boxWidth, boxHeight, boxColor);
     			BreakBoxes.add(tBox);
+    			
+    			
+    			
+    			
     		}
     	}
     }
@@ -268,6 +316,9 @@ class Breakout{
 	        velocity.add(acceleration);
 	        location.add(velocity);
 	        acceleration.mult(0);
+	        /// acceleration.limit(2);
+	        
+	        velocity.limit(18);
 	        
 	        if(theR < 255){
 	        	theR +=10;
@@ -287,6 +338,35 @@ class Breakout{
 	        } 
 	        
 	        theColor = pApp.color(theR,theG,theB,theA);
+	        
+	        
+	        
+	        //// check to see if we've hit all the blocks
+	        boolean isDone = true;
+	    	for(int k = 0; k< BreakBoxes.size(); k++){
+	    		BreakoutBox tBox = BreakBoxes.get(k);
+	    		/// if one box is not hit
+	    		/// then the level is not done
+	    		if(tBox.isHit == false){
+	    			isDone = false;
+	    		} 
+	    	}
+	    	
+	    	if(isDone==true){
+	    		if(curLevel ==1){
+	    			/// do cheevo
+
+	    			if(hasDestroyer == false){
+						
+						launchCheevo(null, "Destroyer!");
+	    				hasBreaking = true;
+					}
+					
+					
+	    			/// 
+	    		}
+	    		endLevel();
+	    	}
         
     	}
     }
@@ -319,14 +399,21 @@ class Breakout{
             
         }
         
+
         if(location.y>currentFloor){
+        	if( hasFirstBounce ==false){
+        		launchCheevo(null, "First Bounce");
+            	hasFirstBounce = true;
+        		
+        	}
+        	
             velocity.y *= -1;
             location.y = currentFloor;
             // doImpactSounds();
 
             impactCounter = 255;
             hasDamage = true;
-            theSoundControl.playStarWarsSound(6);
+            theSoundControl.playStarWarsSound(4);
             // theAppProfile.scoredata += 23;
 
 
@@ -357,13 +444,20 @@ class Breakout{
     			// do bounce
     			if(location.y > tBox.theY){
     				velocity.y *= .75;
+    				// boxTop
+    				if(location.y < boxTop + tBox.theHeight/2 && hasBreaking == false){
+    					
+    					launchCheevo(null, "Breaking Bad");
+        				hasBreaking = true;
+    				}
+    				
     				
     			}
     			if(location.y < tBox.theY + tBox.theHeight){
     				velocity.y *= -1.75;
     				
     			}
-    			//// are they live
+    			/// do the hit animation
     			tBox.doHit();
     		}	
     	}
@@ -371,19 +465,7 @@ class Breakout{
     	//// have you hit all the blocks?
     	
     	///*
-    	boolean isDone = true;
-    	for(int k = 0; k< BreakBoxes.size(); k++){
-    		BreakoutBox tBox = BreakBoxes.get(k);
-    		/// if one box is not hit
-    		/// then the level is not done
-    		if(tBox.isHit == false){
-    			isDone = false;
-    		} 
-    	}
     	
-    	if(isDone){
-    		endLevel();
-    	}
     	//*/
     	
     }
@@ -485,6 +567,23 @@ class Breakout{
     
     
     
-    /////////////////
+    ///////////////////////////
+    ////// listeners //////////
+    ///////////////////////////
+    public void addMyEventListener(MyEventListener listener) {
+        listenerList.add(MyEventListener.class, listener);
+      }
+      public void removeMyEventListener(MyEventListener listener) {
+        listenerList.remove(MyEventListener.class, listener);
+      }
+      void launchCheevo(MyEvent evt, String tCheev) {
+        Object[] listeners = listenerList.getListenerList();
+        for (int i = 0; i < listeners.length; i = i+2) {
+          if (listeners[i] == MyEventListener.class) {
+            ((MyEventListener) listeners[i+1]).myEventOccurred(evt, tCheev);
+          }
+        }
+      }
+
 }
 /// end breakout class

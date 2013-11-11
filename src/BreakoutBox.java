@@ -18,6 +18,8 @@ public class BreakoutBox {
 	
     /// colors 
     int theColor;
+    int theColor2;
+    int hitColor;
     int theInsideClr;
     
     int theR = 255;
@@ -42,6 +44,8 @@ public class BreakoutBox {
 		theHeight = tHeight;
 		
 		boxColor = pApp.color(tColor, theA);
+		hitColor = pApp.color(0,255,0);
+		theColor2 = pApp.color(0,0,255);
 	}
 	
 	
@@ -49,11 +53,17 @@ public class BreakoutBox {
 		//// 
 	   if(isHit == true){
 		   theA -=10;
-		   if(theA < 0){
-			  isLive = false; 
+		   if(theA < 0 && numHits >0){
+			  isHit = false; 
+			  hitColor = theColor2;
+			  theA = 185;
+		   }
+		   if(theA < 20 && numHits <=0){
+		      isLive = false; 
 		   }
 		   
-	       boxColor = pApp.color(theR, theG, theB, theA);
+		   
+	       boxColor = pApp.color(hitColor, theA);
        }
 
 		pApp.fill(boxColor);
@@ -73,6 +83,7 @@ public class BreakoutBox {
 	
 	//// CHANGES THE COLOR FOR THE BOX
 	public void doHit(){
+		numHits --;
 		isHit = true;
 		theR = 0;
 		theG = 255;

@@ -1,0 +1,23 @@
+{
+    "name": "FINGERBLOCKS",
+    "description": "Breakout is your basic Pong game, except you use the Leap Motion controller to track your hand movement. The player loses a turn when the ball touches the bottom of the screen. To prevent this from happening, the player has a movable paddle to bounce the ball upward, keeping it in play. Get extra points for multiple rebounds in a row!",
+    "main_image": "data/games/thumbnail_breakout.png",
+    "thumbnail": "data/games/thumbnail_breakout.png",
+    "FINGERBLOCKS": [
+        {
+            "name": "First Bounce",
+            "description": "Bounced for the first time!",
+            "image": "data/cheevos/cheevo6.png"
+        },
+        {
+            "name": "Destroyer!",
+            "description": "Destroyed the first wall of blocks!",
+            "image": "data/cheevos/cheevo11.png"
+        },
+	{
+            "name": "Breaking Bad",
+            "description": "Destroyed blocks from the top down",
+            "image": "data/cheevos/cheevo7.png"
+        }	
+    ]
+}
