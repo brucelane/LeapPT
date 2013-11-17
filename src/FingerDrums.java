@@ -8,7 +8,6 @@ import ijeoma.motion.tween.*;
 
 public class FingerDrums {
 
-
 	PApplet pApp;
 	AppProfile theAppProfile;
 	PlayerProfile thePlayerProfile;
