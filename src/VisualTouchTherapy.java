@@ -850,7 +850,7 @@ public class VisualTouchTherapy extends PApplet{
 		{
 			currentSec = sec;
 			theFingerDrums.secChanged( currentSec );
-			//println( currentSec );
+			println( currentSec );
 			
 		}
 		
